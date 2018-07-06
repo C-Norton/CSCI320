@@ -4,9 +4,19 @@ import java.sql.*;
 
 public class DatabaseController {
 
+    private Connection conn;
 
-    //initalize a fresh instance of the retail DB
-    public static void InitializeNewDatabaseInstance(Connection conn) throws Exception{
-        DatabaseInitializer.InitializeDatabase(conn);
+    public DatabaseController(Connection conn){
+        this.conn = conn;
+    }
+
+    //initialize a fresh instance of the retail DB
+    public void InitializeNewDatabaseInstance() throws Exception{
+        DatabaseInitializer.InitializeDatabase(this.conn);
+    }
+
+    public ResultSet ExecuteQuery(Statement stmt, String query) throws Exception{
+        ResultSet rs = stmt.executeQuery(query);
+        return rs;
     }
 }
