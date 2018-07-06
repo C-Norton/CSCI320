@@ -40,16 +40,16 @@ public class Customer {
 
         String selectCustomer = "SELECT * FROM FrequentShopper WHERE userId =" + id ;
 
-        //create query
+        //create query statement
         try {
             stmt = stmtUtil.connStatement(stmt);
         }catch(Exception e){
-            System.out.println("Error Creating Fetch Query");
+            System.out.println("Error Creating Fetch Statement");
         }
 
         //execute and get results of query
         try {
-            rs = dbController.ExecuteQuery(stmt, selectCustomer);
+            rs = dbController.ExecuteSelectQuery(stmt, selectCustomer);
         }catch(Exception e){
             System.out.println("Error Executing Query");
         }
@@ -59,6 +59,33 @@ public class Customer {
         return customer;
     }
 
+
+    public static void updateCustomerInfoQuery(DatabaseController dbController, StatementTemplate stmtUtil,Customer customer){
+        Statement stmt = stmtUtil.newNullStatement();
+
+        String updateName = "UPDATE FrequentShopper SET name ="+"'"+customer.getName()+"'"+" WHERE userId="+ customer.getId();
+        String updateAddress = "UPDATE FrequentShopper SET address ="+"'"+customer.getAddress()+"'"+ " WHERE userId="+ customer.getId();
+        String updateCard = "UPDATE FrequentShopper SET creditCard ="+"'"+customer.getCreditCard()+"'"+ " WHERE userId="+ customer.getId();
+        String updatePhone = "UPDATE FrequentShopper SET phoneNum ="+"'"+customer.getPhone()+"'"+ " WHERE userId="+ customer.getId();
+
+        //create query statement
+        try {
+            stmt = stmtUtil.connStatement(stmt);
+        }catch(Exception e){
+            System.out.println("Error Creating Update Statement");
+        }
+
+        //execute update
+        try {
+            dbController.ExecuteUpdateQuery(stmt, updateName);
+            dbController.ExecuteUpdateQuery(stmt, updateAddress);
+            dbController.ExecuteUpdateQuery(stmt, updateCard);
+            dbController.ExecuteUpdateQuery(stmt, updatePhone);
+        }catch(Exception e){
+            System.out.println("Error Executing Query");
+            e.printStackTrace();
+        }
+    }
 
 
     //--Utils--//
@@ -113,7 +140,7 @@ public class Customer {
     }
 
     public void setCreditCard(String newCard){
-        this.address = newCard;
+        this.creditCard = newCard;
     }
 
     public void setCart(Cart newCart){

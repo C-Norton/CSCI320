@@ -15,8 +15,12 @@ public class DatabaseController {
         DatabaseInitializer.InitializeDatabase(this.conn);
     }
 
-    public ResultSet ExecuteQuery(Statement stmt, String query) throws Exception{
+    public ResultSet ExecuteSelectQuery(Statement stmt, String query) throws Exception{
         ResultSet rs = stmt.executeQuery(query);
         return rs;
+    }
+
+    public void ExecuteUpdateQuery(Statement stmt, String query) throws Exception{
+        stmt.executeUpdate(query);
     }
 }

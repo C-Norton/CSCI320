@@ -19,7 +19,18 @@ public class Main {
 
         System.out.println(cust.getName() + " ");
         System.out.println(cust.getAddress() + " ");
-        System.out.println(cust.getCreditCard() + " ");
+        System.out.println(cust.getCreditCard() + '\n');
+
+        cust.setName("Jillian");
+        cust.setCreditCard("999999999");
+
+        cust.updateCustomerInfoQuery(dbController,stmtUtil,cust);
+
+        Customer custAgain =  Customer.getSingleCustomerInfoQuery(dbController,stmtUtil,4);
+
+        System.out.println(custAgain.getName() + " ");
+        System.out.println(custAgain.getAddress() + " ");
+        System.out.println(custAgain.getCreditCard() + " ");
 
         conn.close();
     }
