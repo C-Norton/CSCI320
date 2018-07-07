@@ -48,17 +48,20 @@ class DatabaseInitializer {
 
         try {
             String FrequentShopper = "CREATE TABLE   FrequentShopper " +
-                    "(userId INTEGER not NULL, " +
+                    "(userId INTEGER not NULL auto_increment, " +
                     " name VARCHAR(255), " +
                     " address VARCHAR(255), " +
                     " phoneNum VARCHAR(10), " +
                     " creditCard VARCHAR(19), " +
                     " PRIMARY KEY ( userId ))";
 
-            String Order = "CREATE TABLE   shopOrder " +
-                    "(orderId INTEGER not NULL, " +
-                    " userId INTEGER, " +
-                    " storeId INTEGER, " +
+            String Order = "CREATE TABLE   Orders " +
+                    "(orderId INTEGER not NULL auto_increment, " +
+                    "orderNum Integer not NULL,"+
+                    "userId INTEGER, " +
+                    "storeId INTEGER, " +
+                    "productName VARCHAR (255)," +
+                    "quantity INTEGER,"+
                     " PRIMARY KEY ( orderId ))";
 
             String Store = "CREATE TABLE   Store " +
@@ -85,6 +88,14 @@ class DatabaseInitializer {
                     " Vendor Integer, " +
                     " PRIMARY KEY ( UPC ))";
 
+            String Inventory = "CREATE TABLE   Inventory " +
+                    "(rowId INTEGER not NULL auto_increment, " +
+                    "storeId INTEGER, " +
+                    "productName VARCHAR (255)," +
+                    "quantity INTEGER,"+
+                    " PRIMARY KEY ( rowId ))";
+
+
             stmt = conn.createStatement();
 
             stmt.executeUpdate(FrequentShopper);
@@ -92,6 +103,8 @@ class DatabaseInitializer {
             stmt.executeUpdate(Store);
             stmt.executeUpdate(Vendor);
             stmt.executeUpdate(Product);
+            stmt.executeUpdate(Inventory);
+
 
             stmt.close();
 
@@ -105,7 +118,7 @@ class DatabaseInitializer {
 
         Statement stmt = null;
 
-        System.out.println("Populating DB with users");
+        System.out.println("Populating DB with users" + '\n');
 
         try {
             String FrequentShopper1 = "INSERT INTO  FrequentShopper VALUES (1,'Bob','3 Washington Lane','1234567899','1452365478')";
@@ -127,4 +140,30 @@ class DatabaseInitializer {
             e.printStackTrace();
         }
     }
+/*
+    private static void createStoreInventories(Connection conn) throws Exception{
+
+        Statement stmt = null;
+
+        System.out.println("Populating DB with users" + '\n');
+
+        try {
+            String FrequentShopper1 = "INSERT INTO  Inventory VALUES (1,'1','White Bread','50')";
+            String FrequentShopper1 = "INSERT INTO  Inventory VALUES (2,'1','White Bread','50')";
+            String FrequentShopper1 = "INSERT INTO  Inventory VALUES (3,'1','White Bread','50')";
+
+            stmt = conn.createStatement();
+            stmt.executeUpdate(FrequentShopper1);
+            stmt.executeUpdate(FrequentShopper2);
+            stmt.executeUpdate(FrequentShopper3);
+            stmt.executeUpdate(FrequentShopper4);
+            stmt.executeUpdate(FrequentShopper5);
+
+
+        } catch (Exception e) {
+            System.out.println("Error Creating users");
+            e.printStackTrace();
+        }
+    }
+    */
 }
