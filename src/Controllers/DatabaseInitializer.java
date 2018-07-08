@@ -48,42 +48,57 @@ class DatabaseInitializer {
 
         try {
             String FrequentShopper = "CREATE TABLE   FrequentShopper " +
-                    "(userId INTEGER not NULL, " +
-                    " name VARCHAR(255), " +
+                    "(userId INTEGER not NULL auto_increment, " +
+                    " name VARCHAR(32), " +
                     " address VARCHAR(255), " +
                     " phoneNum VARCHAR(10), " +
                     " creditCard VARCHAR(19), " +
+                    " username VARCHAR(50), " +
+                    " password VARCHAR(50), " +
                     " PRIMARY KEY ( userId ))";
 
-            String Order = "CREATE TABLE   shopOrder " +
-                    "(orderId INTEGER not NULL, " +
-                    " userId INTEGER, " +
-                    " storeId INTEGER, " +
-                    " PRIMARY KEY ( orderId ))";
+            String Order = "CREATE TABLE   Orders " +
+                    "(orderNum Integer not NULL,"+
+                    "userId INTEGER, " +
+                    "storeId INTEGER, " +
+                    "PRIMARY KEY ( orderNum ) )";
+
+            String productQuantities = "CREATE TABLE   prodQuantities " +
+                    "(orderNum INTEGER not NULL,"+
+                    "productUPC numeric(12,0), " +
+                    "quantity INTEGER, " +
+                    " PRIMARY KEY ( orderNum,productUPC ))";
 
             String Store = "CREATE TABLE   Store " +
-                    "(storeId INTEGER not NULL, " +
-                    " name VARCHAR(255), " +
-                    " location VARCHAR(255), " +
+                    "(storeId INTEGER not NULL auto_increment, " +
+                    " name VARCHAR(32), " +
+                    " location VARCHAR(32), " +
                     " phoneNum VARCHAR(10), " +
-                    " hours VARCHAR(255), " +
+                    " hours VARCHAR(50), " +
                     " PRIMARY KEY ( storeId ))";
 
             String Vendor = "CREATE TABLE   Vendor " +
-                    "(vendorId INTEGER not NULL, " +
-                    " name VARCHAR(255), " +
-                    " location VARCHAR(255), " +
+                    "(vendorId INTEGER not NULL auto_increment, " +
+                    " name VARCHAR(32), " +
+                    " location VARCHAR(32), " +
                     " phoneNum VARCHAR(10), " +
-                    " salesRep VARCHAR(255), " +
+                    " salesRep VARCHAR(32), " +
                     " PRIMARY KEY ( vendorId ))";
 
             String Product = "CREATE TABLE   Product " +
-                    "(UPC INTEGER not NULL, " +
-                    " name VARCHAR(255), " +
-                    " Brand VARCHAR(255), " +
+                    "(UPC numeric(12,0) not NULL , " +
+                    " name VARCHAR(50), " +
+                    " Brand VARCHAR(32), " +
                     " Price decimal(19,2), " +
                     " Vendor Integer, " +
                     " PRIMARY KEY ( UPC ))";
+
+            String Inventory = "CREATE TABLE   Inventory " +
+                    "(storeId INTEGER, " +
+                    "productUPC numeric(12,0)," +
+                    "quantity INTEGER,"+
+                    " PRIMARY KEY ( storeID, productUPC ))";
+
 
             stmt = conn.createStatement();
 
@@ -91,7 +106,11 @@ class DatabaseInitializer {
             stmt.executeUpdate(Order);
             stmt.executeUpdate(Store);
             stmt.executeUpdate(Vendor);
+
             stmt.executeUpdate(Product);
+            stmt.executeUpdate(Inventory);
+            stmt.executeUpdate(productQuantities);
+
 
             stmt.close();
 
@@ -105,14 +124,14 @@ class DatabaseInitializer {
 
         Statement stmt = null;
 
-        System.out.println("Populating DB with users");
+        System.out.println("Populating DB with users" + '\n');
 
         try {
-            String FrequentShopper1 = "INSERT INTO  FrequentShopper VALUES (1,'Bob','3 Washington Lane','1234567899','1452365478')";
-            String FrequentShopper2 = "INSERT INTO  FrequentShopper VALUES (2,'John','6 Washington Lane','9876543211','')";
-            String FrequentShopper3 = "INSERT INTO  FrequentShopper VALUES (3,'Laura','5 Washington Lane','9873216544','')";
-            String FrequentShopper4 = "INSERT INTO  FrequentShopper VALUES (4,'Jill','13 Washington Lane','1237894566','8452156625746')";
-            String FrequentShopper5 = "INSERT INTO  FrequentShopper VALUES (5,'Gorlarth','1 Blorth Drive','6666666666','6666666666666666666')";
+            String FrequentShopper1 = "INSERT INTO  FrequentShopper VALUES (1,'Bob','3 Washington Lane','1234567899','1452365478','bobby','password123')";
+            String FrequentShopper2 = "INSERT INTO  FrequentShopper VALUES (2,'John','6 Washington Lane','9876543211','','johnny','password123')";
+            String FrequentShopper3 = "INSERT INTO  FrequentShopper VALUES (3,'Laura','5 Washington Lane','9873216544','','larua','password123')";
+            String FrequentShopper4 = "INSERT INTO  FrequentShopper VALUES (4,'Jill','13 Washington Lane','1237894566','8452156625746','jill','password123')";
+            String FrequentShopper5 = "INSERT INTO  FrequentShopper VALUES (5,'Gorlarth','1 Blorth Drive','6666666666','6666666666666666666','Gorlarth','password123')";
 
             stmt = conn.createStatement();
             stmt.executeUpdate(FrequentShopper1);
@@ -127,4 +146,30 @@ class DatabaseInitializer {
             e.printStackTrace();
         }
     }
+/*
+    private static void createStoreInventories(Connection conn) throws Exception{
+
+        Statement stmt = null;
+
+        System.out.println("Populating DB with users" + '\n');
+
+        try {
+            String FrequentShopper1 = "INSERT INTO  Inventory VALUES (1,'1','White Bread','50')";
+            String FrequentShopper1 = "INSERT INTO  Inventory VALUES (2,'1','White Bread','50')";
+            String FrequentShopper1 = "INSERT INTO  Inventory VALUES (3,'1','White Bread','50')";
+
+            stmt = conn.createStatement();
+            stmt.executeUpdate(FrequentShopper1);
+            stmt.executeUpdate(FrequentShopper2);
+            stmt.executeUpdate(FrequentShopper3);
+            stmt.executeUpdate(FrequentShopper4);
+            stmt.executeUpdate(FrequentShopper5);
+
+
+        } catch (Exception e) {
+            System.out.println("Error Creating users");
+            e.printStackTrace();
+        }
+    }
+    */
 }
