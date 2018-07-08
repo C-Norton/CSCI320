@@ -44,17 +44,17 @@ public class Customer {
         try {
             stmt = stmtUtil.connStatement(stmt);
         }catch(Exception e){
-            System.out.println("Error Creating Fetch Statement");
+            System.out.println("Error Creating Fetch Statement for Customer");
         }
 
         //execute and get results of query
         try {
             rs = dbController.ExecuteSelectQuery(stmt, selectCustomer);
         }catch(Exception e){
-            System.out.println("Error Executing Query");
+            System.out.println("Error Executing Select Query for Customer");
         }
 
-        Customer customer = parseResultSet(rs);
+        Customer customer = parseResultSet(dbController, stmtUtil,rs);
 
         return customer;
     }
@@ -72,7 +72,7 @@ public class Customer {
         try {
             stmt = stmtUtil.connStatement(stmt);
         }catch(Exception e){
-            System.out.println("Error Creating Update Statement");
+            System.out.println("Error Creating Update Statement for Customer");
         }
 
         //execute update
@@ -82,7 +82,7 @@ public class Customer {
             dbController.ExecuteUpdateQuery(stmt, updateCard);
             dbController.ExecuteUpdateQuery(stmt, updatePhone);
         }catch(Exception e){
-            System.out.println("Error Executing Query");
+            System.out.println("Error Executing Update Query for Customer");
             e.printStackTrace();
         }
     }
@@ -91,7 +91,7 @@ public class Customer {
     //--Utils--//
 
     //create cust object based off query
-    private static Customer parseResultSet(ResultSet rs) {
+    private static Customer parseResultSet(DatabaseController dbController, StatementTemplate stmtUtil, ResultSet rs) {
         if (rs != null) {
 
             try {
@@ -104,9 +104,11 @@ public class Customer {
                     String custCard = rs.getString("creditCard");
 
 
-                    Cart custCart = Cart.getCartByCustIdQuery();
-                    ArrayList<Order> custHistory = Order.getOrdersByCustIdQuery();
+                    Cart custCart = new Cart(5);
 
+                    ArrayList<Order> custHistory = Order.getOrdersByCustIdQuery(dbController,stmtUtil,custId);
+
+                    //triggers query to get order history
                     Customer customer = new Customer(custId,custName,custAddress,custPhone,custCard,custCart,custHistory);
 
                     return customer;
@@ -117,7 +119,7 @@ public class Customer {
             }
         }
 
-        Cart emptyCart = new Cart();
+        Cart emptyCart = new Cart(5);
         ArrayList<Order> noOrders = new ArrayList<Order>();
         Customer customer = new Customer(0, "Anon", "", "", "", emptyCart, noOrders);
 
