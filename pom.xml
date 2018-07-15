@@ -8,7 +8,6 @@
     <groupId>com.JPAIDEC.RetailProject</groupId>
     <version>PHASE 2 VER 1.0</version>
     <dependencies>
-
         <dependency>
             <groupId>com.googlecode.lanterna</groupId>
             <artifactId>lanterna</artifactId>
@@ -19,7 +18,5 @@
             <artifactId>h2</artifactId>
             <version>1.4.197</version>
         </dependency>
-
-
     </dependencies>
 </project>

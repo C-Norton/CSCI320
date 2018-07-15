@@ -11,8 +11,11 @@ package Controllers;
  * The GUI is constructed with the "Lanterna" GUI library, found here https://github.com/mabe02/lanterna
  */
 
+import GUIPages.MainMenu;
 import com.googlecode.lanterna.*;
 import com.googlecode.lanterna.graphics.TextGraphics;
+import com.googlecode.lanterna.gui2.*;
+import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
 
@@ -22,7 +25,6 @@ public class GuiController
 {
     private DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
     private Terminal terminal = null;
-    private final TextGraphics textGraphics;
 
     /**
      * Constructor. Creates a terminal, and draws the welcome page.
@@ -30,6 +32,7 @@ public class GuiController
     public GuiController()
     {
 
+        Screen screen = null;
         TextGraphics tmp = null;
         try
         {
@@ -37,10 +40,29 @@ public class GuiController
             Thread.sleep(500); //On windows, inconsistent behavior was occurring without a sleep here, as a flush
             //was being called before windows had finished initializing the terminal window. While I would wait on that
             //thread, this is also problematic due to OS differences in how this terminal is managed.
-            this.terminal.enterPrivateMode();
-            this.terminal.clearScreen();
-            this.terminal.flush();
-            tmp = terminal.newTextGraphics();
+            screen = terminalFactory.createScreen();
+            screen.startScreen();
+            final WindowBasedTextGUI textGUI = new MultiWindowTextGUI(screen);
+            final Window window = new BasicWindow("Just put anything, I don't even care");
+            Panel panel = new Panel(new LinearLayout(Direction.VERTICAL));
+            panel.addComponent(new Button("Begin", new Runnable()
+            {
+                public void run()
+                {
+
+                    MainMenu.DrawMainMenu(textGUI, window);
+                }
+            }));
+            panel.addComponent(new Button("Exit", new Runnable()
+            {
+                public void run()
+                {
+
+                    window.close();
+                }
+            }));
+            window.setComponent(panel);
+            textGUI.addWindowAndWait(window);
         }
         catch (IOException e)
         {
@@ -72,10 +94,7 @@ public class GuiController
                 }
             }
         }
-        finally
-        {
-            textGraphics = tmp;
-        }
+
     }
 
     /**
