@@ -1,5 +1,6 @@
 import java.sql.*;
 import Controllers.DatabaseController;
+import Controllers.GuiController;
 import Models.Customer;
 import Utilities.StatementTemplate;
 
@@ -24,14 +25,14 @@ public class Main {
         cust.setName("Jillian");
         cust.setCreditCard("999999999");
 
-        cust.updateCustomerInfoQuery(dbController,stmtUtil,cust);
+        Customer.updateCustomerInfoQuery(dbController, stmtUtil, cust);
 
         Customer custAgain =  Customer.getSingleCustomerInfoQuery(dbController,stmtUtil,4);
 
         System.out.println(custAgain.getName() + " ");
         System.out.println(custAgain.getAddress() + " ");
         System.out.println(custAgain.getCreditCard() + " ");
-
+        GuiController gui = new GuiController();
         conn.close();
     }
 

@@ -57,7 +57,6 @@ public class GuiController
             {
                 public void run()
                 {
-
                     window.close();
                 }
             }));
