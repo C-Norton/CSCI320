@@ -12,20 +12,24 @@ package Controllers;
  */
 
 import GUIPages.MainMenu;
-import Utilities.StatementTemplate;
+import GUIPages.iPage;
 import com.googlecode.lanterna.*;
+import Utilities.StatementTemplate;
 import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.gui2.*;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
-
 import java.io.IOException;
+import java.util.Stack;
 
 public class GuiController
 {
     private DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
-    private Terminal terminal = null;
+    public static Screen screen = null;
+    public static final Window window = null;
+    Stack<iPage> Screens;
+    final public static WindowBasedTextGUI textGUI;//TODO
     private DatabaseController dbController;
     private StatementTemplate stmtUtil;
 
@@ -40,13 +44,9 @@ public class GuiController
         TextGraphics tmp = null;
         try
         {
-            this.terminal = terminalFactory.createTerminal();
-            Thread.sleep(500); //On windows, inconsistent behavior was occurring without a sleep here, as a flush
-            //was being called before windows had finished initializing the terminal window. While I would wait on that
-            //thread, this is also problematic due to OS differences in how this terminal is managed.
             screen = terminalFactory.createScreen();
             screen.startScreen();
-            final WindowBasedTextGUI textGUI = new MultiWindowTextGUI(screen);
+            textGUI = new MultiWindowTextGUI(screen);
             final Window window = new BasicWindow("Just put anything, I don't even care");
             Panel panel = new Panel(new LinearLayout(Direction.VERTICAL));
             panel.addComponent(new Button("Begin", new Runnable()
@@ -54,14 +54,23 @@ public class GuiController
                 public void run()
                 {
 
-                    MainMenu.DrawMainMenu(textGUI, window);
+                    MainMenu ();
                 }
             }));
             panel.addComponent(new Button("Exit", new Runnable()
             {
                 public void run()
                 {
+
                     window.close();
+                    try
+                    {
+                        screen.close();
+                    }
+                    catch (IOException e)
+                    {
+                        e.printStackTrace();
+                    }
                 }
             }));
             window.setComponent(panel);
@@ -70,34 +79,7 @@ public class GuiController
         catch (IOException e)
         {
             e.printStackTrace();
-            if (this.terminal != null)
-            {
-                try
-                {
-                    this.terminal.close();
-                }
-                catch (IOException f)
-                {
-                    f.printStackTrace();
-                }
-            }
         }
-        catch (InterruptedException e)
-        {
-            e.printStackTrace();
-            if (this.terminal != null)
-            {
-                try
-                {
-                    this.terminal.close();
-                }
-                catch (IOException f)
-                {
-                    f.printStackTrace();
-                }
-            }
-        }
-
     }
 
     /**
@@ -108,18 +90,6 @@ public class GuiController
     public void close()
     {
 
-        if (terminal != null)
-        {
-            try
-            {
-                terminal.close();
-            }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-
-            }
-        }
     }
 
     @Override
