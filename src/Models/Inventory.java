@@ -28,10 +28,10 @@ public class Inventory {
         ResultSet rs = null;
 
         //hypebeast complex sql statement
-        String query = "with X(UPC, quantity) as (SELECT productUPC,quantity FROM Inventory WHERE storeId = " + storeId
-                + "), " + "Y(upc, quantity, name, brand, price, vendorID) as (X natural left outer join Product), " +
-                "Z(upc, quantity, name, brand, price, vendorID, vendorName, location, phoneNum, salesRep) as "
-                + "(Y inner join Vendor on Y.vendorID) select * from Z";
+        String query = "SELECT productUPC, quantity from (SELECT productUPC,quantity FROM Inventory WHERE storeId = " + storeId + ") as X; "
+                + "X left join Product on X.productUPC = Product.UPC as Y; " + "ALTER TABLE Y RENAME COLUMN name to productName;" +
+                "Y left join Vendor on Y.vendor = Vendor.vendorID as Z;"
+                + "select * from Z;";
 
         //create query statement
         try {
@@ -52,8 +52,8 @@ public class Inventory {
         ArrayList<ProductQuantity> inventory = parseResultSet(dbController, stmtUtil,rs);
         if (inventory!=null){
             return new Inventory(inventory);
-        }else{
-            throw new Exception("Error Parsing Inventory Result Set");
+        }else {
+            throw new Exception("Error Retrieving Inventory");
         }
     }
 
@@ -83,7 +83,7 @@ public class Inventory {
                 }
             } catch (Exception e) {
                 System.out.print("Error Building Customer" + '\n');
-                e.printStackTrace();
+                System.out.println(e.getMessage());
             }
         }
 
