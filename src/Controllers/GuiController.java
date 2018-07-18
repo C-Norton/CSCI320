@@ -54,7 +54,7 @@ public class GuiController
                 public void run()
                 {
 
-                    MainMenu ();
+                    new MainMenu();
                 }
             }));
             panel.addComponent(new Button("Exit", new Runnable()

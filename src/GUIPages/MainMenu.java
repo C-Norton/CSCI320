@@ -29,7 +29,5 @@ public class MainMenu implements iPage
         //panel, or have a runnable break to go back, so I'm not sure how to handle this yet. More research.
         GuiController.window.setComponent(panel);
         GuiController.textGUI.addWindowAndWait(window);
-        return this;
-    }
 
 }
