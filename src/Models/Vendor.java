@@ -59,7 +59,7 @@ public class Vendor {
 
     //selects names of all vendors
     //returns ResultSet but code for parsing is still included
-    public static ResultSet getListOfVendors(DatabaseController dbController, StatementTemplate stmtUtil, int id){
+    public static ResultSet getListOfVendors(DatabaseController dbController, StatementTemplate stmtUtil){
 
         Statement stmt = stmtUtil.newNullStatement();
         ResultSet rs = null;
