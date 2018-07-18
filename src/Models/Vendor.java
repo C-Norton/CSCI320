@@ -16,10 +16,11 @@ public class Vendor {
     private int id;
     private String name;
     private String location;
-    private int rep;
+    private String rep;
     private String phone;
 
-    public Vendor(int id, String name, String location, int rep, String phone) {
+    public Vendor(int id, String name, String location, String rep, String phone)
+    {
         this.id = id;
         this.name = name;
         this.location = location;
@@ -30,7 +31,8 @@ public class Vendor {
     //Queries//
 
     //select all for a vendor based on id
-    public static Vendor getSingleVendorQuery(DatabaseController dbController, StatementTemplate stmtUtil, int id){
+    //parsing method still included but this just returns the ResultSet right now
+    public static ResultSet getSingleVendorQuery(DatabaseController dbController, StatementTemplate stmtUtil, int id){
 
         Statement stmt = stmtUtil.newNullStatement();
         ResultSet rs = null;
@@ -51,13 +53,14 @@ public class Vendor {
             System.out.println("Error Executing Select Query for Vendor");
         }
 
-        Vendor vendor = parseResultSet(rs);
+        //Vendor vendor = parseResultSet(rs); // parsing the query
 
-        return vendor;
+        return rs;
     }
 
     //selects names of all vendors
-    public static ArrayList<String> getListOfVendors(DatabaseController dbController, StatementTemplate stmtUtil, int id){
+    //returns ResultSet but code for parsing is still included
+    public static ResultSet getListOfVendors(DatabaseController dbController, StatementTemplate stmtUtil){
 
         Statement stmt = stmtUtil.newNullStatement();
         ResultSet rs = null;
@@ -78,8 +81,8 @@ public class Vendor {
             System.out.println("Error Executing Select Query for Vendor");
         }
 
-        ArrayList<String> vendorNames = parseResultSetList(rs);
-        return vendorNames;
+        //ArrayList<String> vendorNames = parseResultSetList(rs); //calls the parsing method
+        return rs;
 
     }
 
@@ -87,16 +90,17 @@ public class Vendor {
 
 
     //Utils//
+    //not used because we are assuming that parsing is going on on the GUI end
 
     //gets a vendor from a query
     private static Vendor parseResultSet(ResultSet rs){
         if (rs != null){
             try {
                 while (rs.next()) {
-                    int vendorID = Integer.parseInt(rs.getString("ID"));
+                    int vendorID = Integer.parseInt(rs.getString("vendorId"));
                     String vendorName = rs.getString("name");
                     String vendorLoc = rs.getString("location");
-                    int vendorRep = Integer.parseInt(rs.getString("rep"));
+                    String vendorRep = rs.getString("rep");
                     String vendorPhone = rs.getString("phone");
 
                     Vendor vendor = new Vendor(vendorID, vendorName, vendorLoc, vendorRep, vendorPhone);
@@ -122,7 +126,7 @@ public class Vendor {
                 while (rs.next()) {
                     String vendorName = rs.getString("name");
 
-                    //int vendorID = Integer.parseInt(rs.getString("ID"));
+                    //int vendorID = Integer.parseInt(rs.getString("vendorId"));
                     //String vendorLoc = rs.getString("location");
                     //int vendorRep = Integer.parseInt(rs.getString("rep"));
                     //String vendorPhone = rs.getString("phone");
@@ -166,11 +170,13 @@ public class Vendor {
         this.location = location;
     }
 
-    public int getRep() {
+    public String getRep()
+    {
         return rep;
     }
 
-    public void setRep(int rep) {
+    public void setRep(String rep)
+    {
         this.rep = rep;
     }
 
