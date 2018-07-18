@@ -10,14 +10,17 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 public class MainMenu implements iPage
 {
 
-    public MainMenu()
+    private Panel panel;
+
+    public MainMenu(GuiController guiController)
     {
 
-        Panel panel = new Panel(new LinearLayout(Direction.VERTICAL));
+        panel = new Panel(new LinearLayout(Direction.VERTICAL));
         panel.addComponent(new Label("Welcome to FastMart! Where it's fast and easy to shop!\nUse the arrow Keys "
                                      + "to highlight desired option. Press ENTER to select"));
         panel.addComponent(new Button("1. Select Store", new Runnable()
         {
+            @Override
             public void run()
             {
 
@@ -25,9 +28,22 @@ public class MainMenu implements iPage
 
             }
         }));
-        //I'd like to have a good way to remember where you were and add a "back" button, but I can't pass in the old
-        //panel, or have a runnable break to go back, so I'm not sure how to handle this yet. More research.
-        GuiController.window.setComponent(panel);
-        GuiController.textGUI.addWindowAndWait(window);
+        panel.addComponent(new Button("2. Back", new Runnable()
+        {
+            @Override
+            public void run()
+            {
 
+                guiController.closePage();
+
+            }
+        }));
+    }
+
+    @Override
+    public Panel getPanel()
+    {
+
+        return panel;
+    }
 }

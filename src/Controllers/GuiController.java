@@ -11,25 +11,27 @@ package Controllers;
  * The GUI is constructed with the "Lanterna" GUI library, found here https://github.com/mabe02/lanterna
  */
 
-import GUIPages.MainMenu;
+import GUIPages.LoginScreen;
 import GUIPages.iPage;
-import com.googlecode.lanterna.*;
 import Utilities.StatementTemplate;
-import com.googlecode.lanterna.graphics.TextGraphics;
-import com.googlecode.lanterna.gui2.*;
+import com.googlecode.lanterna.gui2.BasicWindow;
+import com.googlecode.lanterna.gui2.MultiWindowTextGUI;
+import com.googlecode.lanterna.gui2.Window;
+import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
-import com.googlecode.lanterna.terminal.Terminal;
+
 import java.io.IOException;
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 public class GuiController
 {
+    public final Window window;
+    public final WindowBasedTextGUI textGUI;
     private DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
-    public static Screen screen = null;
-    public static final Window window = null;
-    Stack<iPage> Screens;
-    final public static WindowBasedTextGUI textGUI;//TODO
+    private Screen screen;
+    private Deque<iPage> Screens;
     private DatabaseController dbController;
     private StatementTemplate stmtUtil;
 
@@ -38,48 +40,30 @@ public class GuiController
      */
     public GuiController(DatabaseController dbController, StatementTemplate stmtUtil)
     {
-        this.dbController = dbController;
-        this.stmtUtil = stmtUtil;
-        Screen screen = null;
-        TextGraphics tmp = null;
+
+        this.dbController = dbController; //Gives us a dbController reference
+        this.stmtUtil = stmtUtil; //Gives us a statement template reference
+        Screens = new ArrayDeque<iPage>(); // Gives us a screen stack
+        window = new BasicWindow("Just put anything, I don't even care");
         try
         {
-            screen = terminalFactory.createScreen();
-            screen.startScreen();
-            textGUI = new MultiWindowTextGUI(screen);
-            final Window window = new BasicWindow("Just put anything, I don't even care");
-            Panel panel = new Panel(new LinearLayout(Direction.VERTICAL));
-            panel.addComponent(new Button("Begin", new Runnable()
-            {
-                public void run()
-                {
-
-                    new MainMenu();
-                }
-            }));
-            panel.addComponent(new Button("Exit", new Runnable()
-            {
-                public void run()
-                {
-
-                    window.close();
-                    try
-                    {
-                        screen.close();
-                    }
-                    catch (IOException e)
-                    {
-                        e.printStackTrace();
-                    }
-                }
-            }));
-            window.setComponent(panel);
-            textGUI.addWindowAndWait(window);
+            screen = terminalFactory.createScreen(); //Populates screen
+            screen.startScreen(); //Runs screen
         }
         catch (IOException e)
         {
             e.printStackTrace();
         }
+        textGUI = new MultiWindowTextGUI(screen);
+
+    }
+
+    @Override
+    protected void finalize() throws Throwable
+    {
+
+        close();
+        super.finalize();
     }
 
     /**
@@ -90,14 +74,51 @@ public class GuiController
     public void close()
     {
 
+        window.close();
+        try
+        {
+            screen.close();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
-    @Override
-    protected void finalize() throws Throwable
+    public void addScreen(iPage page)
     {
 
-        close();
-        super.finalize();
+        Screens.addFirst(page);
+        updatescreen();
+    }
+
+    public void updatescreen()
+    {
+
+        window.setComponent(Screens.peekFirst().getPanel());
+        textGUI.addWindowAndWait(window);
+    }
+
+    public void showLoginScreen()
+    {
+
+        iPage page = new LoginScreen(this);
+        Screens.addFirst(page);
+        updatescreen();
+    }
+
+    public void closePage()
+    {
+
+        if (Screens.size() <= 1)
+        {
+            close();
+        }
+        else
+        {
+            Screens.removeFirst();
+            updatescreen();
+        }
     }
 
 }
