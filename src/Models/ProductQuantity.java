@@ -3,12 +3,13 @@ package Models;
 /**
  * Created by Michael on 7/6/2018.
  */
-public class productQuantity {
+public class ProductQuantity {
 
     private Product product;
     private int quantity;
 
-    public productQuantity(Product product, int quantity){
+    //constructor
+    public ProductQuantity(Product product, int quantity){
         this.product = product;
         this.quantity = quantity;
     }

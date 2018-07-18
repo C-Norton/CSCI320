@@ -16,9 +16,9 @@ public class Order {
     private int orderNum;
     private int storeId;
     private int customerId;
-    private ArrayList<productQuantity> orderedProducts;
+    private ArrayList<ProductQuantity> orderedProducts;
 
-    public Order(int orderNum, int storeId, int customerId, ArrayList<productQuantity> orderedProducts){
+    public Order(int orderNum, int storeId, int customerId, ArrayList<ProductQuantity> orderedProducts){
         this.storeId = storeId;
         this.customerId = customerId;
         this.orderedProducts = orderedProducts;
@@ -81,7 +81,7 @@ public class Order {
     public String viewOrderDetails(){
         String orderDetails = "Order Number:" + this.orderNum +'\n';
 
-        for(productQuantity product:orderedProducts){
+        for(ProductQuantity product:orderedProducts){
             orderDetails += product.getProduct().getName()+'x'+product.getQuantity();
         }
 

@@ -12,6 +12,7 @@ package Controllers;
  */
 
 import GUIPages.MainMenu;
+import Utilities.StatementTemplate;
 import com.googlecode.lanterna.*;
 import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.gui2.*;
@@ -25,13 +26,16 @@ public class GuiController
 {
     private DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
     private Terminal terminal = null;
+    private DatabaseController dbController;
+    private StatementTemplate stmtUtil;
 
     /**
      * Constructor. Creates a terminal, and draws the welcome page.
      */
-    public GuiController()
+    public GuiController(DatabaseController dbController, StatementTemplate stmtUtil)
     {
-
+        this.dbController = dbController;
+        this.stmtUtil = stmtUtil;
         Screen screen = null;
         TextGraphics tmp = null;
         try
