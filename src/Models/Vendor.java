@@ -96,7 +96,7 @@ public class Vendor {
         if (rs != null){
             try {
                 while (rs.next()) {
-                    int vendorID = Integer.parseInt(rs.getString("ID"));
+                    int vendorID = Integer.parseInt(rs.getString("vendorId"));
                     String vendorName = rs.getString("name");
                     String vendorLoc = rs.getString("location");
                     int vendorRep = Integer.parseInt(rs.getString("rep"));
@@ -125,7 +125,7 @@ public class Vendor {
                 while (rs.next()) {
                     String vendorName = rs.getString("name");
 
-                    //int vendorID = Integer.parseInt(rs.getString("ID"));
+                    //int vendorID = Integer.parseInt(rs.getString("vendorId"));
                     //String vendorLoc = rs.getString("location");
                     //int vendorRep = Integer.parseInt(rs.getString("rep"));
                     //String vendorPhone = rs.getString("phone");
