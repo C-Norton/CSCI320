@@ -1,8 +1,10 @@
-import java.sql.*;
 import Controllers.DatabaseController;
 import Controllers.GuiController;
 import Models.Customer;
 import Utilities.StatementTemplate;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
 
 public class Main {
     public static DatabaseController dbController;
@@ -35,6 +37,7 @@ public class Main {
         System.out.println(custAgain.getAddress() + " ");
         System.out.println(custAgain.getCreditCard() + " ");
         GuiController gui = new GuiController(dbController, stmtUtil);
+        gui.showLoginScreen();
         conn.close();
     }
 

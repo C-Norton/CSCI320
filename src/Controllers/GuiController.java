@@ -11,21 +11,27 @@ package Controllers;
  * The GUI is constructed with the "Lanterna" GUI library, found here https://github.com/mabe02/lanterna
  */
 
-import GUIPages.MainMenu;
+import GUIPages.LoginScreen;
+import GUIPages.iPage;
 import Utilities.StatementTemplate;
-import com.googlecode.lanterna.*;
-import com.googlecode.lanterna.graphics.TextGraphics;
-import com.googlecode.lanterna.gui2.*;
+import com.googlecode.lanterna.gui2.BasicWindow;
+import com.googlecode.lanterna.gui2.MultiWindowTextGUI;
+import com.googlecode.lanterna.gui2.Window;
+import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
-import com.googlecode.lanterna.terminal.Terminal;
 
 import java.io.IOException;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 public class GuiController
 {
+    public final Window window;
+    public final WindowBasedTextGUI textGUI;
     private DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
-    private Terminal terminal = null;
+    private Screen screen;
+    private Deque<iPage> Screens;
     private DatabaseController dbController;
     private StatementTemplate stmtUtil;
 
@@ -34,70 +40,30 @@ public class GuiController
      */
     public GuiController(DatabaseController dbController, StatementTemplate stmtUtil)
     {
-        this.dbController = dbController;
-        this.stmtUtil = stmtUtil;
-        Screen screen = null;
-        TextGraphics tmp = null;
+
+        this.dbController = dbController; //Gives us a dbController reference
+        this.stmtUtil = stmtUtil; //Gives us a statement template reference
+        Screens = new ArrayDeque<iPage>(); // Gives us a screen stack
+        window = new BasicWindow("Just put anything, I don't even care");
         try
         {
-            this.terminal = terminalFactory.createTerminal();
-            Thread.sleep(500); //On windows, inconsistent behavior was occurring without a sleep here, as a flush
-            //was being called before windows had finished initializing the terminal window. While I would wait on that
-            //thread, this is also problematic due to OS differences in how this terminal is managed.
-            screen = terminalFactory.createScreen();
-            screen.startScreen();
-            final WindowBasedTextGUI textGUI = new MultiWindowTextGUI(screen);
-            final Window window = new BasicWindow("Just put anything, I don't even care");
-            Panel panel = new Panel(new LinearLayout(Direction.VERTICAL));
-            panel.addComponent(new Button("Begin", new Runnable()
-            {
-                public void run()
-                {
-
-                    MainMenu.DrawMainMenu(textGUI, window);
-                }
-            }));
-            panel.addComponent(new Button("Exit", new Runnable()
-            {
-                public void run()
-                {
-                    window.close();
-                }
-            }));
-            window.setComponent(panel);
-            textGUI.addWindowAndWait(window);
+            screen = terminalFactory.createScreen(); //Populates screen
+            screen.startScreen(); //Runs screen
         }
         catch (IOException e)
         {
             e.printStackTrace();
-            if (this.terminal != null)
-            {
-                try
-                {
-                    this.terminal.close();
-                }
-                catch (IOException f)
-                {
-                    f.printStackTrace();
-                }
-            }
         }
-        catch (InterruptedException e)
-        {
-            e.printStackTrace();
-            if (this.terminal != null)
-            {
-                try
-                {
-                    this.terminal.close();
-                }
-                catch (IOException f)
-                {
-                    f.printStackTrace();
-                }
-            }
-        }
+        textGUI = new MultiWindowTextGUI(screen);
 
+    }
+
+    @Override
+    protected void finalize() throws Throwable
+    {
+
+        close();
+        super.finalize();
     }
 
     /**
@@ -108,26 +74,51 @@ public class GuiController
     public void close()
     {
 
-        if (terminal != null)
+        window.close();
+        try
         {
-            try
-            {
-                terminal.close();
-            }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-
-            }
+            screen.close();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
         }
     }
 
-    @Override
-    protected void finalize() throws Throwable
+    public void addScreen(iPage page)
     {
 
-        close();
-        super.finalize();
+        Screens.addFirst(page);
+        updatescreen();
+    }
+
+    public void updatescreen()
+    {
+
+        window.setComponent(Screens.peekFirst().getPanel());
+        textGUI.addWindowAndWait(window);
+    }
+
+    public void showLoginScreen()
+    {
+
+        iPage page = new LoginScreen(this);
+        Screens.addFirst(page);
+        updatescreen();
+    }
+
+    public void closePage()
+    {
+
+        if (Screens.size() <= 1)
+        {
+            close();
+        }
+        else
+        {
+            Screens.removeFirst();
+            updatescreen();
+        }
     }
 
 }
