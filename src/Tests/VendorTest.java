@@ -51,7 +51,7 @@ class VendorTest {
     void getListOfVendors() throws Exception{
         initialize();
 
-        resultSet = Vendor.getListOfVendors(dbController, stmtUtil);
+        resultSet = Vendor.getVendorNames(dbController, stmtUtil);
 
         ArrayList<String> vendors = Vendor.parseResultSetList(resultSet);
         assertEquals(true, vendors !=null);

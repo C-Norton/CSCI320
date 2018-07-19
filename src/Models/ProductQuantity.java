@@ -10,7 +10,6 @@ public class ProductQuantity {
 
     //constructor
     public ProductQuantity(String productUPC, int quantity){
-
         this.quantity = quantity;
     }
 

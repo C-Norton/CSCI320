@@ -36,7 +36,7 @@ public class Customer {
         return customer!=null;
     }
     //--Queries--//
-    
+
     //returns a Customer instance, if id does not exist it returns an anon
     public static Customer getSingleCustomerInfoQuery(DatabaseController dbController, StatementTemplate stmtUtil, int id){
 
