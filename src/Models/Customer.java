@@ -18,6 +18,8 @@ public class Customer {
     private Cart cart;
     private ArrayList<Order> orderHistory;
 
+    private static Customer customer;//current logged in customer
+
 
     public Customer(int id, String name, String address, String phone, String creditCard, Cart cart, ArrayList<Order> orderHistory ){
 
@@ -30,9 +32,12 @@ public class Customer {
         this.orderHistory = orderHistory;
     }
 
+    public boolean isLoggedIn(){
+        return customer!=null;
+    }
     //--Queries--//
 
-    //get all columns for a customer
+    //returns a Customer instance, if id does not exist it returns an anon
     public static Customer getSingleCustomerInfoQuery(DatabaseController dbController, StatementTemplate stmtUtil, int id){
 
         Statement stmt = stmtUtil.newNullStatement();
@@ -57,6 +62,37 @@ public class Customer {
         Customer customer = parseResultSet(dbController, stmtUtil,rs);
 
         return customer;
+    }
+
+    //see if credentials combination exists in table, if so returns true and make a new customer object
+    public static boolean logIn(DatabaseController dbController, StatementTemplate stmtUtil, String username, String password){
+
+        Statement stmt = stmtUtil.newNullStatement();
+        ResultSet rs = null;
+
+        String selectCustomer = "SELECT * FROM FrequentShopper WHERE username = \'" + username + "\' and password = \'" + password + "\'";
+
+        //create query statement
+        try {
+            stmt = stmtUtil.connStatement(stmt);
+        }catch(Exception e){
+            System.out.println("Error Creating Fetch Statement for Customer");
+            System.out.println(e.getMessage());
+            return false;
+        }
+
+        //execute and get results of query
+        try {
+            rs = dbController.ExecuteSelectQuery(stmt, selectCustomer);
+        }catch(Exception e){
+            System.out.println("Error Executing Select Query for Customer");
+            System.out.println(e.getMessage());
+            return false;
+        }
+
+        Customer.customer = parseResultSet(dbController, stmtUtil,rs);
+
+        return true;
     }
 
 
@@ -176,7 +212,7 @@ public class Customer {
     public Cart getCart(){
         return this.cart;
     }
-
+ 
     public ArrayList<Order> getOrderHistory(){
         return this.orderHistory;
     }

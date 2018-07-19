@@ -13,12 +13,12 @@ import java.util.ArrayList;
 public class Cart {
 
 
-    private ArrayList<productQuantity> boughtProducts;
+    private ArrayList<ProductQuantity> boughtProducts;
     private int storeId;
 
 
     public Cart(int storeId){
-        this.boughtProducts = new ArrayList<productQuantity>();
+        this.boughtProducts = new ArrayList<ProductQuantity>();
         this.storeId = storeId;
     }
 
@@ -36,7 +36,7 @@ public class Cart {
 
         //int latestOrderId = getLatestId(dbController, stmtUtil,getLatestOrderId);
 
-        for(productQuantity product:this.boughtProducts ){
+        for(ProductQuantity product:this.boughtProducts ){
 
 
             //TODO: Rewrite
@@ -95,15 +95,15 @@ public class Cart {
     
     //--Getters and Setters--//
 
-    public void addItem(productQuantity product){
+    public void addItem(ProductQuantity product){
         boughtProducts.add(product);
     }
     
-    public void removeItem(productQuantity product){
+    public void removeItem(ProductQuantity product){
         boughtProducts.remove(product);
     }
 
-    public ArrayList<productQuantity>getCartContents(){
+    public ArrayList<ProductQuantity>getCartContents(){
         return boughtProducts;
     }
     

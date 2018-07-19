@@ -11,70 +11,92 @@ package Controllers;
  * The GUI is constructed with the "Lanterna" GUI library, found here https://github.com/mabe02/lanterna
  */
 
-import com.googlecode.lanterna.*;
-import com.googlecode.lanterna.graphics.TextGraphics;
+import GUIPages.LoginPage;
+import GUIPages.iPage;
+import Utilities.StatementTemplate;
+import com.googlecode.lanterna.gui2.BasicWindow;
+import com.googlecode.lanterna.gui2.MultiWindowTextGUI;
+import com.googlecode.lanterna.gui2.Window;
+import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
+import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
-import com.googlecode.lanterna.terminal.Terminal;
 
 import java.io.IOException;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 public class GuiController
 {
-    private DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
-    private Terminal terminal = null;
-    private final TextGraphics textGraphics;
+    private final Window window;
+    private final WindowBasedTextGUI textGUI;
+    public DatabaseController dbController; //TODO:These should be made static rather than having to pass around
+    public StatementTemplate stmtUtil; //SEE ABOVE
+    private Screen screen;
+    private Deque<iPage> PageStack;
 
     /**
      * Constructor. Creates a terminal, and draws the welcome page.
      */
-    public GuiController()
+    public GuiController(DatabaseController dbController, StatementTemplate stmtUtil)
     {
 
-        TextGraphics tmp = null;
+        DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
+        this.dbController = dbController; //Gives us a dbController reference
+        this.stmtUtil = stmtUtil; //Gives us a statement template reference
+        PageStack = new ArrayDeque<>(); // Gives us a screen stack
+        window = new BasicWindow("Just put anything, I don't even care");
         try
         {
-            this.terminal = terminalFactory.createTerminal();
-            Thread.sleep(500); //On windows, inconsistent behavior was occurring without a sleep here, as a flush
-            //was being called before windows had finished initializing the terminal window. While I would wait on that
-            //thread, this is also problematic due to OS differences in how this terminal is managed.
-            this.terminal.enterPrivateMode();
-            this.terminal.clearScreen();
-            this.terminal.flush();
-            tmp = terminal.newTextGraphics();
+            screen = terminalFactory.createScreen(); //Populates screen
+            screen.startScreen(); //Runs screen
         }
         catch (IOException e)
         {
             e.printStackTrace();
-            if (this.terminal != null)
-            {
-                try
-                {
-                    this.terminal.close();
-                }
-                catch (IOException f)
-                {
-                    f.printStackTrace();
-                }
-            }
         }
-        catch (InterruptedException e)
+        textGUI = new MultiWindowTextGUI(screen);
+
+    }
+
+    public int getWidth()
+    {
+
+        return screen.getTerminalSize().getColumns();
+    }
+
+    public void addAndDisplayPage(iPage page)
+    {
+
+        PageStack.addFirst(page);
+        updatescreen();
+    }
+
+    private void updatescreen()
+    {
+
+        window.setComponent(PageStack.peekFirst().getPanel());
+        textGUI.addWindowAndWait(window);
+    }
+
+    public void showLoginScreen()
+    {
+
+        iPage page = new LoginPage(this);
+        PageStack.addFirst(page);
+        updatescreen();
+    }
+
+    public void closePage()
+    {
+
+        if (PageStack.size() <= 1)
         {
-            e.printStackTrace();
-            if (this.terminal != null)
-            {
-                try
-                {
-                    this.terminal.close();
-                }
-                catch (IOException f)
-                {
-                    f.printStackTrace();
-                }
-            }
+            close();
         }
-        finally
+        else
         {
-            textGraphics = tmp;
+            PageStack.removeFirst();
+            updatescreen();
         }
     }
 
@@ -86,17 +108,14 @@ public class GuiController
     public void close()
     {
 
-        if (terminal != null)
+        window.close();
+        try
         {
-            try
-            {
-                terminal.close();
-            }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-
-            }
+            screen.close();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
         }
     }
 
@@ -107,5 +126,4 @@ public class GuiController
         close();
         super.finalize();
     }
-
 }

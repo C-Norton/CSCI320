@@ -14,6 +14,7 @@ class DatabaseInitializer {
         clearDatabase(conn);
         createTables(conn);
         createUsers(conn);
+        createStoreInventories(conn);
     }
 
     //clears the db
@@ -146,24 +147,28 @@ class DatabaseInitializer {
             e.printStackTrace();
         }
     }
-/*
+
+
     private static void createStoreInventories(Connection conn) throws Exception{
 
         Statement stmt = null;
 
-        System.out.println("Populating DB with users" + '\n');
+        System.out.println("Populating DB with stores" + '\n');
 
         try {
-            String FrequentShopper1 = "INSERT INTO  Inventory VALUES (1,'1','White Bread','50')";
-            String FrequentShopper1 = "INSERT INTO  Inventory VALUES (2,'1','White Bread','50')";
-            String FrequentShopper1 = "INSERT INTO  Inventory VALUES (3,'1','White Bread','50')";
+
+            String Store1 = "INSERT INTO  Store(name, location, phoneNum, hours) VALUES ('NYC','NA','420','24hrs')";
+            String Store2 = "INSERT INTO  Store(name, location, phoneNum, hours) VALUES ('LA','NA','69','24hrs')";
+            String Product1 = "INSERT INTO Product VALUES (101010101010, 'ten', 'boring corp', 420.69, 123)";
+            String Vendor1 = "Insert INTO Vendor(name, location, phoneNum, salesRep) VALUES ('lame corp', 'NA', '911', 'Bobby')";
+            String Inventory1 = "Insert INTO Inventory VALUES (1, 101010101010, 69)";
 
             stmt = conn.createStatement();
-            stmt.executeUpdate(FrequentShopper1);
-            stmt.executeUpdate(FrequentShopper2);
-            stmt.executeUpdate(FrequentShopper3);
-            stmt.executeUpdate(FrequentShopper4);
-            stmt.executeUpdate(FrequentShopper5);
+            stmt.executeUpdate(Store1);
+            stmt.executeUpdate(Store2);
+            stmt.executeUpdate(Product1);
+            stmt.executeUpdate(Vendor1);
+            stmt.executeUpdate(Inventory1);
 
 
         } catch (Exception e) {
@@ -171,5 +176,5 @@ class DatabaseInitializer {
             e.printStackTrace();
         }
     }
-    */
+
 }
