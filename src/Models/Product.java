@@ -5,6 +5,7 @@ import Utilities.StatementTemplate;
 
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 /**
  * Created by Michael on 7/6/2018.
@@ -49,10 +50,31 @@ public class Product {
         return rs;
     }
 
-    public static Product getProductByUpc(DatabaseController dbController, StatementTemplate stmtUtil, String upc){
-        return null;
+    public static ResultSet getProductByUpc(DatabaseController dbController, StatementTemplate stmtUtil, String upc){
+        Statement stmt = stmtUtil.newNullStatement();
+        ResultSet rs = null;
+
+        String selectProductByUpc = "SELECT * FROM Product WHERE UPC = " + upc;
+
+        //create query statement
+        try {
+            stmt = stmtUtil.connStatement(stmt);
+        }catch(Exception e){
+            System.out.println("Error Creating Fetch Statement for Product");
+        }
+
+        //execute and get results of query
+        try {
+            rs = dbController.ExecuteSelectQuery(stmt, selectProductByUpc);
+        }catch(Exception e){
+            System.out.println("Error Executing Select Query for Product");
+        }
+        return rs;
     }
 
+    private static ArrayList<Product> parseResultSet(ResultSet rs){
+        return null;
+    }
 
     public String getName() {
         return name;

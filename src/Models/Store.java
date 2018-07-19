@@ -69,9 +69,8 @@ public class Store {
         return true;
     }
 
-    //get one store by store id, returns null if id doesnt exist
-    public static Store retrieveStoreById(DatabaseController dbController, StatementTemplate stmtUtil, int storeid){
-        Store store = null;
+    //get one store by store id, returns a result set
+    public static ResultSet retrieveStoreById(DatabaseController dbController, StatementTemplate stmtUtil, int storeid){
         Statement stmt = stmtUtil.newNullStatement();
         ResultSet rs = null;
 
@@ -91,13 +90,11 @@ public class Store {
             System.out.println("Error Executing Select Query for Store");
         }
 
-        store = parseStores(rs).get(0);
-
-        return store;
+        return rs;
     }
 
     //turns a table of stores into array of objects
-    public static ArrayList<Store> parseStores(ResultSet rs){
+    private static ArrayList<Store> parseStores(ResultSet rs){
         ArrayList<Store> stores = null;
         if (rs != null) {
 
