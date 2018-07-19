@@ -93,19 +93,19 @@ public class Vendor {
     //not used because we are assuming that parsing is going on on the GUI end
 
     //gets a vendor from a query
-    private static Vendor parseResultSet(ResultSet rs){
+    public static Vendor parseResultSet(ResultSet rs){
         if (rs != null){
             try {
-                while (rs.next()) {
-                    int vendorID = Integer.parseInt(rs.getString("vendorId"));
-                    String vendorName = rs.getString("name");
-                    String vendorLoc = rs.getString("location");
-                    String vendorRep = rs.getString("rep");
-                    String vendorPhone = rs.getString("phone");
 
-                    Vendor vendor = new Vendor(vendorID, vendorName, vendorLoc, vendorRep, vendorPhone);
-                    return vendor;
-                }
+                int vendorID = Integer.parseInt(rs.getString("vendorId"));
+                String vendorName = rs.getString("name");
+                String vendorLoc = rs.getString("location");
+                String vendorRep = rs.getString("rep");
+                String vendorPhone = rs.getString("phone");
+
+                Vendor vendor = new Vendor(vendorID, vendorName, vendorLoc, vendorRep, vendorPhone);
+                return vendor;
+
 
             }catch (Exception e){
                 System.out.println("Error Building Vendor" + '\n');
@@ -118,7 +118,7 @@ public class Vendor {
     }
 
     //gets the list of vendors from a query
-    private static ArrayList<String> parseResultSetList(ResultSet rs){
+    public static ArrayList<String> parseResultSetList(ResultSet rs){
         ArrayList<String> vendors = new ArrayList<String>();
 
         if (rs != null){
