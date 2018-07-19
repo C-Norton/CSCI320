@@ -9,10 +9,11 @@ public class ProductQuantity {
     private int quantity;
 
     //constructor
-    public ProductQuantity(Product product, int quantity){
-        this.product = product;
+    public ProductQuantity(String productUPC, int quantity){
+
         this.quantity = quantity;
     }
+
 
     public int getQuantity(){
         return this.quantity;
