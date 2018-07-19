@@ -1,8 +1,11 @@
 package GUIPages;
 
 import Controllers.GuiController;
-import Models.Store;
-import com.googlecode.lanterna.gui2.*;
+import com.googlecode.lanterna.gui2.Button;
+import com.googlecode.lanterna.gui2.Panel;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * Created by Channing Helmling-Cornell on 7/18/2018.
@@ -11,11 +14,13 @@ public class StoreDetailsPage implements iPage
 {
     private Panel panel;
 
-    public StoreDetailsPage(GuiController guiController, Store store)
+    public StoreDetailsPage(GuiController guiController, ResultSet rs)
     {
 
-        if (store != null)
+        try
         {
+            if (rs.next())
+            {/*
             panel = new Panel(new LinearLayout(Direction.VERTICAL));
             panel.addComponent(new Label("Store Details - " + store.getName()));
             panel.addComponent(new Separator(Direction.HORIZONTAL));
@@ -23,7 +28,7 @@ public class StoreDetailsPage implements iPage
             panel.addComponent(new Label("ID: " + store.getId()));
             panel.addComponent(new Label("Location: " + store.getLocation()));
             panel.addComponent(new Label("Hours: " + store.getHours()));
-            panel.addComponent(new Label("Phone Number: " + store.getPhone()));
+            panel.addComponent(new Label("Phone Number: " + store.getPhone()));*/
         }
         panel.addComponent(new Button("Back", new Runnable()
         {
@@ -34,6 +39,11 @@ public class StoreDetailsPage implements iPage
                 guiController.closePage();
             }
         }));
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
 
     }
 

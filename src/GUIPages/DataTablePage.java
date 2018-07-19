@@ -1,9 +1,7 @@
 package GUIPages;
 
-import Controllers.DatabaseController;
 import Controllers.GuiController;
 import Models.Store;
-import Utilities.StatementTemplate;
 import com.googlecode.lanterna.gui2.*;
 import com.googlecode.lanterna.gui2.table.Table;
 
@@ -95,9 +93,8 @@ public class DataTablePage implements iPage
                     case "Stores": //Todo:This should likely be replaced with an ENUM at some point to make less fragile
 
                         guiController.addAndDisplayPage(new StoreDetailsPage(guiController,
-                                Store.retrieveStoreById(DatabaseController.DB
-                                        , StatementTemplate.Template
-                                        , (Integer.parseInt(data.getTableModel().getCell(0, data.getSelectedRow())))
+                                Store.retrieveStoreById(
+                                        (Integer.parseInt(data.getTableModel().getCell(0, data.getSelectedRow())))
                                 )))
                         ;
 

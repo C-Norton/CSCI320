@@ -1,10 +1,8 @@
 package GUIPages;
 
-import Controllers.DatabaseController;
 import Controllers.GuiController;
 import Models.Products;
 import Models.Store;
-import Utilities.StatementTemplate;
 import com.googlecode.lanterna.gui2.*;
 
 /**
@@ -27,8 +25,7 @@ public class MainMenu implements iPage
             public void run()
             {
 
-                iPage Storelist = new DataTablePage(guiController, Store.retrieveStores(DatabaseController.DB,
-                        StatementTemplate.Template), "Stores");
+                iPage Storelist = new DataTablePage(guiController, Store.retrieveStores(), "Stores");
                 guiController.addAndDisplayPage(Storelist);
 
             }
