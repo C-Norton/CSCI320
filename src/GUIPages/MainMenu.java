@@ -2,10 +2,10 @@ package GUIPages;
 
 import Controllers.DatabaseController;
 import Controllers.GuiController;
+import Models.Products;
 import Models.Store;
 import Utilities.StatementTemplate;
 import com.googlecode.lanterna.gui2.*;
-
 
 /**
  * Created by Channing Helmling-Cornell on 7/14/2018.
@@ -33,7 +33,17 @@ public class MainMenu implements iPage
 
             }
         }));
-        panel.addComponent(new Button("2. Back", new Runnable()
+        panel.addComponent(new Button("2. View Products", new Runnable()
+        {
+            @Override
+            public void run()
+            {
+
+                iPage Productlist = new DataTablePage(guiController, Products.getProductList(), "Products");
+                guiController.addAndDisplayPage(Productlist);
+            }
+        }));
+        panel.addComponent(new Button("3. Back", new Runnable()
         {
             @Override
             public void run()
