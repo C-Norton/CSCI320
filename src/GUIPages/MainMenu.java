@@ -43,7 +43,17 @@ public class MainMenu implements iPage
                 guiController.addAndDisplayPage(Productlist);
             }
         }));
-        panel.addComponent(new Button("3. Back", new Runnable()
+        panel.addComponent(new Button("3. ExecuteQuery", new Runnable()
+        {
+            @Override
+            public void run()
+            {
+
+                iPage QueryResults = new DataTablePage(guiController, Products.getProductList(), "Products");
+                guiController.addAndDisplayPage(QueryResults);
+            }
+        }));
+        panel.addComponent(new Button("4. Back", new Runnable()
         {
             @Override
             public void run()
