@@ -33,14 +33,15 @@ public class Store {
 
     //gets a list of all stores
     public static ResultSet retrieveStores(DatabaseController dbController, StatementTemplate stmtUtil){
-        Statement stmt = stmtUtil.newNullStatement();
+
+        Statement stmt = StatementTemplate.newNullStatement();
         ResultSet rs = null;
 
         String selectCustomer = "SELECT storeID, name FROM Store";
 
         //create query statement
         try {
-            stmt = stmtUtil.connStatement(stmt);
+            stmt = StatementTemplate.connStatement(stmt);
         }catch(Exception e){
             System.out.println("Error Creating Fetch Statement for Stores");
             System.out.println(e.getMessage());
@@ -72,14 +73,14 @@ public class Store {
     //get one store by store id, returns null if id doesnt exist
     public static Store retrieveStoreById(DatabaseController dbController, StatementTemplate stmtUtil, int storeid){
         Store store = null;
-        Statement stmt = stmtUtil.newNullStatement();
+        Statement stmt = StatementTemplate.newNullStatement();
         ResultSet rs = null;
 
         String selectCustomer = "SELECT * FROM Store WHERE storeId = " + storeid ;
 
         //create query statement
         try {
-            stmt = stmtUtil.connStatement(stmt);
+            stmt = StatementTemplate.connStatement(stmt);
         }catch(Exception e){
             System.out.println("Error Creating Fetch Statement for Store");
         }

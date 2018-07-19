@@ -33,13 +33,14 @@ public class Vendor {
     //select all for a vendor based on id
     //parsing method still included but this just returns the ResultSet right now
     public static Vendor getSingleVendorQuery(DatabaseController dbController, StatementTemplate stmtUtil, int id){
-        Statement stmt = stmtUtil.newNullStatement();
+
+        Statement stmt = StatementTemplate.newNullStatement();
         ResultSet rs = null;
         Vendor vendor = null;
         String selectVendor = "SELECT * FROM Vendor WHERE vendorId =" + id;
         //create query statement
         try {
-            stmt = stmtUtil.connStatement(stmt);
+            stmt = StatementTemplate.connStatement(stmt);
         }catch(Exception e){
             System.out.println("Error Creating Fetch Statement for Vendor");
         }
@@ -56,14 +57,14 @@ public class Vendor {
     //selects names of all vendors
     public static ResultSet getVendorNames(DatabaseController dbController, StatementTemplate stmtUtil){
 
-        Statement stmt = stmtUtil.newNullStatement();
+        Statement stmt = StatementTemplate.newNullStatement();
         ResultSet rs = null;
 
         String selectAllVendors = "SELECT Name FROM Vendor";
 
         //create query statement
         try {
-            stmt = stmtUtil.connStatement(stmt);
+            stmt = StatementTemplate.connStatement(stmt);
         }catch(Exception e){
             System.out.println("Error Creating Fetch Statement for Vendor");
         }
