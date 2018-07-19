@@ -5,9 +5,11 @@ import Models.Vendor;
 import Utilities.StatementTemplate;
 import org.junit.jupiter.api.Test;
 
+import javax.xml.transform.Result;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -35,10 +37,12 @@ class VendorTest {
     void getSingleVendorQuery() throws Exception{
         initialize();
 
-        resultSet = Vendor.getSingleVendorQuery(dbController, stmtUtil, 123);
-
+        resultSet = Vendor.getSingleVendorQuery(dbController, stmtUtil, 1);
+        ResultSetMetaData rsmd = resultSet.getMetaData();
+        assertEquals(5, rsmd.getColumnCount());
         Vendor vendor = Vendor.parseResultSet(resultSet); //this makes the parser public
-        assertEquals(123, vendor.getId());
+        assertEquals(true, vendor != null);
+        assertEquals(1, vendor.getId());
         assertEquals("lame corp", vendor.getName());
         assertEquals("NA", vendor.getLocation());
         assertEquals(911, vendor.getPhone());

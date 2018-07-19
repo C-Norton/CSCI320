@@ -96,8 +96,7 @@ public class Vendor {
     public static Vendor parseResultSet(ResultSet rs){
         if (rs != null){
             try {
-
-                int vendorID = Integer.parseInt(rs.getString("vendorId"));
+                int vendorID = rs.getInt("vendorId");
                 String vendorName = rs.getString("name");
                 String vendorLoc = rs.getString("location");
                 String vendorRep = rs.getString("rep");
@@ -109,7 +108,7 @@ public class Vendor {
 
             }catch (Exception e){
                 System.out.println("Error Building Vendor" + '\n');
-                e.printStackTrace();
+                System.out.println(e.getMessage());
             }
         }
         System.out.println("Error: Vendor doesn't exist");

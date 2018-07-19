@@ -77,8 +77,7 @@ public class Inventory {
                     String phoneNum = rs.getString("phoneNum");
                     String salesRep = rs.getString("salesRep");
 
-                    ProductQuantity prodQuant = new ProductQuantity(new Product(upc, name, brand, price,
-                            new Vendor(vendorID, vendorName, location,salesRep, phoneNum)), quantity);
+                    ProductQuantity prodQuant = new ProductQuantity(upc, quantity);
                 }
             } catch (Exception e) {
                 System.out.print("Error Building Customer" + '\n');

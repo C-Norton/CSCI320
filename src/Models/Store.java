@@ -69,8 +69,9 @@ public class Store {
         return true;
     }
 
-    //get one store by store id
+    //get one store by store id, returns null if id doesnt exist
     public static Store retrieveStoreById(DatabaseController dbController, StatementTemplate stmtUtil, int storeid){
+        Store store = null;
         Statement stmt = stmtUtil.newNullStatement();
         ResultSet rs = null;
 
@@ -90,7 +91,7 @@ public class Store {
             System.out.println("Error Executing Select Query for Store");
         }
 
-        Store store = parseStores(rs).get(0);
+        store = parseStores(rs).get(0);
 
         return store;
     }
