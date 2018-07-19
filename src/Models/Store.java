@@ -55,16 +55,44 @@ public class Store {
         return rs;
     }
 
+    //updates the static instance of current store
+
+    //get one store by store id
+    public static Store retrieveStoreById(DatabaseController dbController, StatementTemplate stmtUtil, int storeid){
+        Statement stmt = stmtUtil.newNullStatement();
+        ResultSet rs = null;
+
+        String selectCustomer = "SELECT * FROM Store WHERE storeId = " + storeid ;
+
+        //create query statement
+        try {
+            stmt = stmtUtil.connStatement(stmt);
+        }catch(Exception e){
+            System.out.println("Error Creating Fetch Statement for Store");
+        }
+
+        //execute and get results of query
+        try {
+            rs = dbController.ExecuteSelectQuery(stmt, selectCustomer);
+        }catch(Exception e){
+            System.out.println("Error Executing Select Query for Store");
+        }
+
+        Store store = parseStores(rs).get(0);
+
+        return store;
+    }
+
     //turns a table of stores into array of objects
     public static ArrayList<Store> parseStores(ResultSet rs){
         ArrayList<Store> stores = null;
         if (rs != null) {
 
             try {
-                stores = new ArrayList<Store>();
+                stores = new ArrayList<>();
                 while (rs.next()) {
                     int id;
-                    String name = null;
+                    String name;
                     String location = null;
                     String hours = null;
                     String phone = null;
@@ -73,9 +101,13 @@ public class Store {
 
                     id = rs.getInt("storeID");
                     name = rs.getString("name");
-                    //location = rs.getString("location");
-                    //hours = rs.getString("hours");
-                    //phone = rs.getString("phoneNum");
+                    try {
+                        location = rs.getString("location");
+                        hours = rs.getString("hours");
+                        phone = rs.getString("phoneNum");
+                    }catch(Exception e){
+                        System.out.println();
+                    }
 
                     stores.add(new Store(id,name, location, hours, phone, inventory, orders));
                 }
