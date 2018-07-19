@@ -1,13 +1,17 @@
 package Controllers;
-import java.sql.*;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
 
 public class DatabaseController {
 
-    private Connection conn;
-
+    public static DatabaseController DB;
+    private final Connection conn;
     public DatabaseController(Connection conn){
         this.conn = conn;
+
     }
 
     //initialize a fresh instance of the retail DB

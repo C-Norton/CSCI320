@@ -13,7 +13,6 @@ package Controllers;
 
 import GUIPages.LoginPage;
 import GUIPages.iPage;
-import Utilities.StatementTemplate;
 import com.googlecode.lanterna.gui2.BasicWindow;
 import com.googlecode.lanterna.gui2.MultiWindowTextGUI;
 import com.googlecode.lanterna.gui2.Window;
@@ -29,20 +28,16 @@ public class GuiController
 {
     private final Window window;
     private final WindowBasedTextGUI textGUI;
-    public DatabaseController dbController; //TODO:These should be made static rather than having to pass around
-    public StatementTemplate stmtUtil; //SEE ABOVE
     private Screen screen;
     private Deque<iPage> PageStack;
 
     /**
      * Constructor. Creates a terminal, and draws the welcome page.
      */
-    public GuiController(DatabaseController dbController, StatementTemplate stmtUtil)
+    public GuiController()
     {
 
         DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
-        this.dbController = dbController; //Gives us a dbController reference
-        this.stmtUtil = stmtUtil; //Gives us a statement template reference
         PageStack = new ArrayDeque<>(); // Gives us a screen stack
         window = new BasicWindow("Just put anything, I don't even care");
         try
