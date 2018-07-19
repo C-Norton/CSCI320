@@ -24,28 +24,37 @@ public class ActionTable implements iPage
 
         panel = new Panel(new LinearLayout(Direction.VERTICAL));
         panel.addComponent(new Label(PageName));
-        int colcount;
-        ArrayList<String> headers;
-        ArrayList<Integer> colSizes;
-        ArrayList<Integer> colTypes;
+        int colcount = 0;
+        ArrayList<String> headers = null;
+        ArrayList<Integer> colSizes = null;
+        ArrayList<Integer> colTypes = null;
         try //Get and unpack the metadata
         {
             ResultSetMetaData rsmd = rs.getMetaData();
             colcount = rsmd.getColumnCount();
             headers = new ArrayList<>(colcount);
-            for (int i = 0; i < colcount; i++)
+            colSizes = new ArrayList<>(colcount);
+            colTypes = new ArrayList<>(colcount);
+            for (int i = 1; i <= colcount; i++)
             {
                 headers.add(rsmd.getColumnName(i));
+                colSizes.add(rsmd.getColumnDisplaySize(i));
+                colTypes.add(rsmd.getColumnType(i));
             }
+
 
         }
         catch (SQLException e)
         {
             e.printStackTrace();
+            return;
         }
 
 
-        Table<String> data = new Table<String>();
+        Table<String> data = new Table<String>(headers.toArray(new String[colcount]));
+
+        panel.addComponent(data);
+
     }
 
     @Override

@@ -32,8 +32,8 @@ public class GuiController
     private DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
     private Screen screen;
     private Deque<iPage> Screens;
-    private DatabaseController dbController;
-    private StatementTemplate stmtUtil;
+    public DatabaseController dbController;
+    public StatementTemplate stmtUtil;
 
     /**
      * Constructor. Creates a terminal, and draws the welcome page.

@@ -1,8 +1,9 @@
 package GUIPages;
 
 import Controllers.GuiController;
+import Models.Store;
 import com.googlecode.lanterna.gui2.*;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 
 /**
  * Created by Channing Helmling-Cornell on 7/14/2018.
@@ -24,7 +25,9 @@ public class MainMenu implements iPage
             public void run()
             {
 
-                throw new NotImplementedException();
+                iPage Storelist = new ActionTable(guiController, Store.retrieveStores(guiController.dbController,
+                        guiController.stmtUtil), "Stores");
+                guiController.addScreen(Storelist);
 
             }
         }));
