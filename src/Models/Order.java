@@ -3,7 +3,6 @@ package Models;
 import Controllers.DatabaseController;
 import Utilities.StatementTemplate;
 
-import java.sql.Array;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -30,23 +29,24 @@ public class Order {
     //TODO ordernum, storeid, and customerId to be selectable and when selected itll show all of the products purchased
 
     //get all columns for a customer
-    public static ArrayList<Order> getOrdersByCustIdQuery(DatabaseController dbController, StatementTemplate stmtUtil, int id){
+    public static ArrayList<Order> getOrdersByCustIdQuery(int id)
+    {
 
-        Statement stmt = stmtUtil.newNullStatement();
+        Statement stmt = StatementTemplate.newNullStatement();
         ResultSet rs = null;
 
         String selectCustomer = "SELECT * FROM Orders WHERE userId =" + id;
 
         //create query statement
         try {
-            stmt = stmtUtil.connStatement(stmt);
+            stmt = StatementTemplate.connStatement(stmt);
         }catch(Exception e){
             System.out.println("Error Creating Fetch Statement for Order");
         }
 
         //execute and get results of query
         try {
-            rs = dbController.ExecuteSelectQuery(stmt, selectCustomer);
+            rs = DatabaseController.DB.ExecuteSelectQuery(stmt, selectCustomer);
         }catch(Exception e){
             System.out.println("Error Executing Query for Order");
             e.printStackTrace();
@@ -56,22 +56,24 @@ public class Order {
     }
 
     //get all orders for a store
-    public static ResultSet getOrdersByStoreIdQuery(DatabaseController dbController, StatementTemplate stmtUtil, int id){
-        Statement stmt = stmtUtil.newNullStatement();
+    public static ResultSet getOrdersByStoreIdQuery(int id)
+    {
+
+        Statement stmt = StatementTemplate.newNullStatement();
         ResultSet rs = null;
 
         String selectCustomer = "SELECT * FROM Orders WHERE storeId =" + id;
 
         //create query statement
         try {
-            stmt = stmtUtil.connStatement(stmt);
+            stmt = StatementTemplate.connStatement(stmt);
         }catch(Exception e){
             System.out.println("Error Creating Fetch Statement for Order");
         }
 
         //execute and get results of query
         try {
-            rs = dbController.ExecuteSelectQuery(stmt, selectCustomer);
+            rs = DatabaseController.DB.ExecuteSelectQuery(stmt, selectCustomer);
         }catch(Exception e){
             System.out.println("Error Executing Query for Order");
             e.printStackTrace();
@@ -116,7 +118,7 @@ public class Order {
         String orderDetails = "Order Number:" + this.orderNum +'\n';
 
         for(ProductQuantity product:orderedProducts){
-            orderDetails += product.getProduct().getName()+'x'+product.getQuantity();
+            //orderDetails += product.getProduct().getName()+'x'+product.getQuantity();
         }
 
         return orderDetails;

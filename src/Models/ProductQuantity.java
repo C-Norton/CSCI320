@@ -5,11 +5,12 @@ package Models;
  */
 public class ProductQuantity {
 
-    private Product product;
+    //private Product product;
     private int quantity;
 
     //constructor
     public ProductQuantity(String productUPC, int quantity){
+
         this.quantity = quantity;
     }
 
@@ -18,7 +19,7 @@ public class ProductQuantity {
         return this.quantity;
     }
 
-    public Product getProduct(){
-        return this.product;
-    }
+    //public Product getProduct(){
+    //return this.product;
+    //}
 }

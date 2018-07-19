@@ -30,7 +30,7 @@ public class Cart {
         int latestOrderNum = getLatestId(dbController, stmtUtil,getLatestOrderNum);
 
         Order checkout = new Order(latestOrderNum,this.storeId, customerId, this.boughtProducts);
-        Statement stmt = stmtUtil.newNullStatement();
+        Statement stmt = StatementTemplate.newNullStatement();
 
         //String getLatestOrderId = "orderId";
 
@@ -38,7 +38,7 @@ public class Cart {
 
         for(ProductQuantity product:this.boughtProducts ){
 
-
+/*
             //TODO: Rewrite
             //latestOrderId++;
             String orderItem = "INSERT INTO  orders VALUES (" + Integer.toString(customerId)+
@@ -49,7 +49,7 @@ public class Cart {
                 dbController.ExecuteUpdateQuery(stmt,orderItem);
             }catch(Exception e){
 
-            }
+            }*/
 
         }
     }
@@ -58,14 +58,15 @@ public class Cart {
 
     //returns the max value of a given column
     private int getLatestId(DatabaseController dbController, StatementTemplate stmtUtil, String getLatestItem){
-        Statement stmt = stmtUtil.newNullStatement();
+
+        Statement stmt = StatementTemplate.newNullStatement();
         ResultSet rs = null;
 
         String getLatestId = "SELECT max("+getLatestItem+") FROM orders";
 
         //create query statement
         try {
-            stmt = stmtUtil.connStatement(stmt);
+            stmt = StatementTemplate.connStatement(stmt);
         }catch(Exception e){
             System.out.println("Error Creating Select Statement");
         }

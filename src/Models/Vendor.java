@@ -19,7 +19,7 @@ public class Vendor {
     private String rep;
     private String phone;
 
-    private Vendor(int id, String name, String location, String rep, String phone)
+    public Vendor(int id, String name, String location, String rep, String phone)
     {
         this.id = id;
         this.name = name;

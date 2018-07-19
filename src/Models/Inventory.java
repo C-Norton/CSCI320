@@ -59,8 +59,10 @@ public class Inventory {
     }
 
     //retrieves a list of names for available items in a store
-    public static ResultSet retrieveAvailableItems(DatabaseController dbController, StatementTemplate stmtUtil, int storeId){
-        Statement stmt = stmtUtil.newNullStatement();
+    public static ResultSet retrieveAvailableItems(int storeId)
+    {
+
+        Statement stmt = StatementTemplate.newNullStatement();
         ResultSet rs = null;
 
         //join Inventory and Product
@@ -69,7 +71,7 @@ public class Inventory {
 
         //create query statement
         try {
-            stmt = stmtUtil.connStatement(stmt);
+            stmt = StatementTemplate.connStatement(stmt);
         }catch(Exception e){
             System.out.println("Error Creating Fetch Statement for Inventory");
             System.out.println(e.getMessage());
@@ -77,7 +79,7 @@ public class Inventory {
 
         //execute and get results of query
         try {
-            rs = dbController.ExecuteSelectQuery(stmt, query);
+            rs = DatabaseController.DB.ExecuteSelectQuery(stmt, query);
         }catch(Exception e){
             System.out.println("Error Executing Select Query for Inventory");
             System.out.println(e.getMessage());
