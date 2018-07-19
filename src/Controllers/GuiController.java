@@ -11,7 +11,7 @@ package Controllers;
  * The GUI is constructed with the "Lanterna" GUI library, found here https://github.com/mabe02/lanterna
  */
 
-import GUIPages.LoginScreen;
+import GUIPages.LoginPage;
 import GUIPages.iPage;
 import Utilities.StatementTemplate;
 import com.googlecode.lanterna.gui2.BasicWindow;
@@ -27,13 +27,12 @@ import java.util.Deque;
 
 public class GuiController
 {
-    public final Window window;
-    public final WindowBasedTextGUI textGUI;
-    private DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
+    private final Window window;
+    private final WindowBasedTextGUI textGUI;
+    public DatabaseController dbController; //TODO:These should be made static rather than having to pass around
+    public StatementTemplate stmtUtil; //SEE ABOVE
     private Screen screen;
-    private Deque<iPage> Screens;
-    public DatabaseController dbController;
-    public StatementTemplate stmtUtil;
+    private Deque<iPage> PageStack;
 
     /**
      * Constructor. Creates a terminal, and draws the welcome page.
@@ -41,9 +40,10 @@ public class GuiController
     public GuiController(DatabaseController dbController, StatementTemplate stmtUtil)
     {
 
+        DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
         this.dbController = dbController; //Gives us a dbController reference
         this.stmtUtil = stmtUtil; //Gives us a statement template reference
-        Screens = new ArrayDeque<iPage>(); // Gives us a screen stack
+        PageStack = new ArrayDeque<>(); // Gives us a screen stack
         window = new BasicWindow("Just put anything, I don't even care");
         try
         {
@@ -58,12 +58,46 @@ public class GuiController
 
     }
 
-    @Override
-    protected void finalize() throws Throwable
+    public int getWidth()
     {
 
-        close();
-        super.finalize();
+        return screen.getTerminalSize().getColumns();
+    }
+
+    public void addAndDisplayPage(iPage page)
+    {
+
+        PageStack.addFirst(page);
+        updatescreen();
+    }
+
+    private void updatescreen()
+    {
+
+        window.setComponent(PageStack.peekFirst().getPanel());
+        textGUI.addWindowAndWait(window);
+    }
+
+    public void showLoginScreen()
+    {
+
+        iPage page = new LoginPage(this);
+        PageStack.addFirst(page);
+        updatescreen();
+    }
+
+    public void closePage()
+    {
+
+        if (PageStack.size() <= 1)
+        {
+            close();
+        }
+        else
+        {
+            PageStack.removeFirst();
+            updatescreen();
+        }
     }
 
     /**
@@ -85,40 +119,11 @@ public class GuiController
         }
     }
 
-    public void addScreen(iPage page)
+    @Override
+    protected void finalize() throws Throwable
     {
 
-        Screens.addFirst(page);
-        updatescreen();
+        close();
+        super.finalize();
     }
-
-    public void updatescreen()
-    {
-
-        window.setComponent(Screens.peekFirst().getPanel());
-        textGUI.addWindowAndWait(window);
-    }
-
-    public void showLoginScreen()
-    {
-
-        iPage page = new LoginScreen(this);
-        Screens.addFirst(page);
-        updatescreen();
-    }
-
-    public void closePage()
-    {
-
-        if (Screens.size() <= 1)
-        {
-            close();
-        }
-        else
-        {
-            Screens.removeFirst();
-            updatescreen();
-        }
-    }
-
 }

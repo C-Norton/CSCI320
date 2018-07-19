@@ -13,15 +13,24 @@ import java.util.ArrayList;
 /**
  * Created by Channing Helmling-Cornell on 7/18/2018.
  */
-public class ActionTable implements iPage
+public class DataTablePage implements iPage
 {
     private Panel panel;
 
-    public ActionTable(GuiController guiController, ResultSet rs, String PageName)
+    public DataTablePage(GuiController guiController, ResultSet rs, String PageName)
     {
 
         panel = new Panel(new LinearLayout(Direction.VERTICAL));
         panel.addComponent(new Label(PageName));
+
+        Label refreshWarning = new Label("");
+        refreshWarning.setLabelWidth(guiController.getWidth() - 8);
+        refreshWarning.setText("Note: Changes to the database are not fetched when accessing this page via "
+                               + "the \"Back\" button on future pages. To refresh the data on this page, "
+                               + "please hit the Back button at the bottom of this page, and run the command "
+                               + "that generated this page again.");
+        panel.addComponent(refreshWarning);
+        panel.addComponent(new Separator(Direction.HORIZONTAL));
         int colcount = 0;
         ArrayList<String> headers = null;
         ArrayList<String> colNames = null;
@@ -81,9 +90,9 @@ public class ActionTable implements iPage
 
                 switch (PageName)
                 {
-                    case "Stores":
+                    case "Stores": //Todo:This should likely be replaced with an ENUM at some point to make less fragile
 
-                        guiController.addScreen(new StoreDetails(guiController,
+                        guiController.addAndDisplayPage(new StoreDetailsPage(guiController,
                                 Store.retrieveStoreById(guiController.dbController
                                         , guiController.stmtUtil
                                         , (Integer.parseInt(data.getTableModel().getCell(0, data.getSelectedRow())))
@@ -92,7 +101,7 @@ public class ActionTable implements iPage
 
                         break;
                     default:
-                        throw new IllegalStateException();
+                        break;
                 }
             }
         });

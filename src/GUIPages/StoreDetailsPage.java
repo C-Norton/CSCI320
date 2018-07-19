@@ -7,11 +7,11 @@ import com.googlecode.lanterna.gui2.*;
 /**
  * Created by Channing Helmling-Cornell on 7/18/2018.
  */
-public class StoreDetails implements iPage
+public class StoreDetailsPage implements iPage
 {
     private Panel panel;
 
-    public StoreDetails(GuiController guiController, Store store)
+    public StoreDetailsPage(GuiController guiController, Store store)
     {
 
         if (store != null)
@@ -36,6 +36,7 @@ public class StoreDetails implements iPage
         }));
 
     }
+
     @Override
     public Panel getPanel()
     {
