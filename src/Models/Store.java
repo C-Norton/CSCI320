@@ -32,15 +32,16 @@ public class Store {
     }
 
     //gets a list of all stores
-    public static ResultSet retrieveStores(DatabaseController dbController, StatementTemplate stmtUtil){
-        Statement stmt = stmtUtil.newNullStatement();
+    public static ResultSet retrieveStores(){
+
+        Statement stmt = StatementTemplate.newNullStatement();
         ResultSet rs = null;
 
         String selectCustomer = "SELECT storeID, name FROM Store";
 
         //create query statement
         try {
-            stmt = stmtUtil.connStatement(stmt);
+            stmt = StatementTemplate.connStatement(stmt);
         }catch(Exception e){
             System.out.println("Error Creating Fetch Statement for Stores");
             System.out.println(e.getMessage());
@@ -48,7 +49,7 @@ public class Store {
 
         //execute and get results of query
         try {
-            rs = dbController.ExecuteSelectQuery(stmt, selectCustomer);
+            rs = DatabaseController.DB.ExecuteSelectQuery(stmt, selectCustomer);
         }catch(Exception e){
             System.out.println("Error Executing Select Query for Stores");
             System.out.println(e.getMessage());
@@ -70,22 +71,22 @@ public class Store {
     }
 
     //get one store by store id, returns a result set
-    public static ResultSet retrieveStoreById(DatabaseController dbController, StatementTemplate stmtUtil, int storeid){
-        Statement stmt = stmtUtil.newNullStatement();
+    public static ResultSet retrieveStoreById(int storeid){
+        Statement stmt = StatementTemplate.newNullStatement();
         ResultSet rs = null;
 
         String selectCustomer = "SELECT * FROM Store WHERE storeId = " + storeid ;
 
         //create query statement
         try {
-            stmt = stmtUtil.connStatement(stmt);
+            stmt = StatementTemplate.connStatement(stmt);
         }catch(Exception e){
             System.out.println("Error Creating Fetch Statement for Store");
         }
 
         //execute and get results of query
         try {
-            rs = dbController.ExecuteSelectQuery(stmt, selectCustomer);
+            rs = DatabaseController.DB.ExecuteSelectQuery(stmt, selectCustomer);
         }catch(Exception e){
             System.out.println("Error Executing Select Query for Store");
         }

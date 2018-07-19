@@ -24,7 +24,8 @@ public class Inventory {
     //retrieves the inventory for a specific store from the db
     public static Inventory retrieveInventory(DatabaseController dbController, StatementTemplate stmtUtil, int storeId)
     throws Exception{
-        Statement stmt = stmtUtil.newNullStatement();
+
+        Statement stmt = StatementTemplate.newNullStatement();
         ResultSet rs = null;
 
         //hypebeast complex sql statement
@@ -35,7 +36,7 @@ public class Inventory {
 
         //create query statement
         try {
-            stmt = stmtUtil.connStatement(stmt);
+            stmt = StatementTemplate.connStatement(stmt);
         }catch(Exception e){
             System.out.println("Error Creating Fetch Statement for Inventory");
             System.out.println(e.getMessage());
