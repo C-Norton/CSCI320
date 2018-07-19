@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Created by Jeremy on 7/18/2018.
  */
-public class VendorTest {
+class VendorTest {
     Connection conn;
     DatabaseController dbController;
     StatementTemplate stmtUtil;
