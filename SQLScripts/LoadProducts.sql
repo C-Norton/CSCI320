@@ -1,0 +1,16 @@
+INSERT INTO Product(UPC,name,brand,price,vendor) VALUES (978020137962,'Coca Cola; 16 oz','Coca Cola Company',0.99,100);
+INSERT INTO Product(UPC,name,brand,price,vendor) VALUES (608267789902,'Pepsi','PepsiCo',1.29,100);
+INSERT INTO Product(UPC,name,brand,price,vendor) VALUES (608263619879,'Diet Pepsi Max','PepsiCo',1.29,100);
+INSERT INTO Product(UPC,name,brand,price,vendor) VALUES (915696201353,'White bread','Wonder Foods',3.49,200);
+INSERT INTO Product(UPC,name,brand,price,vendor) VALUES (915693126004,'Wheat bread','Wonder Foods',3.49,200);
+INSERT INTO Product(UPC,name,brand,price,vendor) VALUES (159411115996,'White bread','Pepperidge Farm',4.29,200);
+INSERT INTO Product(UPC,name,brand,price,vendor) VALUES (287778064707,'Lighter','BIC',0.89,300);
+INSERT INTO Product(UPC,name,brand,price,vendor) VALUES (287775127070,'Dispoable Razor; 6 pack','BIC',4.99,400);
+INSERT INTO Product(UPC,name,brand,price,vendor) VALUES (287775035831,'Pens; 24 pack','BIC',3.99,400);
+INSERT INTO Product(UPC,name,brand,price,vendor) VALUES (774960143593,'Bottled Water; 12 pack','Ice Mountain',10.99,200);
+INSERT INTO Product(UPC,name,brand,price,vendor) VALUES (608630039789,'0w-20 Oil; 1 quart','STP',7.69,500);
+INSERT INTO Product(UPC,name,brand,price,vendor) VALUES (598671119332,'5w-30 Oil; 1 quart','STP',7.69,500);
+INSERT INTO Product(UPC,name,brand,price,vendor) VALUES (608638391525,'10w-30 Oil; 1 quart','STP',7.69,500);
+INSERT INTO Product(UPC,name,brand,price,vendor) VALUES (608636172208,'5w-40 Oil; 1 quart','STP',7.69,500);
+INSERT INTO Product(UPC,name,brand,price,vendor) VALUES (608632354592,'10w-40 Oil; 1 quart','STP',7.69,500);
+INSERT INTO Product(UPC,name,brand,price,vendor) VALUES (978020230810,'Bottled Water; 24 pack','Dasani',21.99,100);

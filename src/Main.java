@@ -11,7 +11,7 @@ public class Main {
 
     public static void main(String[] a) throws Exception {
 
-        Connection conn = DriverManager.getConnection("jdbc:h2:./test", "sa", "");
+        Connection conn = DriverManager.getConnection("jdbc:h2:./Tests", "sa", "");
 
         dbController = new DatabaseController(conn);
         stmtUtil = new StatementTemplate(conn);

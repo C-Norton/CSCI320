@@ -5,14 +5,12 @@ import Models.Store;
 import Utilities.StatementTemplate;
 import org.junit.jupiter.api.Test;
 
-import javax.xml.transform.Result;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class StoreTest {
     Connection conn;
@@ -21,7 +19,8 @@ class StoreTest {
     boolean result;
 
     private void initialize() throws Exception {
-        conn = DriverManager.getConnection("jdbc:h2:./test", "sa", "");
+
+        conn = DriverManager.getConnection("jdbc:h2:./Tests", "sa", "");
 
         dbController = new DatabaseController(conn);
         stmtUtil = new StatementTemplate(conn);

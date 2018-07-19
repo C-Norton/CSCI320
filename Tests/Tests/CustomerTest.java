@@ -6,9 +6,8 @@ import Utilities.StatementTemplate;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class CustomerTest {
     Connection conn;
@@ -17,7 +16,8 @@ class CustomerTest {
     boolean result;
 
     private void initialize() throws Exception {
-        conn = DriverManager.getConnection("jdbc:h2:./test", "sa", "");
+
+        conn = DriverManager.getConnection("jdbc:h2:./Tests", "sa", "");
 
         dbController = new DatabaseController(conn);
         stmtUtil = new StatementTemplate(conn);
