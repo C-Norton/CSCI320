@@ -46,7 +46,7 @@ public class Order {
 
         //execute and get results of query
         try {
-            rs = DatabaseController.DB.ExecuteSelectQuery(stmt, selectCustomer);
+            rs = DatabaseController.ExecuteSelectQuery(stmt, selectCustomer);
         }catch(Exception e){
             System.out.println("Error Executing Query for Order");
             e.printStackTrace();
@@ -73,7 +73,7 @@ public class Order {
 
         //execute and get results of query
         try {
-            rs = DatabaseController.DB.ExecuteSelectQuery(stmt, selectCustomer);
+            rs = DatabaseController.ExecuteSelectQuery(stmt, selectCustomer);
         }catch(Exception e){
             System.out.println("Error Executing Query for Order");
             e.printStackTrace();

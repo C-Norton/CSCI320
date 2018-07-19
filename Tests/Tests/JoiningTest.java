@@ -50,8 +50,6 @@ class JoiningTest
 
         dbController = new DatabaseController(conn);
         stmtUtil = new StatementTemplate(conn);
-        DatabaseController.DB = dbController;
-        StatementTemplate.Template = stmtUtil;
         dbController.InitializeNewDatabaseInstance();
 
         //order numbers for user 3694

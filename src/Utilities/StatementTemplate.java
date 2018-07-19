@@ -8,10 +8,12 @@ import java.sql.Statement;
  */
 public class StatementTemplate {
 
-    public static StatementTemplate Template;
-    private final Connection conn;
-    public StatementTemplate(Connection conn){
-        this.conn = conn;
+    private static Connection conn;
+
+    public StatementTemplate(Connection connection)
+    {
+
+        conn = connection;
     }
 
     public static Statement newNullStatement()
@@ -23,7 +25,7 @@ public class StatementTemplate {
     public static Statement connStatement(Statement stmt) throws Exception
     {
 
-        stmt = Template.conn.createStatement();
+        stmt = conn.createStatement();
         return stmt;
     }
 

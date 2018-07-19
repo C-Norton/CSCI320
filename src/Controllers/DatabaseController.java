@@ -9,24 +9,17 @@ import java.sql.Statement;
 
 public class DatabaseController {
 
-    public static DatabaseController DB;
-    private final Connection conn;
-    public DatabaseController(Connection conn){
-        this.conn = conn;
+    private static Connection conn;
+
+    public DatabaseController(Connection connection)
+    {
+
+        conn = connection;
 
     }
 
-    //initialize a fresh instance of the retail DB
-    public void InitializeNewDatabaseInstance() throws Exception{
-        DatabaseInitializer.InitializeDatabase(this.conn);
-    }
-
-    public ResultSet ExecuteSelectQuery(Statement stmt, String query) throws Exception{
-        ResultSet rs = stmt.executeQuery(query);
-        return rs;
-    }
-
-    public void ExecuteUpdateQuery(Statement stmt, String query) throws Exception{
+    public static void ExecuteUpdateQuery(Statement stmt, String query) throws Exception
+    {
         stmt.executeUpdate(query);
     }
 
@@ -55,7 +48,7 @@ public class DatabaseController {
         }
         try
         {
-            rs = DB.ExecuteSelectQuery(stmt, Query);
+            rs = DatabaseController.ExecuteSelectQuery(stmt, Query);
         }
         catch (Exception e)
         {
@@ -63,6 +56,20 @@ public class DatabaseController {
             return null;
         }
         return rs;
+    }
+
+    public static ResultSet ExecuteSelectQuery(Statement stmt, String query) throws Exception
+    {
+
+        ResultSet rs = stmt.executeQuery(query);
+        return rs;
+    }
+
+    //initialize a fresh instance of the retail DB
+    public void InitializeNewDatabaseInstance() throws Exception
+    {
+
+        DatabaseInitializer.InitializeDatabase(conn);
     }
 
 }

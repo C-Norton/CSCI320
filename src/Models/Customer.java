@@ -41,7 +41,7 @@ public final class Customer
 
         //execute and get results of query
         try {
-            rs = dbController.ExecuteSelectQuery(stmt, selectCustomer);
+            rs = DatabaseController.ExecuteSelectQuery(stmt, selectCustomer);
         }catch(Exception e){
             System.out.println("Error Executing Select Query for Customer");
         }

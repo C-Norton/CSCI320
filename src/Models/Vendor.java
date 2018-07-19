@@ -46,7 +46,7 @@ public class Vendor {
         }
         //execute and get results of query
         try {
-            rs = dbController.ExecuteSelectQuery(stmt, selectVendor);
+            rs = DatabaseController.ExecuteSelectQuery(stmt, selectVendor);
         }catch(Exception e){
             System.out.println("Error Executing Select Query for Vendor");
         }
@@ -71,7 +71,7 @@ public class Vendor {
 
         //execute and get results of query
         try {
-            rs = dbController.ExecuteSelectQuery(stmt, selectAllVendors);
+            rs = DatabaseController.ExecuteSelectQuery(stmt, selectAllVendors);
         }catch(Exception e){
             System.out.println("Error Executing Select Query for Vendor");
         }

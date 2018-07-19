@@ -73,7 +73,7 @@ public class Cart {
 
         //execute and get results of query
         try {
-            rs = dbController.ExecuteSelectQuery(stmt, getLatestId);
+            rs = DatabaseController.ExecuteSelectQuery(stmt, getLatestId);
         }catch(Exception e){
             System.out.println("Error Executing Query  for Cart");
         }

@@ -81,7 +81,7 @@ public class Inventory {
 
         //execute and get results of query
         try {
-            rs = DatabaseController.DB.ExecuteSelectQuery(stmt, query);
+            rs = DatabaseController.ExecuteSelectQuery(stmt, query);
         }catch(Exception e){
             System.out.println("Error Executing Select Query for Inventory");
             System.out.println(e.getMessage());
