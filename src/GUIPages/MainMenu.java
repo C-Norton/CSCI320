@@ -1,9 +1,12 @@
 package GUIPages;
 
+import Controllers.DatabaseController;
 import Controllers.GuiController;
 import Models.Products;
 import Models.Store;
 import com.googlecode.lanterna.gui2.*;
+
+import java.sql.ResultSet;
 
 /**
  * Created by Channing Helmling-Cornell on 7/14/2018.
@@ -40,14 +43,30 @@ public class MainMenu implements iPage
                 guiController.addAndDisplayPage(Productlist);
             }
         }));
-        panel.addComponent(new Button("3. ExecuteQuery", new Runnable()
+        panel.addComponent(new Button("3. Execute Query", new Runnable()
         {
             @Override
             public void run()
             {
 
-                iPage QueryResults = new DataTablePage(guiController, Products.getProductList(), "Products");
-                guiController.addAndDisplayPage(QueryResults);
+                String Query = guiController.textpopup("SQL Query", "Warning: Validity of statement is not \n"
+                                                                    + "checked. Syntactically invalid \n"
+                                                                    + "statements result in crashes or \n"
+                                                                    + "unsupported behavior.");
+                if (Query == null)
+                {
+                    return;
+                }
+                ResultSet rs = DatabaseController.MakeSelQuery(Query);
+                if (rs == null)
+                {
+                    guiController.closePage();
+                }
+                else
+                {
+                    iPage results = new DataTablePage(guiController, rs, "Custom Query Results: " + Query);
+                    guiController.addAndDisplayPage(results);
+                }
             }
         }));
         panel.addComponent(new Button("4. Back", new Runnable()

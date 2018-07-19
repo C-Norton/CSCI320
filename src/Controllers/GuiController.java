@@ -17,6 +17,7 @@ import com.googlecode.lanterna.gui2.BasicWindow;
 import com.googlecode.lanterna.gui2.MultiWindowTextGUI;
 import com.googlecode.lanterna.gui2.Window;
 import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
+import com.googlecode.lanterna.gui2.dialogs.TextInputDialog;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 
@@ -93,6 +94,13 @@ public class GuiController
             PageStack.removeFirst();
             updatescreen();
         }
+    }
+
+    public String textpopup(String prompt, String description)
+    {
+
+        return TextInputDialog.showDialog(textGUI, prompt, description, "Enter your " + prompt + " here...");
+
     }
 
     /**
