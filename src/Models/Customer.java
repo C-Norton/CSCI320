@@ -18,7 +18,7 @@ public class Customer {
     private Cart cart;
     private ArrayList<Order> orderHistory;
 
-    private static Customer customer;
+    private static Customer customer;//current logged in customer
 
 
     public Customer(int id, String name, String address, String phone, String creditCard, Cart cart, ArrayList<Order> orderHistory ){
@@ -32,6 +32,9 @@ public class Customer {
         this.orderHistory = orderHistory;
     }
 
+    public boolean isLoggedIn(){
+        return customer!=null;
+    }
     //--Queries--//
 
     //get all columns for a customer from id, except password and username

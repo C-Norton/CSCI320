@@ -158,12 +158,14 @@ class DatabaseInitializer {
         try {
 
             String Store1 = "INSERT INTO  Store(name, location, phoneNum, hours) VALUES ('NYC','NA','420','24hrs')";
+            String Store2 = "INSERT INTO  Store(name, location, phoneNum, hours) VALUES ('LA','NA','69','24hrs')";
             String Product1 = "INSERT INTO Product VALUES (101010101010, 'ten', 'boring corp', 420.69, 123)";
             String Vendor1 = "Insert INTO Vendor VALUES (123, 'lame corp', 'NA', 911, 'Bobby')";
             String Inventory1 = "Insert INTO Inventory VALUES (1, 101010101010, 69)";
 
             stmt = conn.createStatement();
             stmt.executeUpdate(Store1);
+            stmt.executeUpdate(Store2);
             stmt.executeUpdate(Product1);
             stmt.executeUpdate(Vendor1);
             stmt.executeUpdate(Inventory1);

@@ -5,11 +5,31 @@ import Utilities.StatementTemplate;
 
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 /**
  * Created by Michael on 7/6/2018.
  */
 public class Store {
+    private int id;
+    private String name;
+    private String location;
+    private String hours;
+    private String phone;
+    private Inventory inventory;
+    private ArrayList<Order> orders;
+
+    private Store(int id, String name, String location, String hours, String phone, Inventory inventory, ArrayList<Order> orders) {
+        this.id = id;
+        this.name = name;
+        this.location = location;
+        this.hours = hours;
+        this.phone = phone;
+        this.inventory = inventory;
+        this.orders = orders;
+    }
+
+    //gets a list of all stores
     public static ResultSet retrieveStores(DatabaseController dbController, StatementTemplate stmtUtil){
         Statement stmt = stmtUtil.newNullStatement();
         ResultSet rs = null;
@@ -33,5 +53,94 @@ public class Store {
         }
 
         return rs;
+    }
+
+    //turns a table of stores into array of objects
+    public static ArrayList<Store> parseStores(ResultSet rs){
+        ArrayList<Store> stores = null;
+        if (rs != null) {
+
+            try {
+                stores = new ArrayList<Store>();
+                while (rs.next()) {
+                    int id;
+                    String name = null;
+                    String location = null;
+                    String hours = null;
+                    String phone = null;
+                    Inventory inventory = null;
+                    ArrayList<Order> orders = new ArrayList<>();
+
+                    id = rs.getInt("storeID");
+                    name = rs.getString("name");
+                    //location = rs.getString("location");
+                    //hours = rs.getString("hours");
+                    //phone = rs.getString("phoneNum");
+
+                    stores.add(new Store(id,name, location, hours, phone, inventory, orders));
+                }
+            } catch (Exception e) {
+                System.out.print("Error Building Customer" + '\n');
+                System.out.println(e.getMessage());
+            }
+        }
+
+        return stores;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getHours() {
+        return hours;
+    }
+
+    public void setHours(String hours) {
+        this.hours = hours;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public Inventory getInventory() {
+        return inventory;
+    }
+
+    public void setInventory(Inventory inventory) {
+        this.inventory = inventory;
+    }
+
+    public ArrayList<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(ArrayList<Order> orders) {
+        this.orders = orders;
     }
 }

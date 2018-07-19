@@ -49,7 +49,7 @@ public class Inventory {
             System.out.println(e.getMessage());
         }
 
-        ArrayList<ProductQuantity> inventory = parseResultSet(dbController, stmtUtil,rs);
+        ArrayList<ProductQuantity> inventory = parseResultSet(rs);
         if (inventory!=null){
             return new Inventory(inventory);
         }else {
@@ -58,8 +58,7 @@ public class Inventory {
     }
 
     //parses result set, returns list of prod quantities
-    private static ArrayList<ProductQuantity> parseResultSet(DatabaseController dbController, StatementTemplate stmtUtil
-            , ResultSet rs) {
+    private static ArrayList<ProductQuantity> parseResultSet(ResultSet rs) {
         ArrayList<ProductQuantity> inventory = null;
 
         if (rs != null) {

@@ -30,6 +30,6 @@ class InventoryTest {
     void retrieveInventory() throws Exception{
         initialize();
         Inventory inventory = Inventory.retrieveInventory(dbController, stmtUtil, 1);
-        System.out.println(inventory.getInventory().get(0).getProduct().getName());
+        assertEquals("ten",inventory.getInventory().get(0).getProduct().getName());
     }
 }
