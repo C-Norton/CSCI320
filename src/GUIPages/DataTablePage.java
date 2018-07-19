@@ -1,6 +1,7 @@
 package GUIPages;
 
 import Controllers.GuiController;
+import Models.Store;
 import com.googlecode.lanterna.gui2.*;
 import com.googlecode.lanterna.gui2.table.Table;
 
@@ -12,15 +13,24 @@ import java.util.ArrayList;
 /**
  * Created by Channing Helmling-Cornell on 7/18/2018.
  */
-public class ActionTable implements iPage
+public class DataTablePage implements iPage
 {
     private Panel panel;
 
-    public ActionTable(GuiController guiController, ResultSet rs, String PageName)
+    public DataTablePage(GuiController guiController, ResultSet rs, String PageName)
     {
 
         panel = new Panel(new LinearLayout(Direction.VERTICAL));
         panel.addComponent(new Label(PageName));
+
+        Label refreshWarning = new Label("");
+        refreshWarning.setLabelWidth(guiController.getWidth() - 8);
+        refreshWarning.setText("Note: Changes to the database are not fetched when accessing this page via "
+                               + "the \"Back\" button on future pages. To refresh the data on this page, "
+                               + "please hit the Back button at the bottom of this page, and run the command "
+                               + "that generated this page again.");
+        panel.addComponent(refreshWarning);
+        panel.addComponent(new Separator(Direction.HORIZONTAL));
         int colcount = 0;
         ArrayList<String> headers = null;
         ArrayList<String> colNames = null;
@@ -72,6 +82,29 @@ public class ActionTable implements iPage
             e.printStackTrace();
 
         }
+        data.setSelectAction(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+
+                switch (PageName)
+                {
+                    case "Stores": //Todo:This should likely be replaced with an ENUM at some point to make less fragile
+
+                        guiController.addAndDisplayPage(new StoreDetailsPage(guiController,
+                                Store.retrieveStoreById(guiController.dbController
+                                        , guiController.stmtUtil
+                                        , (Integer.parseInt(data.getTableModel().getCell(0, data.getSelectedRow())))
+                                )))
+                        ;
+
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
         panel.addComponent(data);
         panel.addComponent(new Button("Back", new Runnable()
         {

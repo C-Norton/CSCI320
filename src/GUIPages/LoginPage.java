@@ -9,11 +9,11 @@ import com.googlecode.lanterna.gui2.Panel;
 /**
  * Created by Channing Helmling-Cornell on 7/18/2018.
  */
-public class LoginScreen implements iPage
+public class LoginPage implements iPage
 {
     private Panel panel;
 
-    public LoginScreen(GuiController guiController)
+    public LoginPage(GuiController guiController)
     {
 
         panel = new Panel(new LinearLayout(Direction.VERTICAL));
@@ -23,7 +23,7 @@ public class LoginScreen implements iPage
             public void run()
             {
 
-                guiController.addScreen(new MainMenu(guiController));
+                guiController.addAndDisplayPage(new MainMenu(guiController));
             }
         }));
         panel.addComponent(new Button("Exit", new Runnable()

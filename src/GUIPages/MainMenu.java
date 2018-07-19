@@ -25,9 +25,9 @@ public class MainMenu implements iPage
             public void run()
             {
 
-                iPage Storelist = new ActionTable(guiController, Store.retrieveStores(guiController.dbController,
+                iPage Storelist = new DataTablePage(guiController, Store.retrieveStores(guiController.dbController,
                         guiController.stmtUtil), "Stores");
-                guiController.addScreen(Storelist);
+                guiController.addAndDisplayPage(Storelist);
 
             }
         }));
