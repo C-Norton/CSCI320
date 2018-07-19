@@ -19,6 +19,8 @@ public class Store {
     private Inventory inventory;
     private ArrayList<Order> orders;
 
+    private static Store currentStore;
+
     private Store(int id, String name, String location, String hours, String phone, Inventory inventory, ArrayList<Order> orders) {
         this.id = id;
         this.name = name;
@@ -56,6 +58,16 @@ public class Store {
     }
 
     //updates the static instance of current store
+    public static boolean enterStore(Store store){
+        try {
+            Store.currentStore = store;
+        }catch (Exception e){
+            System.out.println("Error Entering Store");
+            System.out.println(e.getMessage());
+            return false;
+        }
+        return true;
+    }
 
     //get one store by store id
     public static Store retrieveStoreById(DatabaseController dbController, StatementTemplate stmtUtil, int storeid){
