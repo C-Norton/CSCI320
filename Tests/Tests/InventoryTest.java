@@ -14,13 +14,6 @@ class InventoryTest {
     StatementTemplate stmtUtil;
     boolean result;
 
-    @Test
-    void retrieveInventory() throws Exception{
-        initialize();
-        Inventory inventory = Inventory.retrieveInventory(dbController, stmtUtil, 1);
-        //assertEquals("ten",inventory.getInventory().get(0).getProduct().getName());
-    }
-
     private void initialize() throws Exception
     {
 

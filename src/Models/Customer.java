@@ -12,7 +12,7 @@ import java.sql.Statement;
 public final class Customer
 {
 
-    private static Customer customer;//current logged in customer
+    //private static Customer customer;//current logged in customer
 
     private Customer()
     {
@@ -48,6 +48,7 @@ public final class Customer
         return rs;
     }
 
+    /*
     //see if credentials combination exists in table, if so returns true and make a new customer object
     public static boolean logIn(DatabaseController dbController, StatementTemplate stmtUtil, String username, String password){
 
@@ -76,6 +77,7 @@ public final class Customer
 
         return true;
     }
+    */
 
 /*
     public static void updateCustomerInfoQuery(DatabaseController dbController, StatementTemplate stmtUtil,Customer customer){

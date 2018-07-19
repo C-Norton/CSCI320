@@ -21,6 +21,7 @@ public class Inventory {
         this.inventory = inventory;
     }
 
+    /*
     //retrieves the inventory for a specific store from the db
     public static Inventory retrieveInventory(DatabaseController dbController, StatementTemplate stmtUtil, int storeId)
     throws Exception{
@@ -57,6 +58,7 @@ public class Inventory {
             throw new Exception("Error Retrieving Inventory");
         }
     }
+    */
 
     //retrieves a list of names for available items in a store
     public static ResultSet retrieveAvailableItems(int storeId)
