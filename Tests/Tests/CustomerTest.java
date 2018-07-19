@@ -25,13 +25,4 @@ class CustomerTest {
 
         dbController.InitializeNewDatabaseInstance();
     }
-
-    @org.junit.jupiter.api.Test
-    void logIn() throws Exception {
-        initialize();
-
-        result = Customer.logIn(dbController, stmtUtil, "bobby", "password123");
-        assertEquals(true, result);
-    }
-
 }
