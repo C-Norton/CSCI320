@@ -37,15 +37,12 @@ class VendorTest {
     void getSingleVendorQuery() throws Exception{
         initialize();
 
-        resultSet = Vendor.getSingleVendorQuery(dbController, stmtUtil, 1);
-        ResultSetMetaData rsmd = resultSet.getMetaData();
-        assertEquals(5, rsmd.getColumnCount());
-        Vendor vendor = Vendor.parseResultSet(resultSet); //this makes the parser public
+        Vendor vendor = Vendor.getSingleVendorQuery(dbController, stmtUtil, 1);
         assertEquals(true, vendor != null);
         assertEquals(1, vendor.getId());
         assertEquals("lame corp", vendor.getName());
         assertEquals("NA", vendor.getLocation());
-        assertEquals(911, vendor.getPhone());
+        assertEquals("911", vendor.getPhone());
         assertEquals("Bobby", vendor.getRep());
 
         //assertNotNull(resultSet); //just checking if its not null rn should be changed in the future

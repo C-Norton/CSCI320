@@ -32,35 +32,29 @@ public class Vendor {
 
     //select all for a vendor based on id
     //parsing method still included but this just returns the ResultSet right now
-    public static ResultSet getSingleVendorQuery(DatabaseController dbController, StatementTemplate stmtUtil, int id){
-
+    public static Vendor getSingleVendorQuery(DatabaseController dbController, StatementTemplate stmtUtil, int id){
         Statement stmt = stmtUtil.newNullStatement();
         ResultSet rs = null;
-
+        Vendor vendor = null;
         String selectVendor = "SELECT * FROM Vendor WHERE vendorId =" + id;
-
         //create query statement
         try {
             stmt = stmtUtil.connStatement(stmt);
         }catch(Exception e){
             System.out.println("Error Creating Fetch Statement for Vendor");
         }
-
         //execute and get results of query
         try {
             rs = dbController.ExecuteSelectQuery(stmt, selectVendor);
         }catch(Exception e){
             System.out.println("Error Executing Select Query for Vendor");
         }
-
-        //Vendor vendor = parseResultSet(rs); // parsing the query
-
-        return rs;
+        vendor = parseResultSet(rs).get(0); // parsing the query
+        return vendor;
     }
 
     //selects names of all vendors
-    //returns ResultSet but code for parsing is still included
-    public static ResultSet getListOfVendors(DatabaseController dbController, StatementTemplate stmtUtil){
+    public static ResultSet getVendorNames(DatabaseController dbController, StatementTemplate stmtUtil){
 
         Statement stmt = stmtUtil.newNullStatement();
         ResultSet rs = null;
@@ -80,40 +74,39 @@ public class Vendor {
         }catch(Exception e){
             System.out.println("Error Executing Select Query for Vendor");
         }
-
-        //ArrayList<String> vendorNames = parseResultSetList(rs); //calls the parsing method
         return rs;
-
     }
 
 
-
-
     //Utils//
-    //not used because we are assuming that parsing is going on on the GUI end
 
-    //gets a vendor from a query
-    public static Vendor parseResultSet(ResultSet rs){
+    //returns an arraylist of all vendors in the result set
+    private static ArrayList<Vendor> parseResultSet(ResultSet rs){
+        ArrayList<Vendor> vendors = null;
         if (rs != null){
             try {
-                int vendorID = rs.getInt("vendorId");
-                String vendorName = rs.getString("name");
-                String vendorLoc = rs.getString("location");
-                String vendorRep = rs.getString("rep");
-                String vendorPhone = rs.getString("phone");
-
-                Vendor vendor = new Vendor(vendorID, vendorName, vendorLoc, vendorRep, vendorPhone);
-                return vendor;
-
-
-            }catch (Exception e){
+                vendors = new ArrayList<>();
+                while(rs.next()) {
+                    int vendorID = rs.getInt(1);
+                    String vendorName = rs.getString(2);
+                    String vendorLoc = null;
+                    String vendorRep = null;
+                    String vendorPhone = null;
+                    try {
+                        vendorLoc = rs.getString(3);
+                        vendorPhone = rs.getString(4);
+                        vendorRep = rs.getString(5);
+                    }catch(NullPointerException e){
+                        System.out.println();
+                    }
+                    vendors.add(new Vendor(vendorID, vendorName, vendorLoc, vendorRep, vendorPhone));
+                }
+            } catch (Exception e) {
                 System.out.println("Error Building Vendor" + '\n');
                 System.out.println(e.getMessage());
             }
         }
-        System.out.println("Error: Vendor doesn't exist");
-        return null;
-
+        return vendors;
     }
 
     //gets the list of vendors from a query
