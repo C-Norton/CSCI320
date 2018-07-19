@@ -9,13 +9,13 @@ import java.sql.ResultSet;
  */
 public class Products
 {
-    public ResultSet getProductList()
+    public static ResultSet getProductList()
     {
 
         return DatabaseController.MakeSelQuery("SELECT * FROM Product");
     }
 
-    public ResultSet getProductsOfBrand(String brand)
+    public static ResultSet getProductsOfBrand(String brand)
     {
 
         return DatabaseController.MakeSelQuery("SELECT (UPC,Name,Price,VendorID) FROM Product WHERE Brand = "
