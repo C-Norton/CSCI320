@@ -1,6 +1,7 @@
 package GUIPages;
 
 import Controllers.GuiController;
+import Models.Store;
 import com.googlecode.lanterna.gui2.*;
 import com.googlecode.lanterna.gui2.table.Table;
 
@@ -72,6 +73,29 @@ public class ActionTable implements iPage
             e.printStackTrace();
 
         }
+        data.setSelectAction(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+
+                switch (PageName)
+                {
+                    case "Stores":
+
+                        guiController.addScreen(new StoreDetails(guiController,
+                                Store.retrieveStoreById(guiController.dbController
+                                        , guiController.stmtUtil
+                                        , (Integer.parseInt(data.getTableModel().getCell(0, data.getSelectedRow())))
+                                )))
+                        ;
+
+                        break;
+                    default:
+                        throw new IllegalStateException();
+                }
+            }
+        });
         panel.addComponent(data);
         panel.addComponent(new Button("Back", new Runnable()
         {
