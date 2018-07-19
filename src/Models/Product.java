@@ -12,12 +12,11 @@ public class Product {
     private Vendor vendor;
 
     //constructor
-    public Product(String upc, String name, String brand, float price,Vendor vendor){
+    public Product(String upc, String name, String brand, float price,int vendorID){
         this.name = name;
         this.brand = brand;
         this.price = price;
         this.upc = upc;
-        this.vendor = vendor;
     }
 
     public String getName() {

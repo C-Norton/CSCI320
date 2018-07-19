@@ -36,8 +36,8 @@ public class Customer {
         return customer!=null;
     }
     //--Queries--//
-
-    //get all columns for a customer from id, except password and username
+    
+    //returns a Customer instance, if id does not exist it returns an anon
     public static Customer getSingleCustomerInfoQuery(DatabaseController dbController, StatementTemplate stmtUtil, int id){
 
         Statement stmt = stmtUtil.newNullStatement();
