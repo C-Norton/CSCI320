@@ -93,6 +93,7 @@ public class Store {
         return rs;
     }
 
+    //public static ResultSet retrieveAvailableItems
     //turns a table of stores into array of objects
     private static ArrayList<Store> parseStores(ResultSet rs){
         ArrayList<Store> stores = null;

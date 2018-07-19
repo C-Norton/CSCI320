@@ -91,13 +91,14 @@ public class DataTablePage implements iPage
                 switch (PageName)
                 {
                     case "Stores": //Todo:This should likely be replaced with an ENUM at some point to make less fragile
-
-                        guiController.addAndDisplayPage(new StoreDetailsPage(guiController,
+                        /*
+                        guiController.addAndDisplayPage(new DataTablePage(guiController,
                                 Store.retrieveStoreById(guiController.dbController
                                         , guiController.stmtUtil
                                         , (Integer.parseInt(data.getTableModel().getCell(0, data.getSelectedRow())))
                                 )))
                         ;
+                        */
 
                         break;
                     default:
