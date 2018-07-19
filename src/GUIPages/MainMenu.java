@@ -2,7 +2,7 @@ package GUIPages;
 
 import Controllers.GuiController;
 import com.googlecode.lanterna.gui2.*;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+//import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * Created by Channing Helmling-Cornell on 7/14/2018.
@@ -24,7 +24,7 @@ public class MainMenu implements iPage
             public void run()
             {
 
-                throw new NotImplementedException();
+                //throw new NotImplementedException();
 
             }
         }));
