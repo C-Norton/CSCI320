@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,6 +25,14 @@ class InventoryTest {
 
 
         dbController.InitializeNewDatabaseInstance();
+    }
+
+    @Test
+    void retrieveAvailableItems() throws Exception{
+        initialize();
+        ResultSet rs = Inventory.retrieveAvailableItems(dbController, stmtUtil, 1);
+        assertEquals(true,rs.next());
+        assertEquals("ten", rs.getString(1));
     }
 
     @Test

@@ -57,6 +57,34 @@ public class Inventory {
         }
     }
 
+    //retrieves a list of names for available items in a store
+    public static ResultSet retrieveAvailableItems(DatabaseController dbController, StatementTemplate stmtUtil, int storeId){
+        Statement stmt = stmtUtil.newNullStatement();
+        ResultSet rs = null;
+
+        //join Inventory and Product
+        String query = "WITH upc AS (SELECT productUPC FROM Inventory WHERE storeId = " + storeId + ")" +
+                "SELECT name FROM (upc join Product on upc.productUPC = Product.upc)";
+
+        //create query statement
+        try {
+            stmt = stmtUtil.connStatement(stmt);
+        }catch(Exception e){
+            System.out.println("Error Creating Fetch Statement for Inventory");
+            System.out.println(e.getMessage());
+        }
+
+        //execute and get results of query
+        try {
+            rs = dbController.ExecuteSelectQuery(stmt, query);
+        }catch(Exception e){
+            System.out.println("Error Executing Select Query for Inventory");
+            System.out.println(e.getMessage());
+        }
+
+        return rs;
+    }
+
     //parses result set, returns list of prod quantities
     private static ArrayList<ProductQuantity> parseResultSet(ResultSet rs) {
         ArrayList<ProductQuantity> inventory = null;
