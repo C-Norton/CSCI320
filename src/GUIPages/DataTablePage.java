@@ -17,7 +17,7 @@ public class DataTablePage implements iPage
 {
     private Panel panel;
 
-    public DataTablePage(GuiController guiController, ResultSet rs, String PageName)
+    DataTablePage(GuiController guiController, ResultSet rs, String PageName)
     {
 
         panel = new Panel(new LinearLayout(Direction.VERTICAL));
@@ -103,15 +103,7 @@ public class DataTablePage implements iPage
             }
         });
         panel.addComponent(data);
-        panel.addComponent(new Button("Back", new Runnable()
-        {
-            @Override
-            public void run()
-            {
-
-                guiController.closePage();
-            }
-        }));
+        panel.addComponent(new Button("Back", guiController::closePage));
 
     }
 

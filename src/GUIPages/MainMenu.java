@@ -16,7 +16,7 @@ public class MainMenu implements iPage
 
     private Panel panel;
 
-    public MainMenu(GuiController guiController)
+    MainMenu(GuiController guiController)
     {
 
         panel = new Panel(new LinearLayout(Direction.VERTICAL));
@@ -43,7 +43,17 @@ public class MainMenu implements iPage
                 guiController.addAndDisplayPage(Productlist);
             }
         }));
-        panel.addComponent(new Button("3. Execute Query", new Runnable()
+        panel.addComponent(new Button("3. View Metrics/ Advanced Sample Queries", new Runnable()
+        {
+            @Override
+            public void run()
+            {
+
+                iPage metricsMenu = new MetricsMenuPage(guiController);
+                guiController.addAndDisplayPage(metricsMenu);
+            }
+        }));
+        panel.addComponent(new Button("4. Execute Custom Query", new Runnable()
         {
             @Override
             public void run()
@@ -69,16 +79,7 @@ public class MainMenu implements iPage
                 }
             }
         }));
-        panel.addComponent(new Button("4. Back", new Runnable()
-        {
-            @Override
-            public void run()
-            {
-
-                guiController.closePage();
-
-            }
-        }));
+        panel.addComponent(new Button("5. Back", guiController::closePage));
     }
 
     @Override
