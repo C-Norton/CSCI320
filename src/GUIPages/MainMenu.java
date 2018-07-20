@@ -25,7 +25,8 @@ public class MainMenu implements iPage
 
         panel = new Panel(new LinearLayout(Direction.VERTICAL));
         panel.addComponent(new Label("Welcome to FastMart! Where it's fast and easy to shop!\nUse the arrow Keys "
-                                     + "to highlight desired option. Press ENTER to select"));
+                                     + "to highlight desired option. Press ENTER to select\n" +
+                                     "Text Fields CAN be pasted into, using the hotkey Ctrl+Shift+V.\nMultiline pasting not supported"));
         panel.addComponent(new Button("1. Select Store", new Runnable()
         {
             @Override
