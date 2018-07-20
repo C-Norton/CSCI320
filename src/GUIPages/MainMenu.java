@@ -4,9 +4,13 @@ import Controllers.DatabaseController;
 import Controllers.GuiController;
 import Models.Products;
 import Models.Store;
+import Utilities.StatementTemplate;
 import com.googlecode.lanterna.gui2.*;
+import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
+import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * Created by Channing Helmling-Cornell on 7/14/2018.
@@ -67,16 +71,45 @@ public class MainMenu implements iPage
                 {
                     return;
                 }
-                ResultSet rs = DatabaseController.MakeSelQuery(Query);
-                if (rs == null)
+                try
                 {
-                    guiController.closePage();
-                }
-                else
-                {
+
+                    ResultSet rs = DatabaseController.ExecuteSelectQuery(StatementTemplate.connStatement
+                            (StatementTemplate.newNullStatement()), Query);
+
                     iPage results = new DataTablePage(guiController, rs, "Custom Query Results: " + Query);
                     guiController.addAndDisplayPage(results);
+
                 }
+                catch (SQLException e)
+                {
+                    if (e.getMessage().startsWith("Method is only allowed for a query."))
+                    {
+                        try
+                        {
+                            DatabaseController.ExecuteUpdateQuery(StatementTemplate.connStatement(StatementTemplate
+                                    .newNullStatement()), Query);
+                            guiController.closePage();
+                        }
+                        catch
+                                (Exception f)
+                        {
+                            f.printStackTrace();
+                        }
+
+                    }
+                    else
+                    {
+                        MessageDialog.showMessageDialog(guiController.textGUI, "INVALID SQL QUERY",
+                                "Your query was invalid.\nNo changes have been made",
+                                MessageDialogButton.Close);
+                    }
+                }
+                catch (Exception f)
+                {
+                    f.printStackTrace();
+                }
+
             }
         }));
         panel.addComponent(new Button("5. Back", guiController::closePage));

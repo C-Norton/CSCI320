@@ -4,6 +4,7 @@ import Utilities.StatementTemplate;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 
@@ -58,7 +59,7 @@ public class DatabaseController {
         return rs;
     }
 
-    public static ResultSet ExecuteSelectQuery(Statement stmt, String query) throws Exception
+    public static ResultSet ExecuteSelectQuery(Statement stmt, String query) throws SQLException
     {
 
         return stmt.executeQuery(query);

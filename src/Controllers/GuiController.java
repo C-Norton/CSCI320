@@ -28,7 +28,7 @@ import java.util.Deque;
 public class GuiController
 {
     private final Window window;
-    private final WindowBasedTextGUI textGUI;
+    public final WindowBasedTextGUI textGUI;
     private Screen screen;
     private Deque<iPage> PageStack;
 
