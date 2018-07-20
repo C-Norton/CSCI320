@@ -1,6 +1,7 @@
 package GUIPages;
 
 import Controllers.GuiController;
+import Models.Cart;
 import Models.Store;
 import com.googlecode.lanterna.gui2.*;
 import com.googlecode.lanterna.gui2.table.Table;
@@ -88,14 +89,19 @@ public class DataTablePage implements iPage
             public void run()
             {
 
+                int storeid;
                 switch (PageName)
                 {
-                    case "Stores": //Todo:This should likely be replaced with an ENUM at some point to make less fragile
-                        int storeid = Integer.parseInt(data.getTableModel().getCell(0, data.getSelectedRow()));
-                        guiController.addAndDisplayPage(new DataTablePage(guiController,
-                                Store.retrieveStoreById(storeid), "Store Details"))
-                        ;
 
+                    case "Stores": //Todo:This should likely be replaced with an ENUM at some point to make less fragile
+                        storeid = Integer.parseInt(data.getTableModel().getCell(0, data.getSelectedRow()));
+                        guiController.addAndDisplayPage(new DataTablePage(guiController,
+                                Store.retrieveStoreById(storeid), "Store Details"));
+                        break;
+                    case "Select Store":
+                        storeid = Integer.parseInt(data.getTableModel().getCell(0, data.getSelectedRow()));
+                        Cart.newCart(storeid);
+                        guiController.addAndDisplayPage(new ShoppingPage(guiController, storeid));
                         break;
                     default:
                         break;

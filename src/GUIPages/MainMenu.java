@@ -27,7 +27,7 @@ public class MainMenu implements iPage
         panel.addComponent(new Label("Welcome to FastMart! Where it's fast and easy to shop!\nUse the arrow Keys "
                                      + "to highlight desired option. Press ENTER to select\n" +
                                      "Text Fields CAN be pasted into, using the hotkey Ctrl+Shift+V.\nMultiline pasting not supported"));
-        panel.addComponent(new Button("1. Select Store", new Runnable()
+        panel.addComponent(new Button("1. View Stores", new Runnable()
         {
             @Override
             public void run()
@@ -113,7 +113,17 @@ public class MainMenu implements iPage
 
             }
         }));
-        panel.addComponent(new Button("5. Back", guiController::closePage));
+        panel.addComponent(new Button("5. Start Shopping", new Runnable()
+        {
+            @Override
+            public void run()
+            {
+
+                guiController.addAndDisplayPage(new DataTablePage(guiController, Store.retrieveStores(), "Select "
+                                                                                                         + "Store"));
+            }
+        }));
+        panel.addComponent(new Button("6. Back", guiController::closePage));
     }
 
     @Override
