@@ -11,17 +11,23 @@ import java.util.ArrayList;
  * Created by Michael on 7/6/2018.
  */
 public class Cart {
-
-
     private ArrayList<ProductQuantity> boughtProducts;
     private int storeId;
+    private static Cart currentCart;
 
-
-    public Cart(int storeId){
+    private Cart(int storeId){
         this.boughtProducts = new ArrayList<ProductQuantity>();
         this.storeId = storeId;
     }
 
+    //updates the current cart
+    public static void newCart(int storeId){
+        Cart.currentCart = new Cart(storeId);
+    }
+
+    public static boolean addItem(String upc){
+        return false;
+    }
 
     public void submitOrder(DatabaseController dbController, StatementTemplate stmtUtil, int customerId){
 
@@ -29,14 +35,12 @@ public class Cart {
 
         int latestOrderNum = getLatestId(dbController, stmtUtil,getLatestOrderNum);
 
-        Order checkout = new Order(latestOrderNum,this.storeId, customerId, this.boughtProducts);
         Statement stmt = StatementTemplate.newNullStatement();
 
-        //String getLatestOrderId = "orderId";
+        //adds new order
 
-        //int latestOrderId = getLatestId(dbController, stmtUtil,getLatestOrderId);
-
-        for(ProductQuantity product:this.boughtProducts ){
+        //adds new prodQuant
+        for(ProductQuantity prodQuant:this.boughtProducts ) {
 
 /*
             //TODO: Rewrite
@@ -50,7 +54,6 @@ public class Cart {
             }catch(Exception e){
 
             }*/
-
         }
     }
 
