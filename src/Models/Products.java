@@ -18,7 +18,9 @@ public class Products
     public static ResultSet getProductsOfBrand(String brand)
     {
 
-        return DatabaseController.MakeSelQuery("SELECT (UPC,Name,Price,VendorID) FROM Product WHERE Brand = "
+        return DatabaseController.MakeSelQuery("SELECT (Product.UPC,Product.Name,Product.Price,Vendor.Name) FROM "
+                                               + "(Product LEFT JOIN Vendor on Product.Vendor=Vendor.vendorID)"
+                                               + "WHERE Brand = "
                                                + "\'" + brand + "\'");
     }
 }

@@ -61,8 +61,7 @@ public class DatabaseController {
     public static ResultSet ExecuteSelectQuery(Statement stmt, String query) throws Exception
     {
 
-        ResultSet rs = stmt.executeQuery(query);
-        return rs;
+        return stmt.executeQuery(query);
     }
 
     //initialize a fresh instance of the retail DB
