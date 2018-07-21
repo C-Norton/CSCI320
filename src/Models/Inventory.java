@@ -1,5 +1,6 @@
 package Models;
 import Controllers.DatabaseController;
+import Utilities.RSParser;
 import Utilities.StatementTemplate;
 
 import java.sql.ResultSet;
@@ -60,6 +61,17 @@ public class Inventory {
     }
     */
 
+    //checks if product is stocked in the store inventory
+    public static int productStock(int storeId, String upc){
+        ResultSet rs = DatabaseController.MakeSelQuery("SELECT quantity FROM Inventory WHERE storeId = " + storeId +
+        " and productUPC = " + upc);
+        ArrayList<String[]> results = RSParser.rsToStringHeaders(rs);
+        if(results == null || results.size() < 2){
+            return 0;
+        }
+        return results.size() - 1;
+    }
+
     //retrieves a list of names for available items in a store
     public static ResultSet retrieveAvailableItems(int storeId)
     {
@@ -101,16 +113,9 @@ public class Inventory {
                 while (rs.next()) {
                     String upc = rs.getString("upc");
                     int quantity = rs.getInt("quantity");
-                    String name = rs.getString("name");
-                    String brand = rs.getString("brand");
-                    float price = rs.getFloat("price");
-                    int vendorID = rs.getInt("vendorID");
-                    String vendorName = rs.getString("vendorName");
-                    String location = rs.getString("location");
-                    String phoneNum = rs.getString("phoneNum");
-                    String salesRep = rs.getString("salesRep");
 
                     ProductQuantity prodQuant = new ProductQuantity(upc, quantity);
+                    inventory.add(prodQuant);
                 }
             } catch (Exception e) {
                 System.out.print("Error Building Customer" + '\n');

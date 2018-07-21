@@ -111,16 +111,4 @@ public class Order {
 
         return orderHistory;
     }
-
-
-
-    public String viewOrderDetails(){
-        String orderDetails = "Order Number:" + this.orderNum +'\n';
-
-        for(ProductQuantity product:orderedProducts){
-            //orderDetails += product.getProduct().getName()+'x'+product.getQuantity();
-        }
-
-        return orderDetails;
-    }
 }
