@@ -1,6 +1,7 @@
 package Utilities;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 /**
@@ -22,7 +23,7 @@ public class StatementTemplate {
         return stmt;
     }
 
-    public static Statement connStatement(Statement stmt) throws Exception
+    public static Statement connStatement(Statement stmt) throws SQLException
     {
 
         stmt = conn.createStatement();

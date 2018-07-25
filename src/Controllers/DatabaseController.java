@@ -19,7 +19,7 @@ public class DatabaseController {
 
     }
 
-    public static void ExecuteUpdateQuery(Statement stmt, String query) throws Exception
+    public static void ExecuteUpdateQuery(Statement stmt, String query) throws SQLException
     {
         stmt.executeUpdate(query);
     }

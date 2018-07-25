@@ -15,7 +15,7 @@ public class Cart {
     private static Cart currentCart;
 
     //stores the customer id, if existent
-    public static boolean logIn(int customerId){
+    public static boolean setCustomerId(int customerId){
         ResultSet rs = null;
 
         //find shopper
@@ -25,28 +25,28 @@ public class Cart {
         if (parsedRs == null || !parsedRs.get(1)[0].equals(String.valueOf(customerId))){
             return false;
         }
-        Cart.currentCart.customerId = customerId;
+        currentCart.customerId = customerId;
         return true;
     }
 
     //retrieves the customer id associated with this cart
     public static int getCustomerId(){
-        return Cart.currentCart.customerId;
+        return currentCart.customerId;
     }
 
     //updates the current cart
     public static boolean newCart(int storeId){
-        Cart.currentCart = new Cart(storeId);
+        currentCart = new Cart(storeId);
         return true;
     }
 
     //adds a product to the cart by an amount
     public static boolean addItem(String upc, int count){
         int newQuant = count;
-        ProductQuantity maybe = Cart.currentCart.hasItem(upc);
+        ProductQuantity maybe = currentCart.hasItem(upc);
         if (maybe != null){
             newQuant += maybe.getQuantity();
-            if (newQuant > Inventory.productStock(Cart.currentCart.getStoreId(), upc)){
+            if (newQuant > Inventory.productStock(currentCart.getStoreId(), upc)){
                 return false;
             }
             maybe.setQuantity(newQuant);
@@ -55,27 +55,27 @@ public class Cart {
         if (newQuant > Inventory.productStock(currentCart.getStoreId(), upc)){
             return false;
         }
-        Cart.currentCart.getCartContents().add(new ProductQuantity(upc, count));
+        currentCart.getCartContents().add(new ProductQuantity(upc, count));
         return true;
     }
 
     //total number of items in the cart
     public static int numberOfItems(){
-        return Cart.currentCart.getCartContents().size();
+        return currentCart.getCartContents().size();
     }
 
     //list of number of units for every item
     public static int[] itemsQuantities(){
         int[] prodQuant = new int[numberOfItems()];
         for (int val = 0; val < prodQuant.length; val ++){
-            prodQuant[val] = Cart.currentCart.getCartContents().get(val).getQuantity();
+            prodQuant[val] = currentCart.getCartContents().get(val).getQuantity();
         }
         return prodQuant;
     }
 
     //list of result set for every item
     public static ArrayList<ResultSet> itemsInfo(){
-        return Cart.currentCart.itemsInfo;
+        return currentCart.itemsInfo;
     }
 
     public static float total(){
@@ -88,6 +88,10 @@ public class Cart {
             total += cost * itemsQuantities()[i];
         }
         return total;
+    }
+
+    public static boolean checkOut(){
+        return Order.makeOrder(currentCart.items, currentCart.customerId, currentCart.getStoreId());
     }
 
     //instance properties
@@ -119,7 +123,7 @@ public class Cart {
         return true;
     }
 
-    public ArrayList<ProductQuantity>getCartContents(){
+    private ArrayList<ProductQuantity>getCartContents(){
         return items;
     }
     
@@ -127,7 +131,7 @@ public class Cart {
         this.storeId = storeId;
     }
 
-    public int getStoreId() {
+    private int getStoreId() {
         return storeId;
     }
 
