@@ -69,7 +69,7 @@ public class Inventory {
         if(results == null || results.size() < 2){
             return 0;
         }
-        return results.size() - 1;
+        return Integer.parseInt(results.get(1)[0]);
     }
 
     //retrieves a list of names for available items in a store
