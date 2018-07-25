@@ -12,6 +12,7 @@ package Controllers;
  */
 
 import GUIPages.LoginPage;
+import GUIPages.ShoppingPage;
 import GUIPages.iPage;
 import com.googlecode.lanterna.gui2.BasicWindow;
 import com.googlecode.lanterna.gui2.MultiWindowTextGUI;
@@ -72,6 +73,19 @@ public class GuiController
 
         window.setComponent(PageStack.peekFirst().getPanel());
         textGUI.addWindowAndWait(window);
+    }
+
+    public void refreshPage()
+    {
+
+        iPage page = PageStack.peekFirst();
+        page.getPanel().invalidate();
+        if (page instanceof ShoppingPage)
+        {
+            ShoppingPage spage = (ShoppingPage) page;
+            spage.redraw();
+        }
+        updatescreen();
     }
 
     public void showLoginScreen()

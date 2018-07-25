@@ -119,6 +119,10 @@ public class DataTablePage implements iPage
                                                                                             + " been modified",
                                     MessageDialogButton.Close);
                         }
+                        else
+                        {
+                            guiController.refreshPage();
+                        }
                     default:
                         break;
                 }

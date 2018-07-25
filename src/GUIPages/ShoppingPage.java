@@ -1,22 +1,36 @@
 package GUIPages;
 
 import Controllers.GuiController;
+import Models.Cart;
 import Models.Store;
 import com.googlecode.lanterna.gui2.*;
-import com.googlecode.lanterna.gui2.table.Table;
 
 /**
  * Created by Channing Helmling-Cornell on 7/19/2018.
  */
 public class ShoppingPage implements iPage
 {
-    Integer itemcount = 0;
-    Float cost = 0.0f;
-    private Panel root;
 
+    private Panel root;
+    private GuiController guiController;
+    private Panel StoreItems;
     ShoppingPage(GuiController guiController, int StoreID)
     {
 
+        this.guiController = guiController;
+
+        StoreItems = (new DataTablePage(guiController, Store.getInventoryMetadata(StoreID), "CartPanel"))
+                .getPanel();
+
+        redraw();
+
+
+    }
+
+    public void redraw()
+    {
+
+        root = null;
         root = new Panel(new BorderLayout());
         Panel itemsInStorePanel = new Panel(new LinearLayout(Direction.VERTICAL));
         Panel RightPanel = new Panel(new BorderLayout());
@@ -29,17 +43,15 @@ public class ShoppingPage implements iPage
 
         itemsInStorePanel.addComponent(new Label("Available Items"));
 
-        Panel StoreItems = (new DataTablePage(guiController, Store.getInventoryMetadata(StoreID), "CartPanel"))
-                .getPanel();
 
         itemsInCartPanel.addComponent(new Label("Your Cart"));
 
-        Table itemsInCart = new Table();
+        //Table itemsInCart = new Table();
 
         totals.addComponent(new Separator(Direction.HORIZONTAL));
-        totalText.addComponent(new Label("Items in Cart: " + itemcount.toString()));
+        totalText.addComponent(new Label("Items in Cart: " + Cart.numberOfItems()));
         totalText.addComponent(new Separator(Direction.VERTICAL));
-        totalText.addComponent(new Label("Total: " + cost.toString()));
+        totalText.addComponent(new Label("Total: " + Cart.total()));
 
 
         ActionTotal.addComponent(new EmptySpace(), BorderLayout.Location.CENTER);
@@ -51,7 +63,6 @@ public class ShoppingPage implements iPage
             {
 
 
-                Redraw();
             }
         }));
         Actions.addComponent(new Button("Sign in as Frequent Shopper"));
@@ -67,12 +78,6 @@ public class ShoppingPage implements iPage
         root.addComponent(itemsInStorePanel, BorderLayout.Location.LEFT);
         root.addComponent(new Separator(Direction.VERTICAL), BorderLayout.Location.CENTER);
         root.addComponent(RightPanel, BorderLayout.Location.RIGHT);
-
-    }
-
-    public void Redraw()
-    {
-
     }
 
     @Override
