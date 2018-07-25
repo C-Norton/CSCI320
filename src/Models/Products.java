@@ -25,7 +25,6 @@ public class Products
     }
 
     public static ResultSet getDetailsOfProduct(String upc){
-        return DatabaseController.MakeSelQuery("With selectedProduct as SELECT * FROM Product where upc = " + upc +
-                "select * from (selectedProduct LEFT JOIN Vendor on Product.Vendor = Vendor.vendorID)");
+        return DatabaseController.MakeSelQuery("SELECT * FROM Product WHERE UPC = " + upc);
     }
 }
