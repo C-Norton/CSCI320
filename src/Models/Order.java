@@ -13,16 +13,9 @@ import java.util.ArrayList;
  */
 public class Order {
 
-    private int orderNum;
-    private int storeId;
-    private int customerId;
-    private ArrayList<ProductQuantity> orderedProducts;
+    private Order()
+    {
 
-    public Order(int orderNum, int storeId, int customerId, ArrayList<ProductQuantity> orderedProducts){
-        this.storeId = storeId;
-        this.customerId = customerId;
-        this.orderedProducts = orderedProducts;
-        this.orderNum = orderNum;
     }
 
     //Queries//
@@ -83,32 +76,7 @@ public class Order {
         return true;
     }
 
-    //get all columns for a customer
-    public static ArrayList<Order> getOrdersByCustIdQuery(int id)
-    {
 
-        Statement stmt = StatementTemplate.newNullStatement();
-        ResultSet rs = null;
-
-        String selectCustomer = "SELECT * FROM Orders WHERE userId =" + id;
-
-        //create query statement
-        try {
-            stmt = StatementTemplate.connStatement(stmt);
-        }catch(Exception e){
-            System.out.println("Error Creating Fetch Statement for Order");
-        }
-
-        //execute and get results of query
-        try {
-            rs = DatabaseController.ExecuteSelectQuery(stmt, selectCustomer);
-        }catch(Exception e){
-            System.out.println("Error Executing Query for Order");
-            e.printStackTrace();
-        }
-
-        return parseResultSet(rs);
-    }
 
     //get all orders for a store
     public static ResultSet getOrdersByStoreIdQuery(int id)
@@ -141,29 +109,4 @@ public class Order {
     //Utils//
 
     //create cust object based off query
-    private static ArrayList<Order> parseResultSet(ResultSet rs) {
-
-        ArrayList<Order> orderHistory = new ArrayList<Order>();
-
-        if (rs != null) {
-
-            try {
-
-                while (rs.next()) {
-                    int orderNum = Integer.parseInt( rs.getString("orderId") );
-                    int custId = Integer.parseInt( rs.getString("userId") );
-                    int storeId = Integer.parseInt( rs.getString("shopId") );
-
-                    Order order = new Order(orderNum,storeId,custId, null);
-                    orderHistory.add(order);
-
-                }
-            } catch (Exception e) {
-                System.out.print("Error Building Order" + '\n');
-                e.printStackTrace();
-            }
-        }
-
-        return orderHistory;
-    }
 }

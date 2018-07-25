@@ -1,6 +1,7 @@
 package Utilities;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -19,14 +20,14 @@ public class StatementTemplate {
 
     public static Statement newNullStatement()
     {
-        Statement stmt = null;
-        return stmt;
+
+        return null;
     }
 
     public static Statement connStatement(Statement stmt) throws SQLException
     {
 
-        stmt = conn.createStatement();
+        stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
         return stmt;
     }
 

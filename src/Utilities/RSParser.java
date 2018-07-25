@@ -10,6 +10,9 @@ import java.util.ArrayList;
  */
 public class RSParser
 {
+    /*
+    Preconditions: CAN ONLY BE CALLED ONCE PER RESULT SET
+     */
     public static ArrayList<String[]> rsToStringHeaders(ResultSet rs)
     {
 
