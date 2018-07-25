@@ -14,8 +14,9 @@ public final class Inventory
 
     //checks if product is stocked in the store inventory
     public static int productStock(int storeId, String upc){
-        ResultSet rs = DatabaseController.MakeSelQuery("SELECT quantity FROM Inventory WHERE storeId = " + storeId +
-        " and productUPC = " + upc);
+
+        ResultSet rs = DatabaseController.SelectQuery("SELECT quantity FROM Inventory WHERE storeId = " + storeId +
+                                                      " and productUPC = " + upc, true);
         ArrayList<String[]> results = RSParser.rsToStringHeaders(rs);
         if(results == null || results.size() < 2){
             return 0;

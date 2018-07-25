@@ -22,13 +22,13 @@ class JoiningTest
     {
 
         initialize();
-        ResultSet rs = (DatabaseController.MakeSelQuery("select Orders.orderNum,prodQuantities.productUPC,"
-                                                        + "prodQuantities.Quantity from ("
-                                                        + "Orders join "
-                                                        + "prodQuantities on"
-                                                        + " Orders.orderNum =prodQuantities.orderNum ) where userId "
-                                                        + "= '3694'"
-                                                        + ""));//get all the
+        ResultSet rs = (DatabaseController.SelectQuery("select Orders.orderNum,prodQuantities.productUPC,"
+                                                       + "prodQuantities.Quantity from ("
+                                                       + "Orders join "
+                                                       + "prodQuantities on"
+                                                       + " Orders.orderNum =prodQuantities.orderNum ) where userId "
+                                                       + "= '3694'"
+                                                       + "", true));//get all the
         // order numbers and all the
         ArrayList<String[]> foo = RSParser.rsToStringHeaders(rs);
         for (int i = 0; i < foo.size(); i++)

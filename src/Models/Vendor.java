@@ -1,10 +1,8 @@
 package Models;
 
 import Controllers.DatabaseController;
-import Utilities.StatementTemplate;
 
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
 
 /**
@@ -32,83 +30,19 @@ public class Vendor {
 
     //select all for a vendor based on id
     //parsing method still included but this just returns the ResultSet right now
-    public static Vendor getSingleVendorQuery(DatabaseController dbController, StatementTemplate stmtUtil, int id){
+    public static ResultSet getSingleVendorQuery(int id)
+    {
 
-        Statement stmt = StatementTemplate.newNullStatement();
-        ResultSet rs = null;
-        Vendor vendor = null;
         String selectVendor = "SELECT * FROM Vendor WHERE vendorId =" + id;
         //create query statement
-        try {
-            stmt = StatementTemplate.connStatement(stmt);
-        }catch(Exception e){
-            System.out.println("Error Creating Fetch Statement for Vendor");
-        }
-        //execute and get results of query
-        try {
-            rs = DatabaseController.ExecuteSelectQuery(stmt, selectVendor);
-        }catch(Exception e){
-            System.out.println("Error Executing Select Query for Vendor");
-        }
-        vendor = parseResultSet(rs).get(0); // parsing the query
-        return vendor;
-    }
 
-    //selects names of all vendors
-    public static ResultSet getVendorNames(DatabaseController dbController, StatementTemplate stmtUtil){
+        return DatabaseController.SelectQuery(selectVendor, true);
 
-        Statement stmt = StatementTemplate.newNullStatement();
-        ResultSet rs = null;
-
-        String selectAllVendors = "SELECT Name FROM Vendor";
-
-        //create query statement
-        try {
-            stmt = StatementTemplate.connStatement(stmt);
-        }catch(Exception e){
-            System.out.println("Error Creating Fetch Statement for Vendor");
-        }
-
-        //execute and get results of query
-        try {
-            rs = DatabaseController.ExecuteSelectQuery(stmt, selectAllVendors);
-        }catch(Exception e){
-            System.out.println("Error Executing Select Query for Vendor");
-        }
-        return rs;
     }
 
 
     //Utils//
 
-    //returns an arraylist of all vendors in the result set
-    private static ArrayList<Vendor> parseResultSet(ResultSet rs){
-        ArrayList<Vendor> vendors = null;
-        if (rs != null){
-            try {
-                vendors = new ArrayList<>();
-                while(rs.next()) {
-                    int vendorID = rs.getInt(1);
-                    String vendorName = rs.getString(2);
-                    String vendorLoc = null;
-                    String vendorRep = null;
-                    String vendorPhone = null;
-                    try {
-                        vendorLoc = rs.getString(3);
-                        vendorPhone = rs.getString(4);
-                        vendorRep = rs.getString(5);
-                    }catch(NullPointerException e){
-                        System.out.println();
-                    }
-                    vendors.add(new Vendor(vendorID, vendorName, vendorLoc, vendorRep, vendorPhone));
-                }
-            } catch (Exception e) {
-                System.out.println("Error Building Vendor" + '\n');
-                System.out.println(e.getMessage());
-            }
-        }
-        return vendors;
-    }
 
     //gets the list of vendors from a query
     public static ArrayList<String> parseResultSetList(ResultSet rs){
@@ -143,10 +77,6 @@ public class Vendor {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
     }
@@ -168,16 +98,8 @@ public class Vendor {
         return rep;
     }
 
-    public void setRep(String rep)
-    {
-        this.rep = rep;
-    }
-
     public String getPhone() {
         return phone;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
 }

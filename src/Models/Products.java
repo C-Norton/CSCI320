@@ -7,24 +7,25 @@ import java.sql.ResultSet;
 /**
  * Created by Michael on 7/6/2018.
  */
-public class Products
+public final class Products
 {
     public static ResultSet getProductList()
     {
 
-        return DatabaseController.MakeSelQuery("SELECT * FROM Product");
+        return DatabaseController.SelectQuery("SELECT * FROM Product", true);
     }
 
     public static ResultSet getProductsOfBrand(String brand)
     {
 
-        return DatabaseController.MakeSelQuery("SELECT (Product.UPC,Product.Name,Product.Price,Vendor.Name) FROM "
-                                               + "(Product LEFT JOIN Vendor on Product.Vendor=Vendor.vendorID)"
-                                               + "WHERE Brand = "
-                                               + "\'" + brand + "\'");
+        return DatabaseController.SelectQuery("SELECT (Product.UPC,Product.Name,Product.Price,Vendor.Name) FROM "
+                                              + "(Product LEFT JOIN Vendor on Product.Vendor=Vendor.vendorID)"
+                                              + "WHERE Brand = "
+                                              + "\'" + brand + "\'", true);
     }
 
     public static ResultSet getDetailsOfProduct(String upc){
-        return DatabaseController.MakeSelQuery("SELECT * FROM Product WHERE UPC = " + upc);
+
+        return DatabaseController.SelectQuery("SELECT * FROM Product WHERE UPC = " + upc, true);
     }
 }

@@ -1,14 +1,15 @@
 package Controllers;
 
 import Utilities.StatementTemplate;
+import Utilities.StatementType;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-
-public class DatabaseController {
+public class DatabaseController
+{
 
     private static Connection conn;
 
@@ -19,9 +20,20 @@ public class DatabaseController {
 
     }
 
-    public static void ExecuteUpdateQuery(Statement stmt, String query) throws SQLException
+    public static int UpdateQuery(String query)
     {
-        stmt.executeUpdate(query);
+
+        int updated;
+        try
+        {
+            updated = StatementTemplate.connUpdateStatement().executeUpdate(query);
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+            return -1;
+        }
+        return updated;
     }
 
     /**
@@ -33,14 +45,14 @@ public class DatabaseController {
      * .printStackTrace() method eliminates this downside, as it WILL show the call being made via whatever caused
      * the problem
      */
-    public static ResultSet MakeSelQuery(String Query)
+    public static ResultSet SelectQuery(String Query, Boolean Updateable)
     {
 
-        Statement stmt = StatementTemplate.newNullStatement();
+        Statement stmt = null;
         ResultSet rs = null;
         try
         {
-            stmt = StatementTemplate.connStatement(stmt);
+            stmt = StatementTemplate.connQueryStatement(Updateable);
         }
         catch (Exception e)
         {
@@ -49,7 +61,7 @@ public class DatabaseController {
         }
         try
         {
-            rs = DatabaseController.ExecuteSelectQuery(stmt, Query);
+            rs = stmt.executeQuery(Query);
         }
         catch (Exception e)
         {
@@ -59,17 +71,34 @@ public class DatabaseController {
         return rs;
     }
 
-    public static ResultSet ExecuteSelectQuery(Statement stmt, String query) throws SQLException
-    {
-
-        return stmt.executeQuery(query);
-    }
-
     //initialize a fresh instance of the retail DB
     public void InitializeNewDatabaseInstance() throws Exception
     {
 
         DatabaseInitializer.InitializeDatabase(conn);
+    }
+
+    public static StatementType getQueryType(String Query, boolean Updateable)
+    {
+
+        try
+        {
+            Statement stmt = StatementTemplate.connQueryStatement(Updateable);
+            stmt.executeQuery(Query);
+        }
+        catch (SQLException e)
+        {
+            if (e.getMessage().startsWith("Method is only allowed for a query."))
+            {
+                return StatementType.UPDATE;
+            }
+            else
+            {
+                return StatementType.INVALID;
+            }
+        }
+        return (Updateable) ? StatementType.UPDATEABLESELECT : StatementType.NONUPDATEABLESELECT;
+
     }
 
 }

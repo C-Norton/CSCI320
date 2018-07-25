@@ -18,17 +18,19 @@ public class StatementTemplate {
         conn = connection;
     }
 
-    public static Statement newNullStatement()
+    public static Statement connQueryStatement(boolean Updateable) throws SQLException
     {
 
-        return null;
+        return conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, (Updateable) ? ResultSet.CONCUR_UPDATABLE :
+                                                                       ResultSet
+                .CONCUR_READ_ONLY);
+
     }
 
-    public static Statement connStatement(Statement stmt) throws SQLException
+    public static Statement connUpdateStatement() throws SQLException
     {
 
-        stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-        return stmt;
+        return conn.createStatement();
     }
 
 }
