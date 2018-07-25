@@ -57,8 +57,26 @@ public class Cart {
         if (newQuant > Inventory.productStock(currentCart.getStoreId(), upc)){
             return false;
         }
-        currentCart.getCartContents().add(new ProductQuantity(upc, count));
+        currentCart.addItem(new ProductQuantity(upc, count));
         return true;
+    }
+
+    //adds a product to the cart by an amount
+    public static boolean removeItem(String upc, int count){
+        if (count == 0){
+            return true;
+        }
+        int newQuant = count;
+        ProductQuantity maybe = currentCart.hasItem(upc);
+        if (maybe != null){
+            newQuant -= maybe.getQuantity();
+            maybe.setQuantity(newQuant);
+            if (maybe.getQuantity() == 0){
+                return currentCart.removeItem(maybe.getProductUPC());
+            }
+            return true;
+        }
+        return false;
     }
 
     //total number of items in the cart
@@ -122,6 +140,7 @@ public class Cart {
             return false;
         }
         items.remove(index);
+        itemsInfo.remove(index);
         return true;
     }
 
