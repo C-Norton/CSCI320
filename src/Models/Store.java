@@ -33,7 +33,7 @@ public class Store {
     }
 
     public static Boolean existsStore(int storeId){
-        String query = "select userid from Store where storeId = " + storeId;
+        String query = "select storeId from Store where storeId = " + storeId;
         ResultSet rs = DatabaseController.MakeSelQuery(query);
         ArrayList<String[]> parsedRs = RSParser.rsToStringHeaders(rs);
         return parsedRs != null && parsedRs.get(1)[0].equals(String.valueOf(storeId));
