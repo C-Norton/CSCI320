@@ -41,6 +41,9 @@ public class Cart {
 
     //adds a product to the cart by an amount
     public static boolean addItem(String upc, int count){
+        if (count == 0){
+            return true;
+        }
         int newQuant = count;
         ProductQuantity maybe = currentCart.hasItem(upc);
         if (maybe != null){
