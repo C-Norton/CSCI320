@@ -84,8 +84,8 @@ class DatabaseInitializer
                            "userId INTEGER, " +
                            "storeId INTEGER, " +
                            "PRIMARY KEY ( orderNum ) , " +
-                           "FOREIGN KEY (userId) references FrequentShopper(userId) ON DELETE SET NULL ON UPDATE SET"
-                           + " NULL, " +
+                           "FOREIGN KEY (userId) references FrequentShopper(userId) ON DELETE SET NULL ON UPDATE "
+                           + "CASCADE, " +
                            "FOREIGN KEY (storeId) references Store(storeId) ON DELETE SET NULL ON UPDATE CASCADE)";
 
             String Vendor = "CREATE TABLE   Vendor " +

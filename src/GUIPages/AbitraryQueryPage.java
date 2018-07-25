@@ -22,7 +22,6 @@ public class AbitraryQueryPage
             MessageDialog.showMessageDialog(guiController.textGUI, "INVALID SQL QUERY",
                     "Your query was invalid.\nNo changes have been made",
                     MessageDialogButton.Close);
-            guiController.closePage();
             return;
         }
         StatementType queryType = DatabaseController.getQueryType(Query, false);
@@ -42,16 +41,15 @@ public class AbitraryQueryPage
                 MessageDialog.showMessageDialog(guiController.textGUI, "INVALID SQL QUERY",
                         "Application requested invalid ResultSet type.",
                         MessageDialogButton.Close);
-                guiController.closePage();
                 break;
             case UPDATE:
                 int updated = DatabaseController.UpdateQuery(Query);
                 if (updated >= 0)
                 {
                     MessageDialog.showMessageDialog(guiController.textGUI, "Successful update Query",
-                            "Query executed successfully. " + updated + " rows were affected.",
+                            "Query executed successfully. " + updated + " rows were affected, \nexcluding cascading "
+                            + "updates.",
                             MessageDialogButton.Close);
-                    guiController.closePage();
                     break;
                 }
                 else
@@ -59,7 +57,6 @@ public class AbitraryQueryPage
                     MessageDialog.showMessageDialog(guiController.textGUI, "INVALID SQL QUERY",
                             "Your query was invalid.\nNo changes have been made",
                             MessageDialogButton.Close);
-                    guiController.closePage();
                     break;
                 }
 
