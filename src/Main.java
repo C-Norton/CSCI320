@@ -6,15 +6,15 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 
 public class Main {
-    public static DatabaseController dbController;
-    public static StatementTemplate stmtUtil;
+    private static DatabaseController dbController;
+
 
     public static void main(String[] a) throws Exception {
 
         Connection conn = DriverManager.getConnection("jdbc:h2:./Tests", "sa", "");
 
         dbController = new DatabaseController(conn);
-        stmtUtil = new StatementTemplate(conn);
+        new StatementTemplate(conn);
 
         dbController.InitializeNewDatabaseInstance();
 

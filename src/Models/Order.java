@@ -18,7 +18,6 @@ public final class Order
 
     }
 
-    //make an order
 
     //TODO: I think this needs a rewrite
     public static boolean makeOrder(ArrayList<ProductQuantity> items, int customerId, int storeId)
@@ -79,11 +78,8 @@ public final class Order
 
         //create query statement
 
-        ResultSet rs = DatabaseController.SelectQuery(selectCustomer, false);
+        return DatabaseController.SelectQuery(selectCustomer, false);
 
-
-        //return parseResultSet(rs); //used for when returning an arraylist
-        return rs;
     }
 
 }

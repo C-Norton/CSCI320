@@ -57,12 +57,12 @@ class DatabaseInitializer
     private static void createTables(Connection conn)
     {
 
-        Statement stmt = null;
-
         System.out.println("Creating Database Tables");
 
         try
         {
+            Statement stmt = conn.createStatement();
+
             String FrequentShopper = "CREATE TABLE   FrequentShopper " +
                                      "(userId INTEGER not NULL auto_increment, " +
                                      " name VARCHAR(32), " +
@@ -71,18 +71,6 @@ class DatabaseInitializer
                                      " creditCard VARCHAR(19), " +
                                      " PRIMARY KEY ( userId ))";
 
-            String Order = "CREATE TABLE   Orders " +
-                           "(orderNum Integer not NULL auto_increment," +
-                           "userId INTEGER, " +
-                           "storeId INTEGER, " +
-                           "PRIMARY KEY ( orderNum ) )";
-
-            String productQuantities = "CREATE TABLE   prodQuantities " +
-                                       "(orderNum INTEGER not NULL," +
-                                       "productUPC numeric(12,0), " +
-                                       "quantity INTEGER, " +
-                                       " PRIMARY KEY ( orderNum,productUPC ))";
-
             String Store = "CREATE TABLE   Store " +
                            "(storeId INTEGER not NULL auto_increment, " +
                            " name VARCHAR(32), " +
@@ -90,6 +78,15 @@ class DatabaseInitializer
                            " phoneNum VARCHAR(10), " +
                            " hours VARCHAR(50), " +
                            " PRIMARY KEY ( storeId ))";
+
+            String Order = "CREATE TABLE   Orders " +
+                           "(orderNum Integer not NULL auto_increment," +
+                           "userId INTEGER, " +
+                           "storeId INTEGER, " +
+                           "PRIMARY KEY ( orderNum ) , " +
+                           "FOREIGN KEY (userId) references FrequentShopper(userId) ON DELETE SET NULL ON UPDATE SET"
+                           + " NULL, " +
+                           "FOREIGN KEY (storeId) references Store(storeId) ON DELETE SET NULL ON UPDATE CASCADE)";
 
             String Vendor = "CREATE TABLE   Vendor " +
                             "(vendorId INTEGER not NULL auto_increment, " +
@@ -105,25 +102,36 @@ class DatabaseInitializer
                              " brand VARCHAR(64), " +
                              " price decimal(19,2), " +
                              " vendor Integer, " +
-                             " PRIMARY KEY ( UPC ))";
+                             " PRIMARY KEY ( UPC ), " +
+                             " FOREIGN KEY  (vendor) references VENDOR(VENDORID) ON DELETE SET NULL ON UPDATE CASCADE)";
+
+            String productQuantities = "CREATE TABLE   prodQuantities " +
+                                       "(orderNum INTEGER not NULL," +
+                                       "productUPC numeric(12,0), " +
+                                       "quantity INTEGER, " +
+                                       "PRIMARY KEY ( orderNum,productUPC ), " +
+                                       "FOREIGN KEY  (orderNum) REFERENCES Orders(orderNum) ON DELETE CASCADE ON "
+                                       + "UPDATE CASCADE," +
+                                       " FOREIGN KEY (productUPC) REFERENCES Product(UPC) ON DELETE SET NULL ON "
+                                       + "UPDATE CASCADE)";
 
             String Inventory = "CREATE TABLE   Inventory " +
                                "(storeId INTEGER, " +
                                "productUPC numeric(12,0)," +
                                "quantity INTEGER," +
-                               " PRIMARY KEY ( storeID, productUPC ))";
+                               " PRIMARY KEY ( storeID, productUPC )," +
+                               " FOREIGN KEY (storeId) references store(storeId) ON DELETE CASCADE ON UPDATE CASCADE,"
+                               + " FOREIGN KEY (productUPC) references Product(UPC) on DELETE CASCADE ON UPDATE "
+                               + "CASCADE)";
 
-
-            stmt = conn.createStatement();
 
             stmt.executeUpdate(FrequentShopper);
-            stmt.executeUpdate(Order);
             stmt.executeUpdate(Store);
+            stmt.executeUpdate(Order);
             stmt.executeUpdate(Vendor);
-
             stmt.executeUpdate(Product);
-            stmt.executeUpdate(Inventory);
             stmt.executeUpdate(productQuantities);
+            stmt.executeUpdate(Inventory);
 
 
             stmt.close();
@@ -141,18 +149,25 @@ class DatabaseInitializer
 
         Reader reader = new FileReader("SQLScripts/LoadFrequentCustomers.sql");
         RunScript.execute(conn, reader);
-        reader = new FileReader("SQLScripts/LoadInventories.sql");
-        RunScript.execute(conn, reader);
-        reader = new FileReader("SQLScripts/LoadOrders.sql");
-        RunScript.execute(conn, reader);
-        reader = new FileReader("SQLScripts/LoadProductQuantities.sql");
-        RunScript.execute(conn, reader);
-        reader = new FileReader("SQLScripts/LoadProducts.sql");
-        RunScript.execute(conn, reader);
+
         reader = new FileReader("SQLScripts/LoadStores.sql");
         RunScript.execute(conn, reader);
+
+        reader = new FileReader("SQLScripts/LoadOrders.sql");
+        RunScript.execute(conn, reader);
+
         reader = new FileReader("SQLScripts/LoadVendors.sql");
         RunScript.execute(conn, reader);
+
+        reader = new FileReader("SQLScripts/LoadProducts.sql");
+        RunScript.execute(conn, reader);
+
+        reader = new FileReader("SQLScripts/LoadProductQuantities.sql");
+        RunScript.execute(conn, reader);
+
+        reader = new FileReader("SQLScripts/LoadInventories.sql");
+        RunScript.execute(conn, reader);
+
     }
 
 }
