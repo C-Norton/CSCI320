@@ -90,7 +90,7 @@ public class Cart {
 
     //list of number of units for every item
     public static int[] itemsQuantities(){
-        int[] prodQuant = new int[numberOfItems()];
+        int[] prodQuant = new int[currentCart.items.size()];
         for (int val = 0; val < prodQuant.length; val ++){
             prodQuant[val] = currentCart.getCartContents().get(val).getQuantity();
         }
