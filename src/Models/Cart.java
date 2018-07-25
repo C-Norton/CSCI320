@@ -81,7 +81,11 @@ public class Cart {
 
     //total number of items in the cart
     public static int numberOfItems(){
-        return currentCart.getCartContents().size();
+        int n = 0;
+        for (ProductQuantity quant: currentCart.items){
+            n += quant.getQuantity();
+        }
+        return n;
     }
 
     //list of number of units for every item
@@ -99,11 +103,11 @@ public class Cart {
     }
 
     public static float total(){
-        if (numberOfItems() == 0){
+        if (currentCart.items.size() == 0){
             return 0;
         }
         float total = 0;
-        for (int i = 0; i < numberOfItems(); i++){
+        for (int i = 0; i < currentCart.items.size(); i++){
             Float cost = Float.valueOf(RSParser.rsToStringHeaders(itemsInfo().get(i)).get(1)[3]);
             total += cost * itemsQuantities()[i];
         }
