@@ -16,13 +16,8 @@ public class Cart {
 
     //stores the customer id, if existent
     public static boolean setCustomerId(int customerId){
-        ResultSet rs = null;
-
         //find shopper
-        String query = "select * from frequentshopper where userid = " + customerId;
-        rs = DatabaseController.MakeSelQuery(query);
-        ArrayList<String[]> parsedRs = RSParser.rsToStringHeaders(rs);
-        if (parsedRs == null || !parsedRs.get(1)[0].equals(String.valueOf(customerId))){
+        if (!Customer.existsCustomer(customerId)){
             return false;
         }
         currentCart.customerId = customerId;
@@ -36,6 +31,10 @@ public class Cart {
 
     //updates the current cart
     public static boolean newCart(int storeId){
+        //find store
+        if (!Store.existsStore(storeId)){
+            return false;
+        }
         currentCart = new Cart(storeId);
         return true;
     }

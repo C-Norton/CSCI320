@@ -1,6 +1,7 @@
 package Models;
 
 import Controllers.DatabaseController;
+import Utilities.RSParser;
 import Utilities.StatementTemplate;
 
 import java.sql.ResultSet;
@@ -29,6 +30,13 @@ public class Store {
         this.phone = phone;
         this.inventory = inventory;
         this.orders = orders;
+    }
+
+    public static Boolean existsStore(int storeId){
+        String query = "select userid from Store where storeId = " + storeId;
+        ResultSet rs = DatabaseController.MakeSelQuery(query);
+        ArrayList<String[]> parsedRs = RSParser.rsToStringHeaders(rs);
+        return parsedRs != null && parsedRs.get(1)[0].equals(String.valueOf(storeId));
     }
 
     public static ResultSet getInventoryMetadata(int id)
