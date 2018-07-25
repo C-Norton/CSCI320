@@ -69,12 +69,10 @@ class DatabaseInitializer
                                      " address VARCHAR(255), " +
                                      " phoneNum VARCHAR(10), " +
                                      " creditCard VARCHAR(19), " +
-                                     " username VARCHAR(50), " +
-                                     " password VARCHAR(50), " +
                                      " PRIMARY KEY ( userId ))";
 
             String Order = "CREATE TABLE   Orders " +
-                           "(orderNum Integer not NULL," +
+                           "(orderNum Integer not NULL auto_increment," +
                            "userId INTEGER, " +
                            "storeId INTEGER, " +
                            "PRIMARY KEY ( orderNum ) )";
@@ -95,7 +93,7 @@ class DatabaseInitializer
 
             String Vendor = "CREATE TABLE   Vendor " +
                             "(vendorId INTEGER not NULL auto_increment, " +
-                            " name VARCHAR(32), " +
+                            " name VARCHAR(64), " +
                             " location VARCHAR(32), " +
                             " phoneNum VARCHAR(10), " +
                             " salesRep VARCHAR(32), " +
@@ -104,7 +102,7 @@ class DatabaseInitializer
             String Product = "CREATE TABLE   Product " +
                              "(UPC numeric(12,0) not NULL , " +
                              " name VARCHAR(50), " +
-                             " brand VARCHAR(32), " +
+                             " brand VARCHAR(64), " +
                              " price decimal(19,2), " +
                              " vendor Integer, " +
                              " PRIMARY KEY ( UPC ))";

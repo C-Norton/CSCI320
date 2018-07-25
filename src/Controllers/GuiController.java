@@ -103,6 +103,12 @@ public class GuiController
 
     }
 
+    public int numPopup(String prompt)
+    {
+
+        return TextInputDialog.showNumberDialog(textGUI, prompt, "", "0").intValue();
+    }
+
     /**
      * Close is a cleanup function that MUST be called upon application termination. Should it not be, and references to
      * the GUIController cease, there would be resource loss upon garbage collection. To prevent this, a Finalize method

@@ -4,6 +4,8 @@ import Controllers.GuiController;
 import Models.Cart;
 import Models.Store;
 import com.googlecode.lanterna.gui2.*;
+import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
+import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
 import com.googlecode.lanterna.gui2.table.Table;
 
 import java.sql.ResultSet;
@@ -22,16 +24,19 @@ public class DataTablePage implements iPage
     {
 
         panel = new Panel(new LinearLayout(Direction.VERTICAL));
-        panel.addComponent(new Label(PageName));
+        if (!PageName.equals("CartPanel"))
+        {
+            panel.addComponent(new Label(PageName));
 
-        Label refreshWarning = new Label("");
-        refreshWarning.setLabelWidth(guiController.getWidth() - 8);
-        refreshWarning.setText("Note: Changes to the database are not fetched when accessing this page via "
-                               + "the \"Back\" button on future pages. To refresh the data on this page, "
-                               + "please hit the Back button at the bottom of this page, and run the command "
-                               + "that generated this page again.");
-        panel.addComponent(refreshWarning);
-        panel.addComponent(new Separator(Direction.HORIZONTAL));
+            Label refreshWarning = new Label("");
+            refreshWarning.setLabelWidth(guiController.getWidth() - 8);
+            refreshWarning.setText("Note: Changes to the database are not fetched when accessing this page via "
+                                   + "the \"Back\" button on future pages. To refresh the data on this page, "
+                                   + "please hit the Back button at the bottom of this page, and run the command "
+                                   + "that generated this page again.");
+            panel.addComponent(refreshWarning);
+            panel.addComponent(new Separator(Direction.HORIZONTAL));
+        }
         int colcount = 0;
         ArrayList<String> headers = null;
         ArrayList<String> colNames = null;
@@ -68,6 +73,7 @@ public class DataTablePage implements iPage
             // ANYWHERE in the table, it can't display ANY of it. This is something that we might want to change if
             // we run into later problems
             rs.beforeFirst();
+
             while (rs.next())
             {
                 String[] row = new String[colcount];
@@ -103,13 +109,26 @@ public class DataTablePage implements iPage
                         Cart.newCart(storeid);
                         guiController.addAndDisplayPage(new ShoppingPage(guiController, storeid));
                         break;
+                    case "CartPanel":
+                        int count = guiController.numPopup("Quantity?");
+                        if (!Cart.addItem(data.getTableModel().getCell(0, data.getSelectedRow()), count))
+                        {
+                            MessageDialog.showMessageDialog(guiController.textGUI, "Error", "Requested quantity "
+                                                                                            + "exceeds store's "
+                                                                                            + "quantity. Cart has not"
+                                                                                            + " been modified",
+                                    MessageDialogButton.Close);
+                        }
                     default:
                         break;
                 }
             }
         });
         panel.addComponent(data);
-        panel.addComponent(new Button("Back", guiController::closePage));
+        if (!PageName.equals("CartPanel"))
+        {
+            panel.addComponent(new Button("Back", guiController::closePage));
+        }
 
     }
 

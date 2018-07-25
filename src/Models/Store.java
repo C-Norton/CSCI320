@@ -31,6 +31,14 @@ public class Store {
         this.orders = orders;
     }
 
+    public static ResultSet getInventoryMetadata(int id)
+    {
+
+        return DatabaseController.MakeSelQuery("Select product.UPC, product.Name, product.Brand, product.Price from "
+                                               + "product join inventory on product.UPC = inventory.productUPC where storeId="
+                                               + id);
+    }
+
     //gets a list of all stores
     public static ResultSet retrieveStores(){
 
