@@ -59,4 +59,23 @@ public class Metrics
                                                 "ORDER BY storeId DESC", false);
 
     }
+
+    public static ResultSet TopSalesForStores(){
+
+        return DatabaseController.SelectQuery("WITH productWithOrderNum as ( " +
+                                                    "SELECT orderNum, quantity, Product.price * quantity as money " +
+                                                    "FROM Product join prodQuantities on " +
+                                                    "Product.UPC = prodQuantities.productUPC), " +
+                                                    "OrdersWithStoreName as ( " +
+                                                    "SELECT Store.storeId, Store.name, orderNum " +
+                                                    "FROM Store join Orders on " +
+                                                    "Store.storeId = Orders.storeId) " +
+                                                "SELECT OrdersWithStoreName.storeId, OrdersWithStoreName.name," +
+                                                "sum(quantity) as Total_Sum, sum(money) as Total_Money " +
+                                                "FROM productWithOrderNum join OrdersWithStoreName on " +
+                                                "productWithOrderNum.orderNum = OrdersWithStoreName.orderNum " +
+                                                "GROUP BY storeId, name " +
+                                                "ORDER BY Total_Sum DESC", false);
+    }
+
 }

@@ -5,6 +5,7 @@ import Models.Metrics;
 import Utilities.StatementTemplate;
 import org.junit.jupiter.api.Test;
 
+import javax.xml.transform.Result;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -89,6 +90,23 @@ public class MetricsTest {
         System.out.println(header);
         while(rs.next()){
             String string = String.format("%1$15s %2$-30s  %3$-15s %4$-10s", rs.getString(1), "| "+rs.getString(2), "|       "+rs.getString(3), "| "+rs.getString(4));
+            System.out.println(string);
+        }
+
+    }
+
+    @Test
+    void TopSalesForStoresTest() throws Exception{
+        initialize();
+
+        ResultSet rs = Metrics.TopSalesForStores();
+        assertNotNull(rs);
+        System.out.println(rs);
+        System.out.println("\n                          || List of Stores by Sales ||\n");
+        String header = String.format("%1$15s %2$-35s %3$-10s %4$-10s", "StoreId", "| "+"Name", "| "+"Sales | ", "Revenue");
+        System.out.println(header);
+        while(rs.next()){
+            String string = String.format("%1$15s %2$-35s %3$-10s %4$-10s", rs.getString(1), "| "+rs.getString(2), "| "+rs.getString(3)+" |", "$"+rs.getString(4));
             System.out.println(string);
         }
 
