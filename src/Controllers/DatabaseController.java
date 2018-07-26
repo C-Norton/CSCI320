@@ -8,15 +8,112 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import static java.sql.Statement.EXECUTE_FAILED;
+
 public class DatabaseController
 {
 
     private static Connection conn;
+    private static Statement statementQueue;
 
     public DatabaseController(Connection connection)
     {
 
         conn = connection;
+
+    }
+
+    public static boolean newBatchStatement()
+    {
+
+        try
+        {
+            statementQueue = StatementTemplate.connUpdateStatement();
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean commitBatch()
+    {
+
+        int[] update;
+        try
+        {
+            update = statementQueue.executeBatch();
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+        for (int i : update)
+        {
+            if (i == EXECUTE_FAILED)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static void discardBatch()
+    {
+
+        try
+        {
+            statementQueue.clearBatch();
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+        statementQueue = null;
+    }
+
+    public static boolean addQueryToBatch(String query)
+    {
+
+        if (DatabaseController.getQueryType(query, false) == (StatementType.UPDATE))
+        {
+            try
+            {
+                statementQueue.addBatch(query);
+                return true;
+            }
+            catch (SQLException e)
+            {
+                e.printStackTrace();
+                return false;
+            }
+        }
+        return false;
+    }
+
+    public static StatementType getQueryType(String Query, boolean Updateable)
+    {
+
+        try
+        {
+            Statement stmt = StatementTemplate.connQueryStatement(Updateable);
+            stmt.executeQuery(Query);
+        }
+        catch (SQLException e)
+        {
+            if (e.getMessage().startsWith("Method is only allowed for a query."))
+            {
+                return StatementType.UPDATE;
+            }
+            else
+            {
+                return StatementType.INVALID;
+            }
+        }
+        return (Updateable) ? StatementType.UPDATEABLESELECT : StatementType.NONUPDATEABLESELECT;
 
     }
 
@@ -76,29 +173,6 @@ public class DatabaseController
     {
 
         DatabaseInitializer.InitializeDatabase(conn);
-    }
-
-    public static StatementType getQueryType(String Query, boolean Updateable)
-    {
-
-        try
-        {
-            Statement stmt = StatementTemplate.connQueryStatement(Updateable);
-            stmt.executeQuery(Query);
-        }
-        catch (SQLException e)
-        {
-            if (e.getMessage().startsWith("Method is only allowed for a query."))
-            {
-                return StatementType.UPDATE;
-            }
-            else
-            {
-                return StatementType.INVALID;
-            }
-        }
-        return (Updateable) ? StatementType.UPDATEABLESELECT : StatementType.NONUPDATEABLESELECT;
-
     }
 
 }

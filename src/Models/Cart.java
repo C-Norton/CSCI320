@@ -1,182 +1,159 @@
 package Models;
 
 import Controllers.DatabaseController;
-import Utilities.RSParser;
-import Utilities.StatementTemplate;
 
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 /**
  * Created by Michael on 7/6/2018.
  */
-public class Cart {
-    private static Cart currentCart;
+public class Cart
+{
+    public Integer CustomerId;
+    private int StoreId;
+    private LinkedHashMap<String, CartEntry> Contents;
+    private LinkedHashMap<String, CartEntry> StoreContents;
+    private int itemcount;
+    private float totalCost;
 
-    //stores the customer id, if existent
-    public static boolean setCustomerId(int customerId){
-        //find shopper
-        if (!Customer.existsCustomer(customerId)){
-            return false;
-        }
-        currentCart.customerId = customerId;
-        return true;
+    public Cart(int StoreId)
+    {
+
+        this.StoreId = StoreId;
+        CustomerId = null;
+        itemcount = 0;
+        totalCost = 0.0f;
+        Contents = new LinkedHashMap<>();
+        StoreContents = CartEntry.RStoContents(DatabaseController.SelectQuery
+                (("Select Product.UPC, Product.Name, Product.Brand, Product.Price, Inventory.Quantity from product "
+                  + "join inventory on Product.UPC = inventory.productUPC where inventory.storeId="
+                  + String.valueOf(StoreId)), false));
+
     }
 
-    //retrieves the customer id associated with this cart
-    public static int getCustomerId(){
-        return currentCart.customerId;
+    public ArrayList<CartEntry> getCartItemDetails()
+    {
+
+        ArrayList<CartEntry> conts = new ArrayList<>();
+        conts.addAll(Contents.values());
+        return conts;
     }
 
-    //updates the current cart
-    public static boolean newCart(int storeId){
-        //find store
-        if (!Store.existsStore(storeId)){
-            return false;
-        }
-        currentCart = new Cart(storeId);
-        return true;
-    }
+    public boolean addItem(String UPC, int quantity)
+    {
 
-    //adds a product to the cart by an amount
-    public static boolean addItem(String upc, int count){
-        if (count == 0){
-            return true;
-        }
-        int newQuant = count;
-        ProductQuantity maybe = currentCart.hasItem(upc);
-        if (maybe != null){
-            newQuant += maybe.getQuantity();
-            if (newQuant > Inventory.productStock(currentCart.getStoreId(), upc)){
-                return false;
+        if (StoreContents.containsKey(UPC))
+        {
+            CartEntry item = StoreContents.get(UPC);
+            int desiredQuantity = quantity + (Contents.containsKey(UPC) ? Contents.get(UPC).Quantity : 0);
+            if (item.Quantity >= desiredQuantity)
+            {
+                CartEntry entry = new CartEntry();
+                entry.UPC = UPC;
+                entry.Name = item.Name;
+                entry.Brand = item.Brand;
+                entry.Price = item.Price;
+                entry.Quantity = desiredQuantity;
+                Contents.put(UPC, entry);
+                itemcount += quantity;
+                totalCost += quantity * entry.Price;
+                return true;
             }
-            maybe.setQuantity(newQuant);
-            return true;
-        }
-        if (newQuant > Inventory.productStock(currentCart.getStoreId(), upc)){
-            return false;
-        }
-        currentCart.addItem(new ProductQuantity(upc, count));
-        return true;
-    }
-
-    //adds a product to the cart by an amount
-    public static boolean removeItem(String upc, int count){
-        if (count == 0){
-            return true;
-        }
-        int newQuant = count;
-        ProductQuantity maybe = currentCart.hasItem(upc);
-        if (maybe != null){
-            newQuant -= maybe.getQuantity();
-            maybe.setQuantity(newQuant);
-            if (maybe.getQuantity() == 0){
-                return currentCart.removeItem(maybe.getProductUPC());
-            }
-            return true;
         }
         return false;
     }
 
-    //total number of items in the cart
-    public static int numberOfItems(){
-        int n = 0;
-        for (ProductQuantity quant: currentCart.items){
-            n += quant.getQuantity();
+    public boolean removeItem(String UPC, int quantity)
+    {
+
+        if (Contents.containsKey(UPC))
+        {
+            CartEntry item = Contents.get(UPC);
+            int desiredQuantity = item.Quantity - quantity;
+            if (desiredQuantity > 0)
+            {
+                Contents.get(UPC).Quantity = desiredQuantity;
+                totalCost -= item.Price * quantity;
+                itemcount -= quantity;
+                return true;
+            }
+            else if (desiredQuantity == 0)
+            {
+                totalCost -= item.Price * quantity;
+                itemcount -= quantity;
+                Contents.remove(UPC);
+                return true;
+            }
         }
-        return n;
+        return false;
     }
 
-    //list of number of units for every item
-    public static int[] itemsQuantities(){
-        int[] prodQuant = new int[currentCart.items.size()];
-        for (int val = 0; val < prodQuant.length; val ++){
-            prodQuant[val] = currentCart.getCartContents().get(val).getQuantity();
+    public boolean CheckOut()
+    {
+        /*
+        ResultSet storeInventory = DatabaseController.SelectQuery("Select * from Inventory where storeId = "
+                                                                  + String.valueOf(StoreId), true);
+        boolean succesful = true;
+
+        while (storeInventory.next())
+        {
+            String storeUPC = storeInventory.getString(2);
+            if (Contents.containsKey(storeUPC))
+            {
+                CartEntry entry = Contents.get(storeUPC);
+                int storecount = storeInventory.getInt(3);
+                if (storecount >= entry.Quantity)
+                {
+                    storeInventory.updateInt(3, storecount - entry.Quantity);
+                }
+                else
+                {
+                    succesful = false;
+                }
+            }
         }
-        return prodQuant;
-    }
-
-    //list of result set for every item
-    public static ArrayList<ResultSet> itemsInfo(){
-        return currentCart.itemsInfo;
-    }
-
-    public static float total(){
-        if (currentCart.items.size() == 0){
-            return 0;
+        storeInventory.beforeFirst();
+        while (storeInventory.next())
+        {
+            if (succesful)
+            {
+                storeInventory.updateRow();
+            }
+            else
+            {
+                storeInventory.cancelRowUpdates();
+            }
         }
-        float total = 0;
-        for (int i = 0; i < currentCart.items.size(); i++){
-            Float cost = Float.valueOf(RSParser.rsToStringHeaders(itemsInfo().get(i)).get(1)[3]);
-            total += cost * itemsQuantities()[i];
-        }
-        return total;
-    }
-
-    public static boolean checkOut(){
-        return Order.makeOrder(currentCart.items, currentCart.customerId, currentCart.getStoreId());
-    }
-
-    //instance properties
-    private ArrayList<ProductQuantity> items;
-    private ArrayList<ResultSet> itemsInfo;
-    private int storeId;
-    private int customerId;
-
-    private Cart(int storeId){
-        this.items = new ArrayList<>();
-        this.itemsInfo = new ArrayList<>();
-        this.storeId = storeId;
-        this.customerId = -1;
-    }
-
-    //--Getters and Setters--//
-
-    public void addItem(ProductQuantity product){
-        items.add(product);
-        itemsInfo.add(Products.getDetailsOfProduct(product.getProductUPC()));
-    }
-    
-    public boolean removeItem(String upc){
-        int index = itemIndex(upc);
-        if (index == -1){
+        if (!succesful)
+        {
             return false;
         }
-        items.remove(index);
-        itemsInfo.remove(index);
-        return true;
-    }
-
-    private ArrayList<ProductQuantity>getCartContents(){
-        return items;
-    }
-    
-    public void setStoreId(int storeId){
-        this.storeId = storeId;
-    }
-
-    private int getStoreId() {
-        return storeId;
-    }
-
-    private ProductQuantity hasItem(String upc){
-        for (ProductQuantity quant:items){
-            if (quant.getProductUPC().equals(upc)){
-                return quant;
-            }
+        int updated = (CustomerId == null) ? DatabaseController.UpdateQuery("Insert into Orders (storeId) VALUES("
+                + String.valueOf(StoreId) + ")")
+                            : DatabaseController.UpdateQuery("Insert into Orders (userId, storeId) VALUES("
+                              + CustomerId.toString()+ "," + String.valueOf(StoreId)+ ")");
+        if (updated == -1){
+            return false;
         }
-        return null;
+        for (CartEntry me:Contents.values())
+        {
+            DatabaseController.UpdateQuery("Insert into prodQuantities ");
+        }
+        return succesful;
+        */
+        return false;
     }
 
-    private int itemIndex(String upc){
-        int val = 0;
-        for (ProductQuantity quant:items){
-            if (quant.getProductUPC().equals(upc)){
-                return val;
-            }
-            val ++;
-        }
-        return -1;
+    public float getTotalCost()
+    {
+
+        return totalCost;
+    }
+
+    public int getItemcount()
+    {
+
+        return itemcount;
     }
 }

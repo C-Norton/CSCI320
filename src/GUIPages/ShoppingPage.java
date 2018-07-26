@@ -14,16 +14,16 @@ public class ShoppingPage implements iPage
     private Panel root;
     private GuiController guiController;
     private Panel StoreItems;
+    private Cart cart;
+
     ShoppingPage(GuiController guiController, int StoreID)
     {
 
+        cart = new Cart(StoreID);
         this.guiController = guiController;
-
         StoreItems = (new DataTablePage(guiController, Store.getInventoryMetadata(StoreID), "CartPanel"))
                 .getPanel();
-
         redraw();
-
 
     }
 
@@ -39,19 +39,13 @@ public class ShoppingPage implements iPage
         Panel ActionTotal = new Panel(new BorderLayout());
         Panel totals = new Panel(new LinearLayout(Direction.VERTICAL));
         Panel totalText = new Panel(new LinearLayout(Direction.HORIZONTAL));
-
-
         itemsInStorePanel.addComponent(new Label("Available Items"));
-
-
         itemsInCartPanel.addComponent(new Label("Your Cart"));
 
-        //Table itemsInCart = new Table();
-
         totals.addComponent(new Separator(Direction.HORIZONTAL));
-        totalText.addComponent(new Label("Items in Cart: " + Cart.numberOfItems()));
+        //TODO:totalText.addComponent(new Label("Items in Cart: " + Cart.numberOfItems()));
         totalText.addComponent(new Separator(Direction.VERTICAL));
-        totalText.addComponent(new Label("Total: " + Cart.total()));
+        //TODO:totalText.addComponent(new Label("Total: " + Cart.total()));
 
 
         ActionTotal.addComponent(new EmptySpace(), BorderLayout.Location.CENTER);
