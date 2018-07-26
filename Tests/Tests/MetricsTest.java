@@ -146,39 +146,39 @@ public class MetricsTest {
 
     @Test
     void LinearRegressionRevenueSalesTest() throws Exception{
-        initialize();
-//        String query = "SELECT thetaOne, ybar - xbar * thetaOne AS thetaZero " +
-//                    "FROM (" +
-//                        "SELECT sum(convert(((Total_Sum - avg(Total_Sum)) " +
-//                        "* (Total_Money - avg(Total_Money))), decimal(18, 2))) " +
-//                        "/ sum(convert(((Total_Sum - avg(Total_Sum)) * (Total_Sum - avg(Total_Sum))), decimal(18, 2))) "
-//                        + "as thetaOne, max(avg(Total_Money)) as ybar, max(avg(Total_Sum)) as xbar " +
-//                        "FROM (" +
-//                            "SELECT storeId, sum(quantity) as Total_Sum, sum(money) as Total_Money " +
-//                            "FROM (" +
-//                                "WITH productWithOrderNum as ( " +
-//                                    "SELECT orderNum, quantity, Product.price * quantity as money " +
-//                                    "FROM Product join prodQuantities on " +
-//                                    "Product.UPC = prodQuantities.productUPC" +
-//                                "), " +
-//                                "OrdersWithStoreId as ( " +
-//                                    "SELECT Store.storeId, orderNum " +
-//                                    "FROM Store join Orders on " +
-//                                    "Store.storeId = Orders.storeId" +
-//                                ") " +
-//                                "SELECT OrdersWithStoreId.storeId, quantity, money " +
-//                                "FROM (" +
-//                                    "productWithOrderNum join OrdersWithStoreId on " +
-//                                    "productWithOrderNum.orderNum = OrdersWithStoreId.orderNum" +
-//                                ") " +
-//                            ") " +
-//                            "GROUP BY storeId" +
-//                        ")" +
-//                    ")"
-//        ;
-//        StatementType stmt =
-//                DatabaseController.getQueryType(query, false);
-//        assertEquals(StatementType.NONUPDATEABLESELECT, stmt);
+        initialize();/*
+        String query = "SELECT thetaOne, ybar - xbar * thetaOne AS thetaZero " +
+                    "FROM (" +
+                        "SELECT sum(convert(((Total_Sum - avg(Total_Sum)) " +
+                        "* (Total_Money - avg(Total_Money))), decimal(18, 2))) " +
+                        "/ sum(convert(((Total_Sum - avg(Total_Sum)) * (Total_Sum - avg(Total_Sum))), decimal(18, 2))) "
+                        + "as thetaOne, max(avg(Total_Money)) as ybar, max(avg(Total_Sum)) as xbar " +
+                        "FROM (" +
+                            "SELECT storeId, sum(quantity) as Total_Sum, sum(money) as Total_Money " +
+                            "FROM (" +
+                                "WITH productWithOrderNum as ( " +
+                                    "SELECT orderNum, quantity, Product.price * quantity as money " +
+                                    "FROM Product join prodQuantities on " +
+                                    "Product.UPC = prodQuantities.productUPC" +
+                                "), " +
+                                "OrdersWithStoreId as ( " +
+                                    "SELECT Store.storeId, orderNum " +
+                                    "FROM Store join Orders on " +
+                                    "Store.storeId = Orders.storeId" +
+                                ") " +
+                                "SELECT OrdersWithStoreId.storeId, quantity, money " +
+                                "FROM (" +
+                                    "productWithOrderNum join OrdersWithStoreId on " +
+                                    "productWithOrderNum.orderNum = OrdersWithStoreId.orderNum" +
+                                ") " +
+                            ") " +
+                            "GROUP BY storeId" +
+                        ")" +
+                    ")"
+        ;
+        StatementType stmt =
+                DatabaseController.getQueryType(query, false);
+        assertEquals(StatementType.NONUPDATEABLESELECT, stmt);*/
         ResultSet rs;
         rs = Metrics.TopSalesForStores();
         float[] data = new float[8];
@@ -199,5 +199,24 @@ public class MetricsTest {
 
         System.out.println(rs.getBigDecimal(2));
         assertEquals(mockThetaOne, rs.getBigDecimal(2).floatValue());
+    }
+
+    @Test
+    void genericUnivariateLinearRegression() throws Exception{
+        initialize();
+
+        ResultSet rs;
+        rs = Metrics.GenericUnivariateLinearRegression("FrequentShopper", "doesNotCompute", "userId");
+        assertNull(rs);
+        rs = Metrics.GenericUnivariateLinearRegression("FrequentShopper", "userId", "userId");
+        assertNotNull(rs);
+        rs.next();
+        assertEquals(0, rs.getFloat(1));
+        assertEquals(1, rs.getFloat(2));
+        rs = Metrics.GenericUnivariateLinearRegression("SELECT * FROM FrequentShopper", "userId", "userId");
+        assertNotNull(rs);
+        rs.next();
+        assertEquals(0, rs.getFloat(1));
+        assertEquals(1, rs.getFloat(2));
     }
 }
