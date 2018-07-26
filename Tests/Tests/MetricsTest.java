@@ -3,12 +3,14 @@ package Tests;
 import Controllers.DatabaseController;
 import Models.Metrics;
 import Utilities.StatementTemplate;
+import Utilities.StatementType;
 import org.junit.jupiter.api.Test;
 
 import javax.xml.transform.Result;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -112,5 +114,90 @@ public class MetricsTest {
 
     }
 
+    private float divisor(float[] data){
+        float sum = 0;
 
+        for(int i=0; i < 8; i++){
+            sum += data[i];
+        }
+        float average = sum / data.length;
+        float divisor = 0;
+        for(int i=0; i < 8; i++){
+            divisor += (data[i] - average) * (data[i] - average);
+        }
+        return divisor;
+    }
+
+    private float dividend(float[] data, float[] data1){
+        float sum = 0;
+        float sum1 = 0;
+        for(int i=0; i < 8; i++){
+            sum += data[i];
+            sum1 += data1[i];
+        }
+        float average = sum / data.length;
+        float average1 = sum1 / data.length;
+        float dividend = 0;
+        for(int i=0; i < 8; i++){
+            dividend += (data[i] - average) * (data1[i] - average1);
+        }
+        return dividend;
+    }
+
+    @Test
+    void LinearRegressionRevenueSalesTest() throws Exception{
+        initialize();
+//        String query = "SELECT thetaOne, ybar - xbar * thetaOne AS thetaZero " +
+//                    "FROM (" +
+//                        "SELECT sum(convert(((Total_Sum - avg(Total_Sum)) " +
+//                        "* (Total_Money - avg(Total_Money))), decimal(18, 2))) " +
+//                        "/ sum(convert(((Total_Sum - avg(Total_Sum)) * (Total_Sum - avg(Total_Sum))), decimal(18, 2))) "
+//                        + "as thetaOne, max(avg(Total_Money)) as ybar, max(avg(Total_Sum)) as xbar " +
+//                        "FROM (" +
+//                            "SELECT storeId, sum(quantity) as Total_Sum, sum(money) as Total_Money " +
+//                            "FROM (" +
+//                                "WITH productWithOrderNum as ( " +
+//                                    "SELECT orderNum, quantity, Product.price * quantity as money " +
+//                                    "FROM Product join prodQuantities on " +
+//                                    "Product.UPC = prodQuantities.productUPC" +
+//                                "), " +
+//                                "OrdersWithStoreId as ( " +
+//                                    "SELECT Store.storeId, orderNum " +
+//                                    "FROM Store join Orders on " +
+//                                    "Store.storeId = Orders.storeId" +
+//                                ") " +
+//                                "SELECT OrdersWithStoreId.storeId, quantity, money " +
+//                                "FROM (" +
+//                                    "productWithOrderNum join OrdersWithStoreId on " +
+//                                    "productWithOrderNum.orderNum = OrdersWithStoreId.orderNum" +
+//                                ") " +
+//                            ") " +
+//                            "GROUP BY storeId" +
+//                        ")" +
+//                    ")"
+//        ;
+//        StatementType stmt =
+//                DatabaseController.getQueryType(query, false);
+//        assertEquals(StatementType.NONUPDATEABLESELECT, stmt);
+        ResultSet rs;
+        rs = Metrics.TopSalesForStores();
+        float[] data = new float[8];
+        float[] data1 = new float[8];
+        int i = 0;
+        while(rs.next()){
+            data1[i] = rs.getFloat(4);
+            data[i] = rs.getFloat(3);
+            i++;
+        }
+        float mockThetaOne = dividend(data, data1) / divisor(data);
+//        System.out.println(dividend(data,data1));
+//        System.out.println(divisor(data));
+        System.out.println(mockThetaOne);
+        rs = Metrics.LinearRegressionRevenueSales();
+
+        rs.next();
+
+        System.out.println(rs.getBigDecimal(2));
+        assertEquals(mockThetaOne, rs.getBigDecimal(2).floatValue());
+    }
 }

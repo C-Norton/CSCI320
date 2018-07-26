@@ -94,6 +94,7 @@ public class DatabaseController
             }
             else
             {
+                System.out.println(e.getMessage());
                 return StatementType.INVALID;
             }
         }
