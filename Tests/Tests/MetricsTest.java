@@ -78,17 +78,17 @@ public class MetricsTest {
     void HowManyStoresDoesProdAOutsellProdBTest() throws Exception{
         initialize();
 
-        String a = "Tea - Black Currant";
-        String b = "Wheat bread";
+        String a = "810770474429";
+        String b = "915693126004";
 
         ResultSet rs = Metrics.HowManyStoresDoesProdAOutsellProdB(a,b);
         assertNotNull(rs);
         System.out.println(rs);
         System.out.println("\n                          || Product "+a+" Vs. Product "+b+" ||\n");
-        String header = String.format("%1$15s %2$-30s  %3$15s %4$-10s", "UPC", "| "+"ProductName", "|"+"StoreId", "| "+"Quantity");
+        String header = String.format("%1$15s %2$-30s  %3$-15s %4$-10s", "UPC", "| "+"ProductName", "|"+" StoreId", "| "+"Quantity");
         System.out.println(header);
         while(rs.next()){
-            String string = String.format("%1$15s %2$-30s  %3$15s %4$-10s", rs.getString(1), "| "+rs.getString(2), "|      "+rs.getString(3), "| "+rs.getString(4));
+            String string = String.format("%1$15s %2$-30s  %3$-15s %4$-10s", rs.getString(1), "| "+rs.getString(2), "|       "+rs.getString(3), "| "+rs.getString(4));
             System.out.println(string);
         }
 

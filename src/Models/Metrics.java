@@ -51,7 +51,7 @@ public class Metrics
                                                     "SELECT UPC, name, orderNum, quantity " +
                                                     "FROM Product join prodQuantities on " +
                                                     "Product.UPC = prodQuantities.productUPC " +
-                                                    "WHERE Product.name = '"+prodIdA+"' or Product.name = '"+prodIdB+"' ) " +
+                                                    "WHERE Product.UPC = '"+prodIdA+"' or Product.UPC = '"+prodIdB+"' ) " +
                                                 "SELECT UPC, Name, storeId, sum(quantity) as Total_Sum " +
                                                 "FROM productWithOrderNum join Orders on " +
                                                 "productWithOrderNum.orderNum = Orders.orderNum " +
