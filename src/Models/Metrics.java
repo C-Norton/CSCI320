@@ -1,6 +1,7 @@
 package Models;
 
 import Controllers.DatabaseController;
+import Utilities.StatementType;
 
 import javax.xml.transform.Result;
 import java.sql.ResultSet;
@@ -94,56 +95,71 @@ public class Metrics
     }
 
     public static ResultSet LinearRegressionRevenueSales(){
-        //univariate linear regression
+        //prototype univariate linear regression
         //RevenueLinearModel(sales) = thetaZero + thetaOne * sales
         //returns thetaZero as column one and thetaOne as column two
-        String query = "SELECT ybar - xbar * thetaOne AS thetaZero, thetaOne " +
-                                    "FROM (" +
-                                        "SELECT sum((Total_Sum - xbar) " +
-                                        "* (Total_Money - ybar)) " +
-                                        "/ sum((Total_Sum - xbar) * (Total_Sum - xbar)) "
-                                        + "as thetaOne, ybar, xbar FROM" +
-
-                "(SELECT Total_Sum, Total_Money, xbar, ybar FROM (" +
-                                                                    "SELECT storeId, sum(quantity) as Total_Sum, sum(money) as Total_Money " + "FROM (" +
-                                                                        "WITH productWithOrderNum as ( " +
-                                                                            "SELECT orderNum, quantity, Product.price * quantity as money " +
-                                                                            "FROM Product join prodQuantities on " +
-                                                                            "Product.UPC = prodQuantities.productUPC" +
-                                                                        "), " +
-                                                                        "OrdersWithStoreId as ( " +
-                                                                            "SELECT Store.storeId, orderNum " +
-                                                                            "FROM Store join Orders on " +
-                                                                            "Store.storeId = Orders.storeId" +
-                                                                        ") " +
-                                                                        "SELECT OrdersWithStoreId.storeId, quantity, money " + "FROM (" +
-                                                                            "productWithOrderNum join OrdersWithStoreId on " +
-                                                                            "productWithOrderNum.orderNum = OrdersWithStoreId.orderNum" +
-                                                                        ") " +
-                                                                    ") " +
-                                                                    "GROUP BY storeId" +
-                                                                ") as table1 CROSS JOIN (SELECT avg(Total_Sum) as xbar, avg(Total_Money) as ybar FROM (" +
-                                                                    "SELECT storeId, sum(quantity) as Total_Sum, sum(money) as Total_Money " + "FROM (" +
-                                                                        "WITH productWithOrderNum as ( " +
-                                                                            "SELECT orderNum, quantity, Product.price * quantity as money " +
-                                                                            "FROM Product join prodQuantities on " +
-                                                                            "Product.UPC = prodQuantities.productUPC" +
-                                                                        "), " +
-                                                                        "OrdersWithStoreId as ( " +
-                                                                            "SELECT Store.storeId, orderNum " +
-                                                                            "FROM Store join Orders on " +
-                                                                            "Store.storeId = Orders.storeId" +
-                                                                        ") " +
-                                                                        "SELECT OrdersWithStoreId.storeId, quantity, money " + "FROM (" +
-                                                                            "productWithOrderNum join OrdersWithStoreId on " +
-                                                                            "productWithOrderNum.orderNum = OrdersWithStoreId.orderNum" +
-                                                                        ") " +
-                                                                    ") " +
-                                                                    "GROUP BY storeId" +
-                                                                ")) as table2))";
+        String query = "SELECT Average_Revenue - Average_Sum * thetaOne AS thetaZero, thetaOne " + "FROM (" +
+                            "SELECT sum((Total_Sum - Average_Sum) * (Total_Money - Average_Revenue)) / " +
+                            "sum((Total_Sum - Average_Sum) * (Total_Sum - Average_Sum)) as thetaOne, " +
+                            "Average_Revenue, Average_Sum FROM (" +
+                                "WITH tonsOfData as (" +
+                                    "SELECT storeId, sum(quantity) as Total_Sum, sum(money) as Total_Money " + "FROM (" +
+                                        "WITH productWithOrderNum as ( " +
+                                            "SELECT orderNum, quantity, Product.price * quantity as money " +
+                                            "FROM Product join prodQuantities on " +
+                                            "Product.UPC = prodQuantities.productUPC" +
+                                        "), " +
+                                        "OrdersWithStoreId as ( " +
+                                            "SELECT Store.storeId, orderNum " +
+                                            "FROM Store join Orders on " +
+                                            "Store.storeId = Orders.storeId" +
+                                        ") " +
+                                        "SELECT OrdersWithStoreId.storeId, quantity, money " + "FROM (" +
+                                            "productWithOrderNum join OrdersWithStoreId on " +
+                                            "productWithOrderNum.orderNum = OrdersWithStoreId.orderNum" +
+                                        ") " +
+                                    ") " +
+                                    "GROUP BY storeId" +
+                                ")" +
+                                "SELECT Total_Sum, Total_Money, Average_Sum, Average_Revenue FROM (" +
+                                    "tonsOfData" +
+                                ") " +
+                                "CROSS JOIN " +
+                                "(SELECT avg(Total_Sum) as Average_Sum, avg(Total_Money) as Average_Revenue FROM (" +
+                                    "tonsOfData" +
+                                ")) " +
+                            ")" +
+                        ")";
 
         return DatabaseController.SelectQuery(query, false);
 
+    }
+
+    //does linear regression on any two attributes in a table(which can be customized by select queries)
+    //requires a select statement that returns a table containing the two attributes and their name
+    //returns null if unsuccessful
+    public static ResultSet GenericUnivariateLinearRegression(String potentialQuery, String x, String y){
+        String defaultTable = null;
+        switch (DatabaseController.getQueryType(potentialQuery, false)) {
+            case NONUPDATEABLESELECT:
+                defaultTable = potentialQuery;
+                break;
+            default:
+                defaultTable = "SELECT * FROM " + potentialQuery;
+                if (DatabaseController.getQueryType(defaultTable, false) !=
+                        StatementType.NONUPDATEABLESELECT){
+                    return null;
+                }
+        }
+        String query = "SELECT muY - muX * thetaOne AS thetaZero, thetaOne " + "FROM (" +
+                            "SELECT sum((x - muX) * (y - muY)) / " +
+                            "sum((x - muX) * (x - muX)) as thetaOne, muY, muX FROM (" +
+                                "WITH sample as (" + defaultTable + ")" +
+                                "SELECT " + x + " as x, " + y + " as y, muX, muY FROM (sample)" +
+                                "CROSS JOIN (SELECT avg(" + x + ") as muX, avg(" + y + ") as muY FROM (sample)) " +
+                            ")" +
+                        ")";
+        return DatabaseController.SelectQuery(query, false);
     }
 
 }

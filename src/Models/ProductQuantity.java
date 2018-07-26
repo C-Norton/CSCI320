@@ -26,7 +26,4 @@ public class ProductQuantity {
     public String getProductUPC(){
         return this.productUPC;
     }
-    //public Product getProduct(){
-    //return this.product;
-    //}
 }

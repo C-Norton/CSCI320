@@ -24,9 +24,7 @@ public class MetricsMenuPage implements iPage
             {
 
                 String Brandname = guiController.textpopup("BrandName", "");
-                iPage Results = new DataTablePage(
-                        guiController,
-                        Products.getProductsOfBrand(Brandname),
+                iPage Results = new DataTablePage(guiController, Products.getProductsOfBrand(Brandname),
                         "All products offered by " + Brandname);
                 guiController.addAndDisplayPage(Results);
             }
