@@ -105,10 +105,27 @@ public class MetricsTest {
         assertNotNull(rs);
         System.out.println(rs);
         System.out.println("\n                          || List of Stores by Sales ||\n");
-        String header = String.format("%1$15s %2$-35s %3$-10s %4$-10s", "StoreId", "| "+"Name", "| "+"Sales | ", "Revenue");
+        String header = String.format("%1$15s %2$-35s %3$-10s", "StoreId", "| "+"Name", "| "+"Sales");
         System.out.println(header);
         while(rs.next()){
-            String string = String.format("%1$15s %2$-35s %3$-10s %4$-10s", rs.getString(1), "| "+rs.getString(2), "| "+rs.getString(3)+" |", "$"+rs.getString(4));
+            String string = String.format("%1$15s %2$-35s %3$-10s", rs.getString(1), "| "+rs.getString(2), "| "+rs.getString(3));
+            System.out.println(string);
+        }
+
+    }
+
+    @Test
+    void TopRevenueForStoresTest() throws Exception{
+        initialize();
+
+        ResultSet rs = Metrics.TopRevenueForStores();
+        assertNotNull(rs);
+        System.out.println(rs);
+        System.out.println("\n                          || List of Stores by Revenue ||\n");
+        String header = String.format("%1$15s %2$-35s %3$-10s", "StoreId", "| "+"Name", "| "+"Revenue");
+        System.out.println(header);
+        while(rs.next()){
+            String string = String.format("%1$15s %2$-35s %3$-10s", rs.getString(1), "| "+rs.getString(2), "| $"+rs.getString(3));
             System.out.println(string);
         }
 
