@@ -2,6 +2,7 @@ package Models;
 
 import Controllers.DatabaseController;
 
+import javax.xml.transform.Result;
 import java.sql.ResultSet;
 
 /**
@@ -42,5 +43,20 @@ public class Metrics
                                                 "GROUP BY UPC, Name " +
                                                 "ORDER BY Total_Sold DESC " +
                                                 "LIMIT 20", false);
+    }
+
+    public static ResultSet HowManyStoresDoesProdAOutsellProdB(String prodIdA, String prodIdB){
+
+        return DatabaseController.SelectQuery("WITH productWithOrderNum as ( " +
+                                                    "SELECT UPC, name, orderNum, quantity " +
+                                                    "FROM Product join prodQuantities on " +
+                                                    "Product.UPC = prodQuantities.productUPC " +
+                                                    "WHERE Product.name = '"+prodIdA+"' or Product.name = '"+prodIdB+"' ) " +
+                                                "SELECT UPC, Name, storeId, sum(quantity) as Total_Sum " +
+                                                "FROM productWithOrderNum join Orders on " +
+                                                "productWithOrderNum.orderNum = Orders.orderNum " +
+                                                "GROUP BY UPC, Name, storeId " +
+                                                "ORDER BY storeId DESC", false);
+
     }
 }
