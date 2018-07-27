@@ -91,58 +91,8 @@ public class Cart
 
     public boolean CheckOut()
     {
-        /*
-        ResultSet storeInventory = DatabaseController.SelectQuery("Select * from Inventory where storeId = "
-                                                                  + String.valueOf(StoreId), true);
-        boolean succesful = true;
 
-        while (storeInventory.next())
-        {
-            String storeUPC = storeInventory.getString(2);
-            if (Contents.containsKey(storeUPC))
-            {
-                CartEntry entry = Contents.get(storeUPC);
-                int storecount = storeInventory.getInt(3);
-                if (storecount >= entry.Quantity)
-                {
-                    storeInventory.updateInt(3, storecount - entry.Quantity);
-                }
-                else
-                {
-                    succesful = false;
-                }
-            }
-        }
-        storeInventory.beforeFirst();
-        while (storeInventory.next())
-        {
-            if (succesful)
-            {
-                storeInventory.updateRow();
-            }
-            else
-            {
-                storeInventory.cancelRowUpdates();
-            }
-        }
-        if (!succesful)
-        {
-            return false;
-        }
-        int updated = (CustomerId == null) ? DatabaseController.UpdateQuery("Insert into Orders (storeId) VALUES("
-                + String.valueOf(StoreId) + ")")
-                            : DatabaseController.UpdateQuery("Insert into Orders (userId, storeId) VALUES("
-                              + CustomerId.toString()+ "," + String.valueOf(StoreId)+ ")");
-        if (updated == -1){
-            return false;
-        }
-        for (CartEntry me:Contents.values())
-        {
-            DatabaseController.UpdateQuery("Insert into prodQuantities ");
-        }
-        return succesful;
-        */
-        return false;
+        return DatabaseController.createOrder(StoreId, CustomerId, getCartItemDetails());
     }
 
     public float getTotalCost()

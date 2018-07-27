@@ -1,5 +1,6 @@
 package Controllers;
 
+import Models.CartEntry;
 import Utilities.StatementTemplate;
 import Utilities.StatementType;
 
@@ -7,6 +8,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 public class DatabaseController
 {
@@ -71,13 +73,6 @@ public class DatabaseController
         return rs;
     }
 
-    //initialize a fresh instance of the retail DB
-    public void InitializeNewDatabaseInstance() throws Exception
-    {
-
-        DatabaseInitializer.InitializeDatabase(conn);
-    }
-
     public static StatementType getQueryType(String Query, boolean Updateable)
     {
 
@@ -99,6 +94,132 @@ public class DatabaseController
         }
         return (Updateable) ? StatementType.UPDATEABLESELECT : StatementType.NONUPDATEABLESELECT;
 
+    }
+
+    public static boolean createOrder(int storeId, Integer userId, ArrayList<CartEntry> order)
+    {
+
+        String sstoreId = String.valueOf(storeId);
+
+        try
+        {
+            conn.setAutoCommit(false);
+            Statement stmt = StatementTemplate.connUpdateStatement();
+            long orderNum;
+            if (userId == null)
+            {
+                stmt.executeUpdate("INSERT into Orders (storeId) values ("
+                                   + sstoreId + ")", Statement.RETURN_GENERATED_KEYS);
+            }
+            else
+            {
+                stmt.executeUpdate("INSERT into Orders (userId, storeId) values ("
+                                   + userId.toString() + ", " + sstoreId + ")", Statement.RETURN_GENERATED_KEYS);
+            }
+            ResultSet key = stmt.getGeneratedKeys();
+            if (key != null)
+            {
+                if (key.next())
+                {
+                    orderNum = key.getLong(1);
+                }
+                else
+                {
+                    throw new SQLException("Generated Key is nonnull but of wrong type or empty");
+                }
+
+            }
+            else
+            {
+                throw new SQLException("Generated Key is null");
+            }
+
+            for (CartEntry item : order)
+            {
+                if (item.Quantity <= 0)
+                {
+                    continue;
+                }
+                ResultSet inventory = stmt.executeQuery("Select quantity from inventory where (productUPC = "
+                                                        + item.UPC + " AND storeId = " + sstoreId + ")");
+                if (inventory != null)
+                {
+                    if (inventory.next())
+                    {
+                        int storeQuantity = inventory.getInt(1);
+                        if (storeQuantity >= item.Quantity)
+                        {
+                            long updatecount = stmt.executeUpdate("UPDATE inventory SET quantity = "
+                                                                  + String.valueOf(storeQuantity - item.Quantity)
+                                                                  + " WHERE productUPC = " + item.UPC
+                                                                  + " AND storeId = " + sstoreId);
+                            if (updatecount != 1)
+                            {
+                                throw new SQLException("Incorrect update count to inventory");
+                            }
+
+                            updatecount = stmt.executeUpdate(
+                                    String.format("Insert into prodQuantities VALUES (%d,%s,%s)",
+                                            orderNum, item.UPC, item.Quantity)
+                            );
+                            if (updatecount != 1)
+                            {
+                                throw new SQLException("Incorrect update count to product Quantities");
+                            }
+
+                        }
+                        else
+                        {
+                            throw new SQLException("Insufficient quantity in store");
+                        }
+                    }
+                    else
+                    {
+                        throw new SQLException("Store does not have product, and quantity is non zero");
+                    }
+                }
+                else
+                {
+                    throw new SQLException("Quantity is null");
+                }
+            }
+            conn.commit();
+
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+            try
+            {
+                conn.rollback();
+                return false;
+            }
+            catch (SQLException f)
+            {
+                f.printStackTrace();
+                return false;
+            }
+        }
+        finally
+        {
+            try
+            {
+                conn.setAutoCommit(true);
+            }
+            catch (SQLException e)
+            {
+                e.printStackTrace();
+            }
+        }
+
+        return true;
+    }
+
+    //initialize a fresh instance of the retail DB
+    public void InitializeNewDatabaseInstance() throws Exception
+    {
+
+        DatabaseInitializer.InitializeDatabase(conn);
     }
 
 }

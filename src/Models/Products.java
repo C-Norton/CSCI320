@@ -28,4 +28,5 @@ public final class Products
 
         return DatabaseController.SelectQuery("SELECT * FROM Product WHERE UPC = " + upc, true);
     }
+
 }
