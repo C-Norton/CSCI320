@@ -47,14 +47,14 @@ public class DatabaseController
      * .printStackTrace() method eliminates this downside, as it WILL show the call being made via whatever caused
      * the problem
      */
-    public static ResultSet SelectQuery(String Query, Boolean Updateable)
+    public static ResultSet SelectQuery(String Query)
     {
 
         Statement stmt = null;
         ResultSet rs = null;
         try
         {
-            stmt = StatementTemplate.connQueryStatement(Updateable);
+            stmt = StatementTemplate.connQueryStatement();
         }
         catch (Exception e)
         {
@@ -73,12 +73,12 @@ public class DatabaseController
         return rs;
     }
 
-    public static StatementType getQueryType(String Query, boolean Updateable)
+    public static StatementType getQueryType(String Query)
     {
 
         try
         {
-            Statement stmt = StatementTemplate.connQueryStatement(Updateable);
+            Statement stmt = StatementTemplate.connQueryStatement();
             stmt.executeQuery(Query);
         }
         catch (SQLException e)
@@ -92,7 +92,7 @@ public class DatabaseController
                 return StatementType.INVALID;
             }
         }
-        return (Updateable) ? StatementType.UPDATEABLESELECT : StatementType.NONUPDATEABLESELECT;
+        return StatementType.SELECT;
 
     }
 

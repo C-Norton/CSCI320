@@ -64,6 +64,7 @@ public class DataTablePage implements iPage
 
 
         Table<String> data = new Table<String>(headers.toArray(new String[colcount]));
+        data.setVisibleRows(25);
         try
         {//So we might want to have two try catch blocks here. I didn't for time, but right now, if there's an error
             // ANYWHERE in the table, it can't display ANY of it. This is something that we might want to change if

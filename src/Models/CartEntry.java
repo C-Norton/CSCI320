@@ -46,7 +46,7 @@ public class CartEntry
                 return null;
             }
             if (!(
-                    (metadata.getColumnType(1) == Types.NUMERIC) &&
+                    (metadata.getColumnType(1) == Types.DECIMAL) &&
                     (metadata.getColumnType(2) == Types.VARCHAR) &&
                     (metadata.getColumnType(3) == Types.VARCHAR) &&
                     (metadata.getColumnType(4) == Types.DECIMAL) &&

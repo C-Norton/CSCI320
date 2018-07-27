@@ -7,6 +7,6 @@ public enum StatementType
 {
     INVALID,
     UPDATE,
-    UPDATEABLESELECT,
-    NONUPDATEABLESELECT
+    SELECT
+
 }
