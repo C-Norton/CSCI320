@@ -13,11 +13,8 @@ package Controllers;
 
 import GUIPages.LoginPage;
 import GUIPages.iPage;
-import Utilities.StatementTemplate;
-import com.googlecode.lanterna.gui2.BasicWindow;
-import com.googlecode.lanterna.gui2.MultiWindowTextGUI;
-import com.googlecode.lanterna.gui2.Window;
-import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
+import com.googlecode.lanterna.gui2.*;
+import com.googlecode.lanterna.gui2.dialogs.TextInputDialog;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 
@@ -28,21 +25,17 @@ import java.util.Deque;
 public class GuiController
 {
     private final Window window;
-    private final WindowBasedTextGUI textGUI;
-    public DatabaseController dbController; //TODO:These should be made static rather than having to pass around
-    public StatementTemplate stmtUtil; //SEE ABOVE
+    public final WindowBasedTextGUI textGUI;
     private Screen screen;
     private Deque<iPage> PageStack;
 
     /**
      * Constructor. Creates a terminal, and draws the welcome page.
      */
-    public GuiController(DatabaseController dbController, StatementTemplate stmtUtil)
+    public GuiController()
     {
 
         DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
-        this.dbController = dbController; //Gives us a dbController reference
-        this.stmtUtil = stmtUtil; //Gives us a statement template reference
         PageStack = new ArrayDeque<>(); // Gives us a screen stack
         window = new BasicWindow("Just put anything, I don't even care");
         try
@@ -74,8 +67,17 @@ public class GuiController
     private void updatescreen()
     {
 
-        window.setComponent(PageStack.peekFirst().getPanel());
+        Panel panel = PageStack.peekFirst().getPanel();
+        window.setComponent(panel);
         textGUI.addWindowAndWait(window);
+    }
+
+    public void refreshPage()
+    {
+
+        iPage page = PageStack.peekFirst();
+        page.getPanel().invalidate();
+        updatescreen();
     }
 
     public void showLoginScreen()
@@ -98,6 +100,20 @@ public class GuiController
             PageStack.removeFirst();
             updatescreen();
         }
+    }
+
+    public String textpopup(String prompt, String description)
+    {
+
+        return TextInputDialog.showDialog(textGUI, prompt, description, "Enter your " + prompt + " here...");
+
+    }
+
+    public Integer numPopup(String prompt)
+    {
+
+        return TextInputDialog.showNumberDialog(textGUI, prompt, "", "0").intValue();
+
     }
 
     /**

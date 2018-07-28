@@ -17,10 +17,11 @@ public class DataTablePage implements iPage
 {
     private Panel panel;
 
-    public DataTablePage(GuiController guiController, ResultSet rs, String PageName)
+    DataTablePage(GuiController guiController, ResultSet rs, String PageName)
     {
 
         panel = new Panel(new LinearLayout(Direction.VERTICAL));
+
         panel.addComponent(new Label(PageName));
 
         Label refreshWarning = new Label("");
@@ -31,6 +32,7 @@ public class DataTablePage implements iPage
                                + "that generated this page again.");
         panel.addComponent(refreshWarning);
         panel.addComponent(new Separator(Direction.HORIZONTAL));
+
         int colcount = 0;
         ArrayList<String> headers = null;
         ArrayList<String> colNames = null;
@@ -62,11 +64,13 @@ public class DataTablePage implements iPage
 
 
         Table<String> data = new Table<String>(headers.toArray(new String[colcount]));
+        data.setVisibleRows(25);
         try
         {//So we might want to have two try catch blocks here. I didn't for time, but right now, if there's an error
             // ANYWHERE in the table, it can't display ANY of it. This is something that we might want to change if
             // we run into later problems
             rs.beforeFirst();
+
             while (rs.next())
             {
                 String[] row = new String[colcount];
@@ -88,18 +92,18 @@ public class DataTablePage implements iPage
             public void run()
             {
 
+                int storeid;
                 switch (PageName)
                 {
-                    case "Stores": //Todo:This should likely be replaced with an ENUM at some point to make less fragile
-                        /*
-                        guiController.addAndDisplayPage(new DataTablePage(guiController,
-                                Store.retrieveStoreById(guiController.dbController
-                                        , guiController.stmtUtil
-                                        , (Integer.parseInt(data.getTableModel().getCell(0, data.getSelectedRow())))
-                                )))
-                        ;
-                        */
 
+                    case "Stores": //Todo:This should likely be replaced with an ENUM at some point to make less fragile
+                        storeid = Integer.parseInt(data.getTableModel().getCell(0, data.getSelectedRow()));
+                        guiController.addAndDisplayPage(new DataTablePage(guiController,
+                                Store.retrieveStoreById(storeid), "Store Details"));
+                        break;
+                    case "Select Store":
+                        storeid = Integer.parseInt(data.getTableModel().getCell(0, data.getSelectedRow()));
+                        guiController.addAndDisplayPage(new ShoppingPage(guiController, storeid));
                         break;
                     default:
                         break;
@@ -107,15 +111,8 @@ public class DataTablePage implements iPage
             }
         });
         panel.addComponent(data);
-        panel.addComponent(new Button("Back", new Runnable()
-        {
-            @Override
-            public void run()
-            {
 
-                guiController.closePage();
-            }
-        }));
+        panel.addComponent(new Button("Back", guiController::closePage));
 
     }
 

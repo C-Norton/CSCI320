@@ -26,16 +26,7 @@ public class LoginPage implements iPage
                 guiController.addAndDisplayPage(new MainMenu(guiController));
             }
         }));
-        panel.addComponent(new Button("Exit", new Runnable()
-        {
-            @Override
-            public void run()
-            {
-
-                guiController.close();
-
-            }
-        }));
+        panel.addComponent(new Button("Exit", guiController::close));
     }
 
     @Override

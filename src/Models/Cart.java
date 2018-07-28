@@ -1,113 +1,180 @@
 package Models;
 
 import Controllers.DatabaseController;
-import Utilities.StatementTemplate;
 
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 /**
  * Created by Michael on 7/6/2018.
  */
-public class Cart {
+public class Cart
+{
+    private Integer CustomerId;
+    private int StoreId;
+    private LinkedHashMap<String, CartEntry> Contents;
+    private LinkedHashMap<String, CartEntry> StoreContents;
+    private int itemcount;
+    private float totalCost;
 
+    public Cart(int StoreId)
+    {
 
-    private ArrayList<ProductQuantity> boughtProducts;
-    private int storeId;
+        this.StoreId = StoreId;
+        CustomerId = null;
+        itemcount = 0;
+        totalCost = 0.0f;
+        Contents = new LinkedHashMap<>();
+        StoreContents = CartEntry.RStoContents(DatabaseController.SelectQuery
+                (("Select Product.UPC, Product.Name, Product.Brand, Product.Price, Inventory.Quantity from product "
+                  + "join inventory on Product.UPC = inventory.productUPC where inventory.storeId="
+                  + String.valueOf(StoreId))));
 
-
-    public Cart(int storeId){
-        this.boughtProducts = new ArrayList<ProductQuantity>();
-        this.storeId = storeId;
     }
 
+    public void SignOut()
+    {
 
-    public void submitOrder(DatabaseController dbController, StatementTemplate stmtUtil, int customerId){
+        CustomerId = null;
+    }
 
-        String getLatestOrderNum = "orderNum";
+    public int getCustomerId()
+    {
 
-        int latestOrderNum = getLatestId(dbController, stmtUtil,getLatestOrderNum);
+        if (CustomerId == null)
+        {
+            return -1;
+        }
+        else
+        {
+            return CustomerId;
+        }
+    }
 
-        Order checkout = new Order(latestOrderNum,this.storeId, customerId, this.boughtProducts);
-        Statement stmt = stmtUtil.newNullStatement();
+    public void setCustomerId(Integer id)
+    {
 
-        //String getLatestOrderId = "orderId";
+        if (id != null && Customer.existsCustomer(id))
+        {
+            CustomerId = id;
+        }
+        else
+        {
+            CustomerId = null;
+        }
+    }
 
-        //int latestOrderId = getLatestId(dbController, stmtUtil,getLatestOrderId);
+    public ArrayList<CartEntry> getStoreContents()
+    {
 
-        for(ProductQuantity product:this.boughtProducts ){
+        ArrayList<CartEntry> conts = new ArrayList<>();
+        conts.addAll(StoreContents.values());
+        return conts;
+    }
 
+    public boolean isSignedIn()
+    {
 
-            //TODO: Rewrite
-            //latestOrderId++;
-            String orderItem = "INSERT INTO  orders VALUES (" + Integer.toString(customerId)+
-                    Integer.toString(storeId)+product.getProduct().getName()+product.getQuantity()+")";
+        return CustomerId != null;
+    }
 
-            try{
-                stmt = stmtUtil.connStatement(stmt);
-                dbController.ExecuteUpdateQuery(stmt,orderItem);
-            }catch(Exception e){
+    public boolean addItem(String UPC, Integer quantity)
+    {
 
+        if (quantity == null)
+        {
+            return false;
+        }
+        if (quantity == 0)
+        {
+            return false;
+        }
+        if (StoreContents.containsKey(UPC))
+        {
+            CartEntry item = StoreContents.get(UPC);
+            int desiredQuantity = quantity + (Contents.containsKey(UPC) ? Contents.get(UPC).Quantity : 0);
+            if (item.Quantity >= desiredQuantity)
+            {
+                CartEntry entry = new CartEntry();
+                entry.UPC = UPC;
+                entry.Name = item.Name;
+                entry.Brand = item.Brand;
+                entry.Price = item.Price;
+                entry.Quantity = desiredQuantity;
+                Contents.put(UPC, entry);
+                itemcount += quantity;
+                totalCost += quantity * entry.Price;
+                return true;
             }
-
         }
+        return false;
     }
 
-    //--Util--//
+    public boolean removeItem(String UPC, Integer quantity)
+    {
 
-    //returns the max value of a given column
-    private int getLatestId(DatabaseController dbController, StatementTemplate stmtUtil, String getLatestItem){
-        Statement stmt = stmtUtil.newNullStatement();
-        ResultSet rs = null;
-
-        String getLatestId = "SELECT max("+getLatestItem+") FROM orders";
-
-        //create query statement
-        try {
-            stmt = stmtUtil.connStatement(stmt);
-        }catch(Exception e){
-            System.out.println("Error Creating Select Statement");
+        if (quantity == null)
+        {
+            return false;
+        }
+        if (quantity == 0)
+        {
+            return false;
         }
 
-        //execute and get results of query
-        try {
-            rs = dbController.ExecuteSelectQuery(stmt, getLatestId);
-        }catch(Exception e){
-            System.out.println("Error Executing Query  for Cart");
-        }
-
-        int latestOrderId = parseResultSet(rs);
-
-        return latestOrderId;
-    }
-
-    private int parseResultSet(ResultSet rs){
-        try{
-            if (rs.next()) {
-                return rs.getInt(1);
+        if (Contents.containsKey(UPC))
+        {
+            CartEntry item = Contents.get(UPC);
+            int desiredQuantity = item.Quantity - quantity;
+            if (desiredQuantity > 0)
+            {
+                Contents.get(UPC).Quantity = desiredQuantity;
+                totalCost -= item.Price * quantity;
+                itemcount -= quantity;
+                return true;
             }
-        }catch (Exception e){
-            System.out.println("Error parsing ResultSet");
+            else if (desiredQuantity == 0)
+            {
+                totalCost -= item.Price * quantity;
+                itemcount -= quantity;
+                Contents.remove(UPC);
+                return true;
+            }
         }
-        return 0;
-    }
-    
-    //--Getters and Setters--//
-
-    public void addItem(ProductQuantity product){
-        boughtProducts.add(product);
-    }
-    
-    public void removeItem(ProductQuantity product){
-        boughtProducts.remove(product);
+        return false;
     }
 
-    public ArrayList<ProductQuantity>getCartContents(){
-        return boughtProducts;
+    public boolean CheckOut()
+    {
+
+        return DatabaseController.createOrder(StoreId, CustomerId, getCartItemDetails());
     }
-    
-    public void setStore(int storeId){
-        this.storeId = storeId;
+
+    public ArrayList<CartEntry> getCartItemDetails()
+    {
+
+        ArrayList<CartEntry> conts = new ArrayList<>();
+        conts.addAll(Contents.values());
+        return conts;
+    }
+
+    public float getTotalCost()
+    {
+
+        return totalCost;
+    }
+
+    public int getItemcount()
+    {
+
+        return itemcount;
+    }
+
+    public void emptyCart()
+    {
+
+        Contents = new LinkedHashMap<>();
+        itemcount = 0;
+        totalCost = 0;
     }
 }

@@ -1,27 +1,35 @@
 package Utilities;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 /**
  * Created by Michael on 7/6/2018.
  */
-public class StatementTemplate {
+public class StatementTemplate
+{
 
-    private Connection conn;
+    private static Connection conn;
 
-    public StatementTemplate(Connection conn){
-        this.conn = conn;
+    public StatementTemplate(Connection connection)
+    {
+
+        conn = connection;
     }
 
-    public Statement newNullStatement(){
-        Statement stmt = null;
-        return stmt;
+    public static Statement connQueryStatement() throws SQLException
+    {
+
+        return conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+
     }
 
-    public Statement connStatement(Statement stmt) throws Exception{
-        stmt = this.conn.createStatement();
-        return stmt;
+    public static Statement connUpdateStatement() throws SQLException
+    {
+
+        return conn.createStatement();
     }
 
 }

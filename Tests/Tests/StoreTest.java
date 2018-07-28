@@ -1,23 +1,29 @@
 package Tests;
 
 import Controllers.DatabaseController;
-import Models.Customer;
 import Utilities.StatementTemplate;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-class CustomerTest {
+class StoreTest {
     Connection conn;
     DatabaseController dbController;
     StatementTemplate stmtUtil;
     boolean result;
 
-    private void initialize() throws Exception {
-        conn = DriverManager.getConnection("jdbc:h2:./test", "sa", "");
+    @Test
+    void retrieveStoreById() throws Exception{
+        initialize();
+        //Store store = Store.retrieveStoreById(1);
+        //assertEquals("NYC", store.getName());
+    }
+
+    private void initialize() throws Exception
+    {
+
+        conn = DriverManager.getConnection("jdbc:h2:./Tests", "sa", "");
 
         dbController = new DatabaseController(conn);
         stmtUtil = new StatementTemplate(conn);
@@ -26,12 +32,9 @@ class CustomerTest {
         dbController.InitializeNewDatabaseInstance();
     }
 
-    @org.junit.jupiter.api.Test
-    void logIn() throws Exception {
+    @Test //passed
+    void retrieveStores() throws Exception{
         initialize();
 
-        result = Customer.logIn(dbController, stmtUtil, "bobby", "password123");
-        assertEquals(true, result);
     }
-
 }
