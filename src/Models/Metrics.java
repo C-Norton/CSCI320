@@ -14,14 +14,10 @@ import java.sql.ResultSet;
 public final class Metrics
 {
 
-    public static ResultSet TopTwentyProdStore(int store_Id)
+    public static ResultSet TopTwentyProdStore(int store_Id) //calls productWithOrderNum view
     {
 
-        return DatabaseController.SelectQuery("WITH productWithOrderNum as ( " +
-                                              "SELECT UPC, name, orderNum, quantity " +
-                                              "FROM Product join prodQuantities on " +
-                                              "Product.UPC = prodQuantities.productUPC) " +
-                                              "SELECT UPC, Name, sum( quantity ) as Total_Sold " +
+        return DatabaseController.SelectQuery("SELECT UPC, Name, sum( quantity ) as Total_Sold " +
                                               "FROM productWithOrderNum join Orders on " +
                                               "productWithOrderNum.orderNum = Orders.orderNum " +
                                               "WHERE storeId = " + store_Id + " " +
@@ -30,14 +26,10 @@ public final class Metrics
                                               "LIMIT 20");
     }
 
-    public static ResultSet TopTwentyProdOverall()
+    public static ResultSet TopTwentyProdOverall() // calls productWithOrderNum view
     {
 
-        return DatabaseController.SelectQuery("WITH productWithOrderNum as ( " +
-                                              "SELECT Product.UPC, Product.name, prodQuantities.orderNum, prodQuantities.quantity " +
-                                              "FROM Product join prodQuantities on " +
-                                              "Product.UPC = prodQuantities.productUPC) " +
-                                              "SELECT UPC, Name, sum( quantity ) as Total_Sold " +
+        return DatabaseController.SelectQuery("SELECT UPC, Name, sum( quantity ) as Total_Sold " +
                                               "FROM productWithOrderNum join Orders on " +
                                               "productWithOrderNum.orderNum = Orders.orderNum " +
                                               "GROUP BY UPC, Name " +
@@ -45,54 +37,46 @@ public final class Metrics
                                               "LIMIT 20");
     }
 
-    public static ResultSet HowManyStoresDoesProdAOutsellProdB(String prodIdA, String prodIdB){
+    public static ResultSet HowManyStoresDoesProdAOutsellProdB(String prodIdA, String prodIdB){ //doesn't use a view
 
-        return DatabaseController.SelectQuery("WITH productWithOrderNum as ( " +
+        return DatabaseController.SelectQuery("WITH productWithOrderNumCompareProd as ( " +
                                               "SELECT UPC, name, orderNum, quantity " +
                                               "FROM Product join prodQuantities on " +
                                               "Product.UPC = prodQuantities.productUPC " +
                                               "WHERE Product.UPC = '" + prodIdA + "' or Product.UPC = '" + prodIdB + "' ) " +
                                               "SELECT UPC, Name, storeId, sum(quantity) as Total_Sum " +
-                                              "FROM productWithOrderNum join Orders on " +
-                                              "productWithOrderNum.orderNum = Orders.orderNum " +
+                                              "FROM productWithOrderNumCompareProd join Orders on " +
+                                              "productWithOrderNumCompareProd.orderNum = Orders.orderNum " +
                                               "GROUP BY UPC, Name, storeId " +
                                               "ORDER BY storeId DESC");
 
     }
 
 
-    public static ResultSet TopSalesForStores(){
+    public static ResultSet TopSalesForStores(){ //uses orderWithStoreName view
 
-        return DatabaseController.SelectQuery("WITH productWithOrderNum as ( " +
+        return DatabaseController.SelectQuery("WITH productQuantityAndOrderNum as ( " +
                                               "SELECT orderNum, quantity " +
                                               "FROM Product join prodQuantities on " +
-                                              "Product.UPC = prodQuantities.productUPC), " +
-                                              "OrdersWithStoreName as ( " +
-                                              "SELECT Store.storeId, Store.name, orderNum " +
-                                              "FROM Store join Orders on " +
-                                              "Store.storeId = Orders.storeId) " +
-                                              "SELECT OrdersWithStoreName.storeId, OrdersWithStoreName.name," +
+                                              "Product.UPC = prodQuantities.productUPC) " +
+                                              "SELECT orderWithStoreName.storeId, orderWithStoreName.name," +
                                               "sum(quantity) as Total_Sum " +
-                                              "FROM productWithOrderNum join OrdersWithStoreName on " +
-                                              "productWithOrderNum.orderNum = OrdersWithStoreName.orderNum " +
+                                              "FROM productQuantityAndOrderNum join orderWithStoreName on " +
+                                              "productQuantityAndOrderNum.orderNum = orderWithStoreName.orderNum " +
                                               "GROUP BY storeId, name " +
                                               "ORDER BY Total_Sum DESC");
     }
 
-    public static ResultSet TopRevenueForStores(){
+    public static ResultSet TopRevenueForStores(){ //uses orderWithStoreName view
 
-        return DatabaseController.SelectQuery("WITH productWithOrderNum as ( " +
+        return DatabaseController.SelectQuery("WITH productWithOrderNumWithRevenue as ( " +
                                               "SELECT orderNum, quantity, Product.price * quantity as money " +
                                               "FROM Product join prodQuantities on " +
-                                              "Product.UPC = prodQuantities.productUPC), " +
-                                              "OrdersWithStoreName as ( " +
-                                              "SELECT Store.storeId, Store.name, orderNum " +
-                                              "FROM Store join Orders on " +
-                                              "Store.storeId = Orders.storeId) " +
-                                              "SELECT OrdersWithStoreName.storeId, OrdersWithStoreName.name," +
+                                              "Product.UPC = prodQuantities.productUPC) " +
+                                              "SELECT orderWithStoreName.storeId, orderWithStoreName.name," +
                                               "sum(money) as Total_Money " +
-                                              "FROM productWithOrderNum join OrdersWithStoreName on " +
-                                              "productWithOrderNum.orderNum = OrdersWithStoreName.orderNum " +
+                                              "FROM productWithOrderNumWithRevenue join orderWithStoreName on " +
+                                              "productWithOrderNumWithRevenue.orderNum = orderWithStoreName.orderNum " +
                                               "GROUP BY storeId, name " +
                                               "ORDER BY Total_Money DESC");
     }

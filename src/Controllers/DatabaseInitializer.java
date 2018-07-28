@@ -2,6 +2,7 @@ package Controllers;
 
 import org.h2.tools.RunScript;
 
+import javax.xml.transform.Result;
 import java.io.FileReader;
 import java.io.Reader;
 import java.sql.Connection;
@@ -21,6 +22,7 @@ class DatabaseInitializer
 
         clearDatabase(conn);
         createTables(conn);
+        createViews(conn);
         dataPop(conn);
 
     }
@@ -37,6 +39,19 @@ class DatabaseInitializer
 
         // Find all tables and drop them
         Set<String> tables = new HashSet<String>();
+        Set<String> views = new HashSet<>();
+
+
+        ResultSet rsViews = s.executeQuery("SELECT table_name FROM INFORMATION_SCHEMA.VIEWS");
+        while (rsViews.next())
+        {
+            views.add(rsViews.getString(1));
+        }
+        rsViews.close();
+
+        for(String view :views){
+            s.executeUpdate("DROP VIEW " + view);
+        }
 
         ResultSet rs = s.executeQuery("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES  where TABLE_SCHEMA='PUBLIC'");
         while (rs.next())
@@ -48,6 +63,7 @@ class DatabaseInitializer
         {
             s.executeUpdate("DROP TABLE " + table);
         }
+
 
         // Re-enable integrity checks
         s.execute("SET REFERENTIAL_INTEGRITY TRUE");
@@ -140,6 +156,40 @@ class DatabaseInitializer
         catch (Exception e)
         {
             System.out.println("Error Creating tables");
+            e.printStackTrace();
+        }
+    }
+
+
+    private static void createViews(Connection conn)
+    {
+
+        System.out.println("Creating Database Views");
+
+        try
+        {
+            Statement stmt = conn.createStatement();
+
+            String productWithOrderNum = "CREATE VIEW productWithOrderNum as " +
+                                            "SELECT UPC, name, orderNum, quantity " +
+                                            "FROM Product join prodQuantities on " +
+                                            "Product.UPC = prodQuantities.productUPC";
+
+            String orderWithStoreName = "CREATE VIEW orderWithStoreName as " +
+                "SELECT Store.storeId, Store.name, orderNum " +
+                "FROM Store join Orders on " +
+                "Store.storeId = Orders.storeId ";
+
+
+            stmt.executeUpdate(productWithOrderNum);
+            stmt.executeUpdate(orderWithStoreName);
+
+            stmt.close();
+
+        }
+        catch (Exception e)
+        {
+            System.out.println("Error Creating Views");
             e.printStackTrace();
         }
     }

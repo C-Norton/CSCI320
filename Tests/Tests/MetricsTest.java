@@ -5,6 +5,7 @@ import Models.Metrics;
 import Utilities.RSParser;
 import Utilities.StatementTemplate;
 import Utilities.StatementType;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import javax.xml.transform.Result;
@@ -33,6 +34,19 @@ public class MetricsTest {
         dbController.InitializeNewDatabaseInstance();
     }
 
+    @AfterEach
+    public void tearDown()
+    {
+
+        try
+        {
+            conn.close();
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+    }
 
     @Test
     void topTwentyProdStoreTest() throws Exception{
