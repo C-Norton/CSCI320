@@ -60,7 +60,7 @@ public class ShoppingPage implements iPage
             {
 
                 String UPC = inventoryTable.getTableModel().getCell(0, inventoryTable.getSelectedRow());
-                int count = guiController.numPopup("Enter required quantity");
+                Integer count = guiController.numPopup("Enter required quantity");
                 boolean successful = cart.addItem(UPC, count);
                 if (successful)
                 {
@@ -90,7 +90,7 @@ public class ShoppingPage implements iPage
             {
 
                 String UPC = cartTable.getTableModel().getCell(0, cartTable.getSelectedRow());
-                int count = guiController.numPopup("Enter quantity to remove");
+                Integer count = guiController.numPopup("Enter quantity to remove");
                 boolean successful = cart.removeItem(UPC, count);
                 if (successful)
                 {
@@ -165,7 +165,7 @@ public class ShoppingPage implements iPage
                                          public void run()
                                          {
 
-                                             int id = guiController.numPopup("Please enter your customer ID: ");
+                                             Integer id = guiController.numPopup("Please enter your customer ID: ");
                                              cart.setCustomerId(id);
                                              redraw();
                                          }
