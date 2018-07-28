@@ -27,7 +27,7 @@ public final class Order
         String insertOrder = "INSERT INTO Order(userId, storeId) VALUES (" + customerId + ", " + storeId + ")";
 
         int orderNumber = 1;
-        ResultSet orderNum = DatabaseController.SelectQuery("SELECT max(orderNum) from Order", false);
+        ResultSet orderNum = DatabaseController.SelectQuery("SELECT max(orderNum) from Order");
         if (orderNum != null)
         {
             try
@@ -78,7 +78,7 @@ public final class Order
 
         //create query statement
 
-        return DatabaseController.SelectQuery(selectCustomer, false);
+        return DatabaseController.SelectQuery(selectCustomer);
 
     }
 

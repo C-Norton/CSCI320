@@ -24,7 +24,7 @@ public final class Customer
     //return boolean of whether the customer exists
     public static boolean existsCustomer(int customerId){
         String query = "select userid from frequentshopper where userid = " + customerId;
-        ResultSet rs = DatabaseController.SelectQuery(query, false);
+        ResultSet rs = DatabaseController.SelectQuery(query);
         ArrayList<String[]> parsedRs = RSParser.rsToStringHeaders(rs);
         return parsedRs != null && parsedRs.get(1)[0].equals(String.valueOf(customerId));
     }
@@ -36,7 +36,7 @@ public final class Customer
         String selectCustomer = "SELECT * FROM FrequentShopper WHERE userId =" + id ;
 
 
-        return DatabaseController.SelectQuery(selectCustomer, false);
+        return DatabaseController.SelectQuery(selectCustomer);
     }
 
 }

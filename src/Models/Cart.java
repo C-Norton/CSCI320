@@ -10,7 +10,7 @@ import java.util.LinkedHashMap;
  */
 public class Cart
 {
-    public Integer CustomerId;
+    private Integer CustomerId;
     private int StoreId;
     private LinkedHashMap<String, CartEntry> Contents;
     private LinkedHashMap<String, CartEntry> StoreContents;
@@ -28,21 +28,63 @@ public class Cart
         StoreContents = CartEntry.RStoContents(DatabaseController.SelectQuery
                 (("Select Product.UPC, Product.Name, Product.Brand, Product.Price, Inventory.Quantity from product "
                   + "join inventory on Product.UPC = inventory.productUPC where inventory.storeId="
-                  + String.valueOf(StoreId)), false));
+                  + String.valueOf(StoreId))));
 
     }
 
-    public ArrayList<CartEntry> getCartItemDetails()
+    public void SignOut()
+    {
+
+        CustomerId = null;
+    }
+
+    public int getCustomerId()
+    {
+
+        if (CustomerId == null)
+        {
+            return -1;
+        }
+        else
+        {
+            return CustomerId;
+        }
+    }
+
+    public void setCustomerId(int id)
+    {
+
+        if (Customer.existsCustomer(id))
+        {
+            CustomerId = id;
+        }
+        else
+        {
+            CustomerId = null;
+        }
+    }
+
+    public ArrayList<CartEntry> getStoreContents()
     {
 
         ArrayList<CartEntry> conts = new ArrayList<>();
-        conts.addAll(Contents.values());
+        conts.addAll(StoreContents.values());
         return conts;
+    }
+
+    public boolean isSignedIn()
+    {
+
+        return CustomerId != null;
     }
 
     public boolean addItem(String UPC, int quantity)
     {
 
+        if (quantity == 0)
+        {
+            return false;
+        }
         if (StoreContents.containsKey(UPC))
         {
             CartEntry item = StoreContents.get(UPC);
@@ -91,58 +133,16 @@ public class Cart
 
     public boolean CheckOut()
     {
-        /*
-        ResultSet storeInventory = DatabaseController.SelectQuery("Select * from Inventory where storeId = "
-                                                                  + String.valueOf(StoreId), true);
-        boolean succesful = true;
 
-        while (storeInventory.next())
-        {
-            String storeUPC = storeInventory.getString(2);
-            if (Contents.containsKey(storeUPC))
-            {
-                CartEntry entry = Contents.get(storeUPC);
-                int storecount = storeInventory.getInt(3);
-                if (storecount >= entry.Quantity)
-                {
-                    storeInventory.updateInt(3, storecount - entry.Quantity);
-                }
-                else
-                {
-                    succesful = false;
-                }
-            }
-        }
-        storeInventory.beforeFirst();
-        while (storeInventory.next())
-        {
-            if (succesful)
-            {
-                storeInventory.updateRow();
-            }
-            else
-            {
-                storeInventory.cancelRowUpdates();
-            }
-        }
-        if (!succesful)
-        {
-            return false;
-        }
-        int updated = (CustomerId == null) ? DatabaseController.UpdateQuery("Insert into Orders (storeId) VALUES("
-                + String.valueOf(StoreId) + ")")
-                            : DatabaseController.UpdateQuery("Insert into Orders (userId, storeId) VALUES("
-                              + CustomerId.toString()+ "," + String.valueOf(StoreId)+ ")");
-        if (updated == -1){
-            return false;
-        }
-        for (CartEntry me:Contents.values())
-        {
-            DatabaseController.UpdateQuery("Insert into prodQuantities ");
-        }
-        return succesful;
-        */
-        return false;
+        return DatabaseController.createOrder(StoreId, CustomerId, getCartItemDetails());
+    }
+
+    public ArrayList<CartEntry> getCartItemDetails()
+    {
+
+        ArrayList<CartEntry> conts = new ArrayList<>();
+        conts.addAll(Contents.values());
+        return conts;
     }
 
     public float getTotalCost()
@@ -155,5 +155,13 @@ public class Cart
     {
 
         return itemcount;
+    }
+
+    public void emptyCart()
+    {
+
+        Contents = new LinkedHashMap<>();
+        itemcount = 0;
+        totalCost = 0;
     }
 }

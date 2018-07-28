@@ -36,7 +36,7 @@ public class Vendor {
         String selectVendor = "SELECT * FROM Vendor WHERE vendorId =" + id;
         //create query statement
 
-        return DatabaseController.SelectQuery(selectVendor, true);
+        return DatabaseController.SelectQuery(selectVendor);
 
     }
 

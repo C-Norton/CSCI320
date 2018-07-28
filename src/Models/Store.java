@@ -21,7 +21,7 @@ public final class Store
     {
 
         String query = "select storeId from Store where storeId = " + storeId;
-        ResultSet rs = DatabaseController.SelectQuery(query, false);
+        ResultSet rs = DatabaseController.SelectQuery(query);
         ArrayList<String[]> parsedRs = RSParser.rsToStringHeaders(rs);
         return parsedRs != null && parsedRs.get(1)[0].equals(String.valueOf(storeId));
     }
@@ -32,7 +32,7 @@ public final class Store
         return DatabaseController.SelectQuery("Select product.UPC, product.Name, product.Brand, product.Price from "
                                               + "product join inventory on product.UPC = inventory.productUPC where "
                                               + "storeId="
-                                              + id, false);
+                                              + id);
     }
 
     //gets a list of all stores
@@ -47,7 +47,7 @@ public final class Store
 
         //execute and get results of query
 
-        rs = DatabaseController.SelectQuery(selectCustomer, true);
+        rs = DatabaseController.SelectQuery(selectCustomer);
 
 
         return rs;
@@ -63,7 +63,7 @@ public final class Store
         String selectCustomer = "SELECT * FROM Store WHERE storeId = " + storeid;
 
 
-        rs = DatabaseController.SelectQuery(selectCustomer, true);
+        rs = DatabaseController.SelectQuery(selectCustomer);
 
 
         return rs;

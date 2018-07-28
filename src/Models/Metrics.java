@@ -3,7 +3,6 @@ package Models;
 import Controllers.DatabaseController;
 import Utilities.StatementType;
 
-import javax.xml.transform.Result;
 import java.sql.ResultSet;
 
 /**
@@ -19,45 +18,45 @@ public class Metrics
     {
 
         return DatabaseController.SelectQuery("WITH productWithOrderNum as ( " +
-                                                    "SELECT UPC, name, orderNum, quantity " +
-                                                    "FROM Product join prodQuantities on " +
-                                                    "Product.UPC = prodQuantities.productUPC) " +
-                                                "SELECT UPC, Name, sum( quantity ) as Total_Sold " +
-                                                "FROM productWithOrderNum join Orders on " +
-                                                "productWithOrderNum.orderNum = Orders.orderNum " +
-                                                "WHERE storeId = "+ store_Id + " " +
-                                                "GROUP BY UPC, Name " +
-                                                "ORDER BY Total_Sold DESC " +
-                                                "LIMIT 20", false);
+                                              "SELECT UPC, name, orderNum, quantity " +
+                                              "FROM Product join prodQuantities on " +
+                                              "Product.UPC = prodQuantities.productUPC) " +
+                                              "SELECT UPC, Name, sum( quantity ) as Total_Sold " +
+                                              "FROM productWithOrderNum join Orders on " +
+                                              "productWithOrderNum.orderNum = Orders.orderNum " +
+                                              "WHERE storeId = " + store_Id + " " +
+                                              "GROUP BY UPC, Name " +
+                                              "ORDER BY Total_Sold DESC " +
+                                              "LIMIT 20");
     }
 
     public static ResultSet TopTwentyProdOverall()
     {
 
         return DatabaseController.SelectQuery("WITH productWithOrderNum as ( " +
-                                                    "SELECT Product.UPC, Product.name, prodQuantities.orderNum, prodQuantities.quantity " +
-                                                    "FROM Product join prodQuantities on " +
-                                                    "Product.UPC = prodQuantities.productUPC) " +
-                                                "SELECT UPC, Name, sum( quantity ) as Total_Sold " +
-                                                "FROM productWithOrderNum join Orders on " +
-                                                "productWithOrderNum.orderNum = Orders.orderNum " +
-                                                "GROUP BY UPC, Name " +
-                                                "ORDER BY Total_Sold DESC " +
-                                                "LIMIT 20", false);
+                                              "SELECT Product.UPC, Product.name, prodQuantities.orderNum, prodQuantities.quantity " +
+                                              "FROM Product join prodQuantities on " +
+                                              "Product.UPC = prodQuantities.productUPC) " +
+                                              "SELECT UPC, Name, sum( quantity ) as Total_Sold " +
+                                              "FROM productWithOrderNum join Orders on " +
+                                              "productWithOrderNum.orderNum = Orders.orderNum " +
+                                              "GROUP BY UPC, Name " +
+                                              "ORDER BY Total_Sold DESC " +
+                                              "LIMIT 20");
     }
 
     public static ResultSet HowManyStoresDoesProdAOutsellProdB(String prodIdA, String prodIdB){
 
         return DatabaseController.SelectQuery("WITH productWithOrderNum as ( " +
-                                                    "SELECT UPC, name, orderNum, quantity " +
-                                                    "FROM Product join prodQuantities on " +
-                                                    "Product.UPC = prodQuantities.productUPC " +
-                                                    "WHERE Product.UPC = '"+prodIdA+"' or Product.UPC = '"+prodIdB+"' ) " +
-                                                "SELECT UPC, Name, storeId, sum(quantity) as Total_Sum " +
-                                                "FROM productWithOrderNum join Orders on " +
-                                                "productWithOrderNum.orderNum = Orders.orderNum " +
-                                                "GROUP BY UPC, Name, storeId " +
-                                                "ORDER BY storeId DESC", false);
+                                              "SELECT UPC, name, orderNum, quantity " +
+                                              "FROM Product join prodQuantities on " +
+                                              "Product.UPC = prodQuantities.productUPC " +
+                                              "WHERE Product.UPC = '" + prodIdA + "' or Product.UPC = '" + prodIdB + "' ) " +
+                                              "SELECT UPC, Name, storeId, sum(quantity) as Total_Sum " +
+                                              "FROM productWithOrderNum join Orders on " +
+                                              "productWithOrderNum.orderNum = Orders.orderNum " +
+                                              "GROUP BY UPC, Name, storeId " +
+                                              "ORDER BY storeId DESC");
 
     }
 
@@ -65,37 +64,37 @@ public class Metrics
     public static ResultSet TopSalesForStores(){
 
         return DatabaseController.SelectQuery("WITH productWithOrderNum as ( " +
-                "SELECT orderNum, quantity " +
-                "FROM Product join prodQuantities on " +
-                "Product.UPC = prodQuantities.productUPC), " +
-                "OrdersWithStoreName as ( " +
-                "SELECT Store.storeId, Store.name, orderNum " +
-                "FROM Store join Orders on " +
-                "Store.storeId = Orders.storeId) " +
-                "SELECT OrdersWithStoreName.storeId, OrdersWithStoreName.name," +
-                "sum(quantity) as Total_Sum " +
-                "FROM productWithOrderNum join OrdersWithStoreName on " +
-                "productWithOrderNum.orderNum = OrdersWithStoreName.orderNum " +
-                "GROUP BY storeId, name " +
-                "ORDER BY Total_Sum DESC", false);
+                                              "SELECT orderNum, quantity " +
+                                              "FROM Product join prodQuantities on " +
+                                              "Product.UPC = prodQuantities.productUPC), " +
+                                              "OrdersWithStoreName as ( " +
+                                              "SELECT Store.storeId, Store.name, orderNum " +
+                                              "FROM Store join Orders on " +
+                                              "Store.storeId = Orders.storeId) " +
+                                              "SELECT OrdersWithStoreName.storeId, OrdersWithStoreName.name," +
+                                              "sum(quantity) as Total_Sum " +
+                                              "FROM productWithOrderNum join OrdersWithStoreName on " +
+                                              "productWithOrderNum.orderNum = OrdersWithStoreName.orderNum " +
+                                              "GROUP BY storeId, name " +
+                                              "ORDER BY Total_Sum DESC");
     }
 
     public static ResultSet TopRevenueForStores(){
 
         return DatabaseController.SelectQuery("WITH productWithOrderNum as ( " +
-                "SELECT orderNum, quantity, Product.price * quantity as money " +
-                "FROM Product join prodQuantities on " +
-                "Product.UPC = prodQuantities.productUPC), " +
-                "OrdersWithStoreName as ( " +
-                "SELECT Store.storeId, Store.name, orderNum " +
-                "FROM Store join Orders on " +
-                "Store.storeId = Orders.storeId) " +
-                "SELECT OrdersWithStoreName.storeId, OrdersWithStoreName.name," +
-                "sum(money) as Total_Money " +
-                "FROM productWithOrderNum join OrdersWithStoreName on " +
-                "productWithOrderNum.orderNum = OrdersWithStoreName.orderNum " +
-                "GROUP BY storeId, name " +
-                "ORDER BY Total_Money DESC", false);
+                                              "SELECT orderNum, quantity, Product.price * quantity as money " +
+                                              "FROM Product join prodQuantities on " +
+                                              "Product.UPC = prodQuantities.productUPC), " +
+                                              "OrdersWithStoreName as ( " +
+                                              "SELECT Store.storeId, Store.name, orderNum " +
+                                              "FROM Store join Orders on " +
+                                              "Store.storeId = Orders.storeId) " +
+                                              "SELECT OrdersWithStoreName.storeId, OrdersWithStoreName.name," +
+                                              "sum(money) as Total_Money " +
+                                              "FROM productWithOrderNum join OrdersWithStoreName on " +
+                                              "productWithOrderNum.orderNum = OrdersWithStoreName.orderNum " +
+                                              "GROUP BY storeId, name " +
+                                              "ORDER BY Total_Money DESC");
     }
 
     public static ResultSet LinearRegressionRevenueSales(){
@@ -135,7 +134,7 @@ public class Metrics
                             ")" +
                         ")";
 
-        return DatabaseController.SelectQuery(query, false);
+        return DatabaseController.SelectQuery(query);
 
     }
 
@@ -144,14 +143,16 @@ public class Metrics
     //returns null if unsuccessful
     public static ResultSet GenericUnivariateLinearRegression(String potentialQuery, String x, String y){
         String defaultTable = null;
-        switch (DatabaseController.getQueryType(potentialQuery, false)) {
-            case NONUPDATEABLESELECT:
+        switch (DatabaseController.getQueryType(potentialQuery))
+        {
+            case SELECT:
                 defaultTable = potentialQuery;
                 break;
             default:
                 defaultTable = "SELECT * FROM " + potentialQuery;
-                if (DatabaseController.getQueryType(defaultTable, false) !=
-                        StatementType.NONUPDATEABLESELECT){
+                if (DatabaseController.getQueryType(defaultTable) !=
+                    StatementType.SELECT)
+                {
                     return null;
                 }
         }
@@ -163,7 +164,7 @@ public class Metrics
                                 "CROSS JOIN (SELECT avg(" + x + ") as muX, avg(" + y + ") as muY FROM (sample)) " +
                             ")" +
                         ")";
-        return DatabaseController.SelectQuery(query, false);
+        return DatabaseController.SelectQuery(query);
     }
 
 }

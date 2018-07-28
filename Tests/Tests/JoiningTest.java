@@ -28,7 +28,7 @@ class JoiningTest
                                                        + "prodQuantities on"
                                                        + " Orders.orderNum =prodQuantities.orderNum ) where userId "
                                                        + "= '3694'"
-                                                       + "", true));//get all the
+                                                       + ""));//get all the
         // order numbers and all the
         ArrayList<String[]> foo = RSParser.rsToStringHeaders(rs);
         for (int i = 0; i < foo.size(); i++)

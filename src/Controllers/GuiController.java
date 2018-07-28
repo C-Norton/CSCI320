@@ -12,12 +12,8 @@ package Controllers;
  */
 
 import GUIPages.LoginPage;
-import GUIPages.ShoppingPage;
 import GUIPages.iPage;
-import com.googlecode.lanterna.gui2.BasicWindow;
-import com.googlecode.lanterna.gui2.MultiWindowTextGUI;
-import com.googlecode.lanterna.gui2.Window;
-import com.googlecode.lanterna.gui2.WindowBasedTextGUI;
+import com.googlecode.lanterna.gui2.*;
 import com.googlecode.lanterna.gui2.dialogs.TextInputDialog;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
@@ -71,7 +67,8 @@ public class GuiController
     private void updatescreen()
     {
 
-        window.setComponent(PageStack.peekFirst().getPanel());
+        Panel panel = PageStack.peekFirst().getPanel();
+        window.setComponent(panel);
         textGUI.addWindowAndWait(window);
     }
 
@@ -80,11 +77,6 @@ public class GuiController
 
         iPage page = PageStack.peekFirst();
         page.getPanel().invalidate();
-        if (page instanceof ShoppingPage)
-        {
-            ShoppingPage spage = (ShoppingPage) page;
-            spage.redraw();
-        }
         updatescreen();
     }
 

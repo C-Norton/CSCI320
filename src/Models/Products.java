@@ -12,7 +12,7 @@ public final class Products
     public static ResultSet getProductList()
     {
 
-        return DatabaseController.SelectQuery("SELECT * FROM Product", true);
+        return DatabaseController.SelectQuery("SELECT * FROM Product");
     }
 
     public static ResultSet getProductsOfBrand(String brand)
@@ -21,11 +21,12 @@ public final class Products
         return DatabaseController.SelectQuery("SELECT (Product.UPC,Product.Name,Product.Price,Vendor.Name) FROM "
                                               + "(Product LEFT JOIN Vendor on Product.Vendor=Vendor.vendorID)"
                                               + "WHERE Brand = "
-                                              + "\'" + brand + "\'", true);
+                                              + "\'" + brand + "\'");
     }
 
     public static ResultSet getDetailsOfProduct(String upc){
 
-        return DatabaseController.SelectQuery("SELECT * FROM Product WHERE UPC = " + upc, true);
+        return DatabaseController.SelectQuery("SELECT * FROM Product WHERE UPC = " + upc);
     }
+
 }
