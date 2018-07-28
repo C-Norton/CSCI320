@@ -100,8 +100,10 @@ public final class Metrics
     public static ResultSet LinearRegressionRevenueSales(){
         //prototype univariate linear regression
         //RevenueLinearModel(sales) = thetaZero + thetaOne * sales
-        //returns thetaZero as column one and thetaOne as column two
-        String query = "SELECT Average_Revenue - Average_Sum * thetaOne AS thetaZero, thetaOne " + "FROM (" +
+        //returns thetaZero as column four and thetaOne as column five
+        String query =      "SELECT 'Y = thetaZero + X * thetaOne' AS model, '" +
+                            "Store Revenue" + "' AS y, '" + "Number of Sales" + "' AS x, " +
+                            "Average_Revenue - Average_Sum * thetaOne AS thetaZero, thetaOne " + "FROM (" +
                             "SELECT sum((Total_Sum - Average_Sum) * (Total_Money - Average_Revenue)) / " +
                             "sum((Total_Sum - Average_Sum) * (Total_Sum - Average_Sum)) as thetaOne, " +
                             "Average_Revenue, Average_Sum FROM (" +
@@ -156,7 +158,8 @@ public final class Metrics
                     return null;
                 }
         }
-        String query = "SELECT muY - muX * thetaOne AS thetaZero, thetaOne " + "FROM (" +
+        String query =  "SELECT 'Y = thetaZero + X * thetaOne' AS model, '" + y + "' AS y, '" + x + "' AS x, " +
+                        "muY - muX * thetaOne AS thetaZero, thetaOne " + "FROM (" +
                             "SELECT sum((x - muX) * (y - muY)) / " +
                             "sum((x - muX) * (x - muX)) as thetaOne, muY, muX FROM (" +
                                 "WITH sample as (" + defaultTable + ")" +

@@ -2,6 +2,7 @@ package Tests;
 
 import Controllers.DatabaseController;
 import Models.Metrics;
+import Utilities.RSParser;
 import Utilities.StatementTemplate;
 import Utilities.StatementType;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -163,58 +165,85 @@ public class MetricsTest {
 
     @Test
     void LinearRegressionRevenueSalesTest() throws Exception{
-        initialize();
-//        String query = "SELECT thetaOne, ybar - xbar * thetaOne AS thetaZero " +
-//                    "FROM (" +
-//                        "SELECT sum(convert(((Total_Sum - avg(Total_Sum)) " +
-//                        "* (Total_Money - avg(Total_Money))), decimal(18, 2))) " +
-//                        "/ sum(convert(((Total_Sum - avg(Total_Sum)) * (Total_Sum - avg(Total_Sum))), decimal(18, 2))) "
-//                        + "as thetaOne, max(avg(Total_Money)) as ybar, max(avg(Total_Sum)) as xbar " +
-//                        "FROM (" +
-//                            "SELECT storeId, sum(quantity) as Total_Sum, sum(money) as Total_Money " +
-//                            "FROM (" +
-//                                "WITH productWithOrderNum as ( " +
-//                                    "SELECT orderNum, quantity, Product.price * quantity as money " +
-//                                    "FROM Product join prodQuantities on " +
-//                                    "Product.UPC = prodQuantities.productUPC" +
-//                                "), " +
-//                                "OrdersWithStoreId as ( " +
-//                                    "SELECT Store.storeId, orderNum " +
-//                                    "FROM Store join Orders on " +
-//                                    "Store.storeId = Orders.storeId" +
-//                                ") " +
-//                                "SELECT OrdersWithStoreId.storeId, quantity, money " +
-//                                "FROM (" +
-//                                    "productWithOrderNum join OrdersWithStoreId on " +
-//                                    "productWithOrderNum.orderNum = OrdersWithStoreId.orderNum" +
-//                                ") " +
-//                            ") " +
-//                            "GROUP BY storeId" +
-//                        ")" +
-//                    ")"
-//        ;
-//        StatementType stmt =
-//                DatabaseController.getQueryType(query, false);
-//        assertEquals(StatementType.NONUPDATEABLESELECT, stmt);
+        initialize();/*
+        String query = "SELECT thetaOne, ybar - xbar * thetaOne AS thetaZero " +
+                    "FROM (" +
+                        "SELECT sum(convert(((Total_Sum - avg(Total_Sum)) " +
+                        "* (Total_Money - avg(Total_Money))), decimal(18, 2))) " +
+                        "/ sum(convert(((Total_Sum - avg(Total_Sum)) * (Total_Sum - avg(Total_Sum))), decimal(18, 2))) "
+                        + "as thetaOne, max(avg(Total_Money)) as ybar, max(avg(Total_Sum)) as xbar " +
+                        "FROM (" +
+                            "SELECT storeId, sum(quantity) as Total_Sum, sum(money) as Total_Money " +
+                            "FROM (" +
+                                "WITH productWithOrderNum as ( " +
+                                    "SELECT orderNum, quantity, Product.price * quantity as money " +
+                                    "FROM Product join prodQuantities on " +
+                                    "Product.UPC = prodQuantities.productUPC" +
+                                "), " +
+                                "OrdersWithStoreId as ( " +
+                                    "SELECT Store.storeId, orderNum " +
+                                    "FROM Store join Orders on " +
+                                    "Store.storeId = Orders.storeId" +
+                                ") " +
+                                "SELECT OrdersWithStoreId.storeId, quantity, money " +
+                                "FROM (" +
+                                    "productWithOrderNum join OrdersWithStoreId on " +
+                                    "productWithOrderNum.orderNum = OrdersWithStoreId.orderNum" +
+                                ") " +
+                            ") " +
+                            "GROUP BY storeId" +
+                        ")" +
+                    ")"
+        ;
+        StatementType stmt =
+                DatabaseController.getQueryType(query, false);
+        assertEquals(StatementType.NONUPDATEABLESELECT, stmt);*/
         ResultSet rs;
-        rs = Metrics.TopSalesForStores();
-        float[] data = new float[8];
-        float[] data1 = new float[8];
-        int i = 0;
-        while(rs.next()){
-            data1[i] = rs.getFloat(4);
-            data[i] = rs.getFloat(3);
-            i++;
-        }
-        float mockThetaOne = dividend(data, data1) / divisor(data);
+//        rs = Metrics.TopSalesForStores();
+//        float[] data = new float[8];
+//        float[] data1 = new float[8];
+//        int i = 0;
+//        while(rs.next()){
+//            data1[i] = rs.getFloat(4);
+//            data[i] = rs.getFloat(3);
+//            i++;
+//        }
+//        float mockThetaOne = dividend(data, data1) / divisor(data);
 //        System.out.println(dividend(data,data1));
 //        System.out.println(divisor(data));
-        System.out.println(mockThetaOne);
+//        System.out.println(mockThetaOne);
         rs = Metrics.LinearRegressionRevenueSales();
 
         rs.next();
 
-        System.out.println(rs.getBigDecimal(2));
-        assertEquals(mockThetaOne, rs.getBigDecimal(2).floatValue());
+        //System.out.println(rs.getBigDecimal(5));
+        assertEquals(50.116535, rs.getBigDecimal(5).floatValue());
+    }
+
+    @Test
+    void genericUnivariateLinearRegression() throws Exception{
+        initialize();
+
+        ResultSet rs;
+        rs = Metrics.GenericUnivariateLinearRegression("FrequentShopper", "doesNotCompute", "userId");
+        assertNull(rs);
+        rs = Metrics.GenericUnivariateLinearRegression("FrequentShopper", "userId", "userId");
+        assertNotNull(rs);
+        rs.next();
+        assertEquals(0, rs.getFloat(4));
+        assertEquals(1, rs.getFloat(5));
+        rs = Metrics.GenericUnivariateLinearRegression("SELECT * FROM FrequentShopper", "userId", "userId");
+        assertNotNull(rs);
+        rs.next();
+        assertEquals(0, rs.getFloat(4));
+        assertEquals(1, rs.getFloat(5));
+        rs.beforeFirst();
+        ArrayList<String[]> results = RSParser.rsToStringHeaders(rs);
+        for (String[] strArr : results){
+            for (String str : strArr){
+                System.out.print(str + "||");
+            }
+            System.out.println();
+        }
     }
 }
