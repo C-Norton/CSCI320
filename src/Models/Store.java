@@ -69,4 +69,18 @@ public final class Store
         return rs;
     }
 
+    public static ResultSet getOrdersFromStore(int id)
+    {
+
+
+        String Query = "with prod as (Select * from orders natural join prodquantities "
+                       + " WHERE storeId =" + id + ")  Select prod.ordernum, prod.userid, "
+                       + " prod.productupc, prod.quantity, product.name, product.brand from prod "
+                       + " join product on prod.productupc = product.upc order by prod.ordernum";
+
+
+        return DatabaseController.SelectQuery(Query);
+
+    }
+
 }

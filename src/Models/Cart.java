@@ -51,10 +51,10 @@ public class Cart
         }
     }
 
-    public void setCustomerId(int id)
+    public void setCustomerId(Integer id)
     {
 
-        if (Customer.existsCustomer(id))
+        if (id != null && Customer.existsCustomer(id))
         {
             CustomerId = id;
         }
@@ -78,9 +78,13 @@ public class Cart
         return CustomerId != null;
     }
 
-    public boolean addItem(String UPC, int quantity)
+    public boolean addItem(String UPC, Integer quantity)
     {
 
+        if (quantity == null)
+        {
+            return false;
+        }
         if (quantity == 0)
         {
             return false;
@@ -106,8 +110,17 @@ public class Cart
         return false;
     }
 
-    public boolean removeItem(String UPC, int quantity)
+    public boolean removeItem(String UPC, Integer quantity)
     {
+
+        if (quantity == null)
+        {
+            return false;
+        }
+        if (quantity == 0)
+        {
+            return false;
+        }
 
         if (Contents.containsKey(UPC))
         {

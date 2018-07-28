@@ -24,9 +24,5 @@ public final class Products
                                               + "\'" + brand + "\'");
     }
 
-    public static ResultSet getDetailsOfProduct(String upc){
-
-        return DatabaseController.SelectQuery("SELECT * FROM Product WHERE UPC = " + upc);
-    }
 
 }

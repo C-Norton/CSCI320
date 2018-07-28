@@ -109,10 +109,11 @@ public class GuiController
 
     }
 
-    public int numPopup(String prompt)
+    public Integer numPopup(String prompt)
     {
 
         return TextInputDialog.showNumberDialog(textGUI, prompt, "", "0").intValue();
+
     }
 
     /**
