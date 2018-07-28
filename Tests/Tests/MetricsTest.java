@@ -2,6 +2,7 @@ package Tests;
 
 import Controllers.DatabaseController;
 import Models.Metrics;
+import Utilities.RSParser;
 import Utilities.StatementTemplate;
 import Utilities.StatementType;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -197,25 +199,25 @@ public class MetricsTest {
                 DatabaseController.getQueryType(query, false);
         assertEquals(StatementType.NONUPDATEABLESELECT, stmt);*/
         ResultSet rs;
-        rs = Metrics.TopSalesForStores();
-        float[] data = new float[8];
-        float[] data1 = new float[8];
-        int i = 0;
-        while(rs.next()){
-            data1[i] = rs.getFloat(4);
-            data[i] = rs.getFloat(3);
-            i++;
-        }
-        float mockThetaOne = dividend(data, data1) / divisor(data);
+//        rs = Metrics.TopSalesForStores();
+//        float[] data = new float[8];
+//        float[] data1 = new float[8];
+//        int i = 0;
+//        while(rs.next()){
+//            data1[i] = rs.getFloat(4);
+//            data[i] = rs.getFloat(3);
+//            i++;
+//        }
+//        float mockThetaOne = dividend(data, data1) / divisor(data);
 //        System.out.println(dividend(data,data1));
 //        System.out.println(divisor(data));
-        System.out.println(mockThetaOne);
+//        System.out.println(mockThetaOne);
         rs = Metrics.LinearRegressionRevenueSales();
 
         rs.next();
 
-        System.out.println(rs.getBigDecimal(2));
-        assertEquals(mockThetaOne, rs.getBigDecimal(2).floatValue());
+        //System.out.println(rs.getBigDecimal(5));
+        assertEquals(50.116535, rs.getBigDecimal(5).floatValue());
     }
 
     @Test
@@ -228,12 +230,20 @@ public class MetricsTest {
         rs = Metrics.GenericUnivariateLinearRegression("FrequentShopper", "userId", "userId");
         assertNotNull(rs);
         rs.next();
-        assertEquals(0, rs.getFloat(1));
-        assertEquals(1, rs.getFloat(2));
+        assertEquals(0, rs.getFloat(4));
+        assertEquals(1, rs.getFloat(5));
         rs = Metrics.GenericUnivariateLinearRegression("SELECT * FROM FrequentShopper", "userId", "userId");
         assertNotNull(rs);
         rs.next();
-        assertEquals(0, rs.getFloat(1));
-        assertEquals(1, rs.getFloat(2));
+        assertEquals(0, rs.getFloat(4));
+        assertEquals(1, rs.getFloat(5));
+        rs.beforeFirst();
+        ArrayList<String[]> results = RSParser.rsToStringHeaders(rs);
+        for (String[] strArr : results){
+            for (String str : strArr){
+                System.out.print(str + "||");
+            }
+            System.out.println();
+        }
     }
 }

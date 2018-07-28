@@ -81,7 +81,7 @@ public class MetricsMenuPage implements iPage
             }
         }
         ));
-        panel.addComponent(new Button("5. View linear regression of revenue by store", new Runnable()
+        panel.addComponent(new Button("5. View linear regression of revenue to sales by store", new Runnable()
         {
             @Override
             public void run()
