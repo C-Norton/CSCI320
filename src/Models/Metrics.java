@@ -11,7 +11,7 @@ import java.sql.ResultSet;
  * Metrics is a class for more complicated queries on the database for getting overall statistics about the data. See
  * page 3 of the retail domain document, "Queries" section for more details
  */
-public class Metrics
+public final class Metrics
 {
 
     public static ResultSet TopTwentyProdStore(int store_Id)
