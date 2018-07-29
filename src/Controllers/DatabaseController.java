@@ -14,7 +14,7 @@ public class DatabaseController
 {
 
     private static Connection conn;
-
+    private static boolean restockenabled = false;
     public DatabaseController(Connection connection)
     {
 
@@ -255,13 +255,14 @@ public class DatabaseController
         {
             Statement stmt = StatementTemplate.connUpdateStatement();
 
-            String statement =  "create trigger autorestock after update on inventory " +
-                                "for each row " +
-                                "call \"Controllers.Restock\"";
+            String statement = "create trigger autorestock after update on inventory " +
+                               "for each row " +
+                               "call \"Controllers.Restock\"";
 
             stmt.executeUpdate(statement);
         }
-        catch (SQLException e){
+        catch (SQLException e)
+        {
             e.printStackTrace();
             try
             {
@@ -274,40 +275,46 @@ public class DatabaseController
                 return false;
             }
         }
-
+        restockenabled = true;
         return true;
 
     }
 
     public static boolean disableRestockingTrigger()
-        {
+    {
 
+        try
+        {
+            Statement stmt = StatementTemplate.connUpdateStatement();
+
+            String statement = "DROP TRIGGER autorestock";
+
+            stmt.executeUpdate(statement);
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
             try
             {
-                Statement stmt = StatementTemplate.connUpdateStatement();
-
-                String statement =  "DROP TRIGGER autorestock";
-
-                stmt.executeUpdate(statement);
+                conn.rollback();
+                return false;
             }
-            catch (SQLException e){
-                e.printStackTrace();
-                try
-                {
-                    conn.rollback();
-                    return false;
-                }
-                catch (SQLException f)
-                {
-                    f.printStackTrace();
-                    return false;
-                }
+            catch (SQLException f)
+            {
+                f.printStackTrace();
+                return false;
             }
-
-            return true;
-
         }
+        restockenabled = false;
+        return true;
 
+    }
+
+    public static Boolean getRestockenabled()
+    {
+
+        return restockenabled;
+    }
     //initialize a fresh instance of the retail DB
     public void InitializeNewDatabaseInstance() throws Exception
     {

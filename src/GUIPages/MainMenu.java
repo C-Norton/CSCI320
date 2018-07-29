@@ -1,5 +1,6 @@
 package GUIPages;
 
+import Controllers.DatabaseController;
 import Controllers.GuiController;
 import Models.Products;
 import Models.Store;
@@ -10,16 +11,24 @@ import com.googlecode.lanterna.gui2.*;
  */
 public class MainMenu implements iPage
 {
-
+    private GuiController guiController;
     private Panel panel;
 
     MainMenu(GuiController guiController)
     {
 
+        this.guiController = guiController;
+        redraw();
+    }
+
+    private void redraw()
+    {
+
         panel = new Panel(new LinearLayout(Direction.VERTICAL));
         panel.addComponent(new Label("Welcome to FastMart! Where it's fast and easy to shop!\nUse the arrow Keys "
                                      + "to highlight desired option. Press ENTER to select\n" +
-                                     "Text Fields CAN be pasted into, using the hotkey Ctrl+Shift+V.\nMultiline pasting not supported"));
+                                     "Text Fields CAN be pasted into, using the hotkey Ctrl+Shift+V.\nMultiline "
+                                     + "pasting not supported"));
         panel.addComponent(new Button("1. View Stores", new Runnable()
         {
             @Override
@@ -71,13 +80,34 @@ public class MainMenu implements iPage
                                                                                                          + "Store"));
             }
         }));
-        panel.addComponent(new Button("6. Back", guiController::closePage));
-    }
+        boolean restockenabled = DatabaseController.getRestockenabled();
+        panel.addComponent(new Button("6. Toggle automatic restocking, Current status: "
+                                      + String.valueOf(restockenabled),
+                new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
 
+                        if (restockenabled)
+                        {
+                            DatabaseController.disableRestockingTrigger();
+                        }
+                        else
+                        {
+                            DatabaseController.enableRestockingTrigger();
+                        }
+                        redraw();
+                        guiController.refreshPage();
+                    }
+                }));
+        panel.addComponent(new Button("7. Back", guiController::closePage));
+    }
     @Override
     public Panel getPanel()
     {
 
         return panel;
     }
+
 }
