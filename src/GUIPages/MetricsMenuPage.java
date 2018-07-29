@@ -102,6 +102,17 @@ public class MetricsMenuPage implements iPage
 
                 String prod1 = guiController.textpopup("Enter UPC 1", "Which products would you like to know about?");
                 String prod2 = guiController.textpopup("Enter UPC 2", "Which products would you like to know about?");
+                Long prod1L, prod2L;
+                try
+                {
+                    prod1L = Long.valueOf(prod1);
+                    prod2L = Long.valueOf(prod2);
+                }
+                catch (NumberFormatException e)
+                {
+                    prod1 = null;
+                    prod2 = null;
+                }
                 if (prod1 != null && prod2 != null)
                 {
                     iPage results = new DataTablePage(
