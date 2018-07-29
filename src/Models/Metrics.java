@@ -93,7 +93,7 @@ public final class Metrics
                             "Average_Revenue, Average_Sum FROM (" +
                                 "WITH tonsOfData as (" +
                                     "SELECT storeId, sum(quantity) as Total_Sum, sum(money) as Total_Money " + "FROM (" +
-                                        "WITH productWithOrderNum as ( " +
+                                        "WITH OrdersWithProductCosts as ( " +
                                             "SELECT orderNum, quantity, Product.price * quantity as money " +
                                             "FROM Product join prodQuantities on " +
                                             "Product.UPC = prodQuantities.productUPC" +
@@ -104,8 +104,8 @@ public final class Metrics
                                             "Store.storeId = Orders.storeId" +
                                         ") " +
                                         "SELECT OrdersWithStoreId.storeId, quantity, money " + "FROM (" +
-                                            "productWithOrderNum join OrdersWithStoreId on " +
-                                            "productWithOrderNum.orderNum = OrdersWithStoreId.orderNum" +
+                                            "OrdersWithProductCosts join OrdersWithStoreId on " +
+                                            "OrdersWithProductCosts.orderNum = OrdersWithStoreId.orderNum" +
                                         ") " +
                                     ") " +
                                     "GROUP BY storeId" +
