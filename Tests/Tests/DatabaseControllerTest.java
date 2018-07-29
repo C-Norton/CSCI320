@@ -40,4 +40,18 @@ class DatabaseControllerTest {
         assertEquals(true, cart.addItem("608263619879", 49));
         assertEquals(false, cart.addItem("608263619879", 1));
     }
+
+    @Test
+    void disableRestockingTrigger() throws Exception{
+        initialize();
+        assertEquals(true, DatabaseController.enableRestockingTrigger());
+        assertEquals(true, DatabaseController.disableRestockingTrigger());
+        Cart cart = new Cart(1);
+        cart.addItem("608630039789", 19);
+        cart.addItem("608263619879", 62);
+        cart.CheckOut();
+        cart = new Cart(1);
+        assertEquals(false, cart.addItem("608630039789", 1));
+        assertEquals(false, cart.addItem("608263619879", 1));
+    }
 }

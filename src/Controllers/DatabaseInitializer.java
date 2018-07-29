@@ -23,7 +23,9 @@ class DatabaseInitializer
         createTables(conn);
         createViews(conn);
         dataPop(conn);
-
+        if (!DatabaseController.enableRestockingTrigger()){
+            throw new Exception("Failure Creating Restock Trigger");
+        }
     }
 
     //clears the db
