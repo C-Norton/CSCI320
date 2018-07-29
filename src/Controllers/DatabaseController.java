@@ -248,6 +248,37 @@ public class DatabaseController
         return true;
     }
 
+    public static boolean enableRestockingTrigger()
+    {
+
+        try
+        {
+            Statement stmt = StatementTemplate.connUpdateStatement();
+
+            String statement =  "create trigger autorestock after update on inventory " +
+                                "for each row " +
+                                "call \"Controllers.Restock\"";
+
+            stmt.executeUpdate(statement);
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+            try
+            {
+                conn.rollback();
+                return false;
+            }
+            catch (SQLException f)
+            {
+                f.printStackTrace();
+                return false;
+            }
+        }
+
+        return true;
+
+    }
+
     //initialize a fresh instance of the retail DB
     public void InitializeNewDatabaseInstance() throws Exception
     {
