@@ -4,11 +4,9 @@ import Controllers.DatabaseController;
 import Models.Metrics;
 import Utilities.RSParser;
 import Utilities.StatementTemplate;
-import Utilities.StatementType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
-import javax.xml.transform.Result;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -17,22 +15,12 @@ import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class MetricsTest {
+public class MetricsTest
+{
 
-    Connection conn;
+    Connection conn = null;
     DatabaseController dbController;
     StatementTemplate stmtUtil;
-
-    private void initialize() throws Exception{
-
-        conn = DriverManager.getConnection("jdbc:h2:./Tests", "sa", "");
-
-        dbController = new DatabaseController(conn);
-        stmtUtil = new StatementTemplate(conn);
-
-
-        dbController.InitializeNewDatabaseInstance();
-    }
 
     @AfterEach
     public void tearDown()
@@ -49,7 +37,9 @@ public class MetricsTest {
     }
 
     @Test
-    void topTwentyProdStoreTest() throws Exception{
+    void topTwentyProdStoreTest() throws Exception
+    {
+
         initialize();
 
         int store_Id = 1; //testing store with id 1
@@ -58,8 +48,10 @@ public class MetricsTest {
         assertNotNull(rs);
         System.out.println(rs);
         System.out.println("\n                          || Top Twenty Products For Store " + store_Id + " ||\n");
-        while(rs.next()){
-            String string = String.format("%1$15s %2$-40s  %3$10s", rs.getString(1), "| "+rs.getString(2), "|      "+rs.getString(3));
+        while (rs.next())
+        {
+            String string = String.format("%1$15s %2$-40s  %3$10s", rs.getString(1), "| " + rs.getString(2), "|      "
+                                                                                                             + rs.getString(3));
             //System.out.println(rs.getString("Name") + " | " + rs.getString("Total_Sold"));
             System.out.println(string);
         }
@@ -78,107 +70,148 @@ public class MetricsTest {
 
     }
 
+    private void initialize() throws Exception
+    {
+
+        conn = DriverManager.getConnection("jdbc:h2:./Tests", "sa", "");
+
+        dbController = new DatabaseController(conn);
+        stmtUtil = new StatementTemplate(conn);
+
+
+        dbController.InitializeNewDatabaseInstance();
+    }
+
     @Test
-    void TopTwentyProdOverallTest() throws Exception{
+    void TopTwentyProdOverallTest() throws Exception
+    {
+
         initialize();
 
         ResultSet rs = Metrics.TopTwentyProdOverall();
         assertNotNull(rs);
         System.out.println(rs);
         System.out.println("\n                          || Top Twenty Products ||\n");
-        while(rs.next()){
-            String string = String.format("%1$15s %2$-40s  %3$10s", rs.getString(1), "| "+rs.getString(2), "|      "+rs.getString(3));
+        while (rs.next())
+        {
+            String string = String.format("%1$15s %2$-40s  %3$10s", rs.getString(1), "| " + rs.getString(2), "|      "
+                                                                                                             + rs.getString(3));
             System.out.println(string);
         }
 
     }
 
     @Test
-    void HowManyStoresDoesProdAOutsellProdBTest() throws Exception{
+    void HowManyStoresDoesProdAOutsellProdBTest() throws Exception
+    {
+
         initialize();
 
         String a = "810770474429";
         String b = "915693126004";
 
-        ResultSet rs = Metrics.HowManyStoresDoesProdAOutsellProdB(a,b);
+        ResultSet rs = Metrics.HowManyStoresDoesProdAOutsellProdB(a, b);
         assertNotNull(rs);
         System.out.println(rs);
-        System.out.println("\n                          || Product "+a+" Vs. Product "+b+" ||\n");
-        String header = String.format("%1$15s %2$-30s  %3$-15s %4$-10s", "UPC", "| "+"ProductName", "|"+" StoreId", "| "+"Quantity");
+        System.out.println("\n                          || Product " + a + " Vs. Product " + b + " ||\n");
+        String header = String.format("%1$15s %2$-30s  %3$-15s %4$-10s", "UPC", "| " + "ProductName", "|" + " StoreId",
+                "| "
+                + "Quantity");
         System.out.println(header);
-        while(rs.next()){
-            String string = String.format("%1$15s %2$-30s  %3$-15s %4$-10s", rs.getString(1), "| "+rs.getString(2), "|       "+rs.getString(3), "| "+rs.getString(4));
+        while (rs.next())
+        {
+            String string = String.format("%1$15s %2$-30s  %3$-15s %4$-10s", rs.getString(1), "| " + rs.getString(2),
+                    "|       "
+                    + rs.getString(3), "| " + rs.getString(4));
             System.out.println(string);
         }
 
     }
 
     @Test
-    void TopSalesForStoresTest() throws Exception{
+    void TopSalesForStoresTest() throws Exception
+    {
+
         initialize();
 
         ResultSet rs = Metrics.TopSalesForStores();
         assertNotNull(rs);
         System.out.println(rs);
         System.out.println("\n                          || List of Stores by Sales ||\n");
-        String header = String.format("%1$15s %2$-35s %3$-10s", "StoreId", "| "+"Name", "| "+"Sales");
+        String header = String.format("%1$15s %2$-35s %3$-10s", "StoreId", "| " + "Name", "| " + "Sales");
         System.out.println(header);
-        while(rs.next()){
-            String string = String.format("%1$15s %2$-35s %3$-10s", rs.getString(1), "| "+rs.getString(2), "| "+rs.getString(3));
+        while (rs.next())
+        {
+            String string = String.format("%1$15s %2$-35s %3$-10s", rs.getString(1), "| " + rs.getString(2), "| "
+                                                                                                             + rs.getString(3));
             System.out.println(string);
         }
 
     }
 
     @Test
-    void TopRevenueForStoresTest() throws Exception{
+    void TopRevenueForStoresTest() throws Exception
+    {
+
         initialize();
 
         ResultSet rs = Metrics.TopRevenueForStores();
         assertNotNull(rs);
         System.out.println(rs);
         System.out.println("\n                          || List of Stores by Revenue ||\n");
-        String header = String.format("%1$15s %2$-35s %3$-10s", "StoreId", "| "+"Name", "| "+"Revenue");
+        String header = String.format("%1$15s %2$-35s %3$-10s", "StoreId", "| " + "Name", "| " + "Revenue");
         System.out.println(header);
-        while(rs.next()){
-            String string = String.format("%1$15s %2$-35s %3$-10s", rs.getString(1), "| "+rs.getString(2), "| $"+rs.getString(3));
+        while (rs.next())
+        {
+            String string = String.format("%1$15s %2$-35s %3$-10s", rs.getString(1), "| " + rs.getString(2), "| $"
+                                                                                                             + rs.getString(3));
             System.out.println(string);
         }
 
     }
 
-    private float divisor(float[] data){
+    private float divisor(float[] data)
+    {
+
         float sum = 0;
 
-        for(int i=0; i < 8; i++){
+        for (int i = 0; i < 8; i++)
+        {
             sum += data[i];
         }
         float average = sum / data.length;
         float divisor = 0;
-        for(int i=0; i < 8; i++){
+        for (int i = 0; i < 8; i++)
+        {
             divisor += (data[i] - average) * (data[i] - average);
         }
         return divisor;
     }
 
-    private float dividend(float[] data, float[] data1){
+    private float dividend(float[] data, float[] data1)
+    {
+
         float sum = 0;
         float sum1 = 0;
-        for(int i=0; i < 8; i++){
+        for (int i = 0; i < 8; i++)
+        {
             sum += data[i];
             sum1 += data1[i];
         }
         float average = sum / data.length;
         float average1 = sum1 / data.length;
         float dividend = 0;
-        for(int i=0; i < 8; i++){
+        for (int i = 0; i < 8; i++)
+        {
             dividend += (data[i] - average) * (data1[i] - average1);
         }
         return dividend;
     }
 
     @Test
-    void LinearRegressionRevenueSalesTest() throws Exception{
+    void LinearRegressionRevenueSalesTest() throws Exception
+    {
+
         initialize();/*
         String query = "SELECT thetaOne, ybar - xbar * thetaOne AS thetaZero " +
                     "FROM (" +
@@ -235,7 +268,9 @@ public class MetricsTest {
     }
 
     @Test
-    void genericUnivariateLinearRegression() throws Exception{
+    void genericUnivariateLinearRegression() throws Exception
+    {
+
         initialize();
 
         ResultSet rs;
@@ -253,8 +288,10 @@ public class MetricsTest {
         assertEquals(1, rs.getFloat(5));
         rs.beforeFirst();
         ArrayList<String[]> results = RSParser.rsToStringHeaders(rs);
-        for (String[] strArr : results){
-            for (String str : strArr){
+        for (String[] strArr : results)
+        {
+            for (String str : strArr)
+            {
                 System.out.print(str + "||");
             }
             System.out.println();

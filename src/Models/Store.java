@@ -1,10 +1,9 @@
 package Models;
 
 import Controllers.DatabaseController;
-import Utilities.RSParser;
 
 import java.sql.ResultSet;
-import java.util.ArrayList;
+import java.sql.SQLException;
 
 /**
  * Created by Michael on 7/6/2018.
@@ -17,13 +16,20 @@ public final class Store
 
     }
 
-    public static Boolean existsStore(int storeId)
+    public static boolean existsStore(int storeId)
     {
 
         String query = "select storeId from Store where storeId = " + storeId;
         ResultSet rs = DatabaseController.SelectQuery(query);
-        ArrayList<String[]> parsedRs = RSParser.rsToStringHeaders(rs);
-        return parsedRs != null && parsedRs.get(1)[0].equals(String.valueOf(storeId));
+        try
+        {
+            return rs != null && rs.next();
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public static ResultSet getInventoryMetadata(int id)

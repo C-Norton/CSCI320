@@ -2,7 +2,6 @@ package Controllers;
 
 import org.h2.tools.RunScript;
 
-import javax.xml.transform.Result;
 import java.io.FileReader;
 import java.io.Reader;
 import java.sql.Connection;
@@ -81,19 +80,20 @@ class DatabaseInitializer
 
             String FrequentShopper = "CREATE TABLE   FrequentShopper " +
                                      "(userId INTEGER not NULL auto_increment, " +
-                                     " name VARCHAR(32), " +
-                                     " address VARCHAR(255), " +
-                                     " phoneNum VARCHAR(10), " +
+                                     " name VARCHAR(32) not NULL, " +
+                                     " address VARCHAR(255) not NULL, " +
+                                     " phoneNum CHAR(10) not NULL, " +
                                      " creditCard VARCHAR(19), " +
-                                     " PRIMARY KEY ( userId ))";
-
+                                     " PRIMARY KEY ( userId ), CONSTRAINT nameLen CHECK (LENGTH(name)>=1), CONSTRAINT"
+                                     + " addresslen CHECK (LENGTH(address)>=4))";
             String Store = "CREATE TABLE   Store " +
                            "(storeId INTEGER not NULL auto_increment, " +
-                           " name VARCHAR(32), " +
-                           " location VARCHAR(32), " +
-                           " phoneNum VARCHAR(10), " +
-                           " hours VARCHAR(50), " +
-                           " PRIMARY KEY ( storeId ))";
+                           " name VARCHAR(32) not NULL, " +
+                           " location VARCHAR(32) not NULL, " +
+                           " phoneNum CHAR(10) not NULL, " +
+                           " hours VARCHAR(50) not NULL, " +
+                           " PRIMARY KEY ( storeId ), CONSTRAINT storelen CHECK (LENGTH(name)>= 1), CONSTRAINT loclen "
+                           + "CHECK (LENGTH(location)>=1))";
 
             String Order = "CREATE TABLE   Orders " +
                            "(orderNum Integer not NULL auto_increment," +
@@ -106,39 +106,43 @@ class DatabaseInitializer
 
             String Vendor = "CREATE TABLE   Vendor " +
                             "(vendorId INTEGER not NULL auto_increment, " +
-                            " name VARCHAR(64), " +
-                            " location VARCHAR(32), " +
-                            " phoneNum VARCHAR(10), " +
-                            " salesRep VARCHAR(32), " +
-                            " PRIMARY KEY ( vendorId ))";
+                            " name VARCHAR(64) NOT NULL, " +
+                            " location VARCHAR(32) NOT NULL, " +
+                            " phoneNum CHAR(10) NOT NULL, " +
+                            " salesRep VARCHAR(32) NOT NULL, " +
+                            " PRIMARY KEY ( vendorId ), CONSTRAINT vendorname CHECK (LENGTH(name)>= 1), CONSTRAINT "
+                            + "vendorloc CHECK (LENGTH(location)>=1), CONSTRAINT repname CHECK (LENGTH(salesrep)>=1"
+                            + "))";
 
             String Product = "CREATE TABLE   Product " +
                              "(UPC numeric(12,0) not NULL , " +
-                             " name VARCHAR(50), " +
-                             " brand VARCHAR(64), " +
-                             " price decimal(19,2), " +
+                             " name VARCHAR(50) not NULL, " +
+                             " brand VARCHAR(64) not NULL, " +
+                             " price decimal(19,2) not NULL, " +
                              " vendor Integer, " +
                              " PRIMARY KEY ( UPC ), " +
-                             " FOREIGN KEY  (vendor) references VENDOR(VENDORID) ON DELETE SET NULL ON UPDATE CASCADE)";
+                             " FOREIGN KEY  (vendor) references VENDOR(VENDORID) ON DELETE SET NULL ON UPDATE CASCADE"
+                             + ", CONSTRAINT prodname CHECK (LENGTH(NAME)>0), CONSTRAINT brandname CHECK (LENGTH"
+                             + "(brand)>0))";
 
             String productQuantities = "CREATE TABLE   prodQuantities " +
                                        "(orderNum INTEGER not NULL," +
                                        "productUPC numeric(12,0), " +
-                                       "quantity INTEGER, " +
+                                       "quantity INTEGER not NULL, " +
                                        "PRIMARY KEY ( orderNum,productUPC ), " +
                                        "FOREIGN KEY  (orderNum) REFERENCES Orders(orderNum) ON DELETE CASCADE ON "
                                        + "UPDATE CASCADE," +
                                        " FOREIGN KEY (productUPC) REFERENCES Product(UPC) ON DELETE SET NULL ON "
-                                       + "UPDATE CASCADE)";
+                                       + "UPDATE CASCADE, CONSTRAINT minQuantity CHECK quantity>=1)";
 
             String Inventory = "CREATE TABLE   Inventory " +
                                "(storeId INTEGER, " +
                                "productUPC numeric(12,0)," +
-                               "quantity INTEGER," +
+                               "quantity INTEGER not NULL," +
                                " PRIMARY KEY ( storeID, productUPC )," +
                                " FOREIGN KEY (storeId) references store(storeId) ON DELETE CASCADE ON UPDATE CASCADE,"
                                + " FOREIGN KEY (productUPC) references Product(UPC) on DELETE CASCADE ON UPDATE "
-                               + "CASCADE)";
+                               + "CASCADE, CONSTRAINT mininvQuantity CHECK quantity>=0)";
 
 
             stmt.executeUpdate(FrequentShopper);
@@ -148,7 +152,6 @@ class DatabaseInitializer
             stmt.executeUpdate(Product);
             stmt.executeUpdate(productQuantities);
             stmt.executeUpdate(Inventory);
-
 
             stmt.close();
 

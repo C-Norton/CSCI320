@@ -25,15 +25,32 @@ public class DatabaseController
     public static int UpdateQuery(String query)
     {
 
+        Statement stmt = null;
+
         int updated;
         try
         {
-            updated = StatementTemplate.connUpdateStatement().executeUpdate(query);
+            stmt = StatementTemplate.connUpdateStatement();
+            updated = stmt.executeUpdate(query);
         }
         catch (SQLException e)
         {
             e.printStackTrace();
             return -1;
+        }
+        finally
+        {
+            try
+            {
+                if (stmt != null)
+                {
+                    stmt.close();
+                }
+            }
+            catch (SQLException e)
+            {
+                e.printStackTrace();
+            }
         }
         return updated;
     }
@@ -50,7 +67,7 @@ public class DatabaseController
     public static ResultSet SelectQuery(String Query)
     {
 
-        Statement stmt = null;
+        Statement stmt;
         ResultSet rs = null;
         try
         {
@@ -76,9 +93,11 @@ public class DatabaseController
     public static StatementType getQueryType(String Query)
     {
 
+        Statement stmt = null;
+
         try
         {
-            Statement stmt = StatementTemplate.connQueryStatement();
+            stmt = StatementTemplate.connQueryStatement();
             stmt.executeQuery(Query);
         }
         catch (SQLException e)
@@ -90,6 +109,20 @@ public class DatabaseController
             else
             {
                 return StatementType.INVALID;
+            }
+        }
+        finally
+        {
+            try
+            {
+                if (stmt != null)
+                {
+                    stmt.close();
+                }
+            }
+            catch (SQLException e)
+            {
+                e.printStackTrace();
             }
         }
         return StatementType.SELECT;

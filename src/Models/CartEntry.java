@@ -21,7 +21,7 @@ public class CartEntry
 
     }
 
-    public static LinkedHashMap<String, CartEntry> RStoContents(ResultSet rs)
+    static LinkedHashMap<String, CartEntry> RStoContents(ResultSet rs)
     {
 
         if (rs == null)

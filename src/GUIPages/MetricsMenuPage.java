@@ -41,7 +41,7 @@ public class MetricsMenuPage implements iPage
             {
 
                 Integer storeId = guiController.numPopup("Which store would you like to know about?");
-                if (storeId != null)
+                if (storeId != null && Store.existsStore(storeId))
                 {
                     iPage results = new DataTablePage(
                             guiController,
@@ -59,7 +59,7 @@ public class MetricsMenuPage implements iPage
             {
 
                 Integer storeId = guiController.numPopup("Which store would you like to know about?");
-                if (storeId != null)
+                if (storeId != null && Store.existsStore(storeId))
                 {
                     iPage results = new DataTablePage(
                             guiController,
@@ -81,7 +81,7 @@ public class MetricsMenuPage implements iPage
             }
         }
         ));
-        panel.addComponent(new Button("5. View linear regression of revenue to sales by store", new Runnable()
+        panel.addComponent(new Button("5. View linear regression of revenue to sales", new Runnable()
         {
             @Override
             public void run()
@@ -94,7 +94,48 @@ public class MetricsMenuPage implements iPage
                 guiController.addAndDisplayPage(results);
             }
         }));
-        panel.addComponent(new Button("5. Back", guiController::closePage));
+        panel.addComponent(new Button("6. Compare sales volume of products across stores", new Runnable()
+        {
+            @Override
+            public void run()
+            {
+
+                String prod1 = guiController.textpopup("Enter UPC 1", "Which products would you like to know about?");
+                String prod2 = guiController.textpopup("Enter UPC 2", "Which products would you like to know about?");
+                if (prod1 != null && prod2 != null)
+                {
+                    iPage results = new DataTablePage(
+                            guiController,
+                            Metrics.HowManyStoresDoesProdAOutsellProdB(prod1, prod2),
+                            "Product sales across stores");
+                    guiController.addAndDisplayPage(results);
+                }
+            }
+        }));
+        panel.addComponent(new Button("7. View total items shipped by each store", new Runnable()
+        {
+            @Override
+            public void run()
+            {
+
+                iPage results = new DataTablePage(guiController, Metrics.TopSalesForStores(),
+                        "Sales of each store by volume");
+                guiController.addAndDisplayPage(results);
+            }
+        }));
+        panel.addComponent(new Button("8. View total revenue of each store", new Runnable()
+        {
+            @Override
+            public void run()
+            {
+
+                iPage results = new DataTablePage(guiController, Metrics.TopRevenueForStores(),
+                        "Revenue of stores");
+                guiController.addAndDisplayPage(results);
+            }
+        }));
+
+        panel.addComponent(new Button("9. Back", guiController::closePage));
     }
 
     @Override
