@@ -19,6 +19,7 @@ import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
@@ -112,8 +113,15 @@ public class GuiController
     public Integer numPopup(String prompt)
     {
 
-        return TextInputDialog.showNumberDialog(textGUI, prompt, "", "0").intValue();
-
+        BigInteger retval = (TextInputDialog.showNumberDialog(textGUI, prompt, "", "0"));
+        if (retval == null)
+        {
+            return null;
+        }
+        else
+        {
+            return retval.intValue();
+        }
     }
 
     /**

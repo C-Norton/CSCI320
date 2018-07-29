@@ -14,7 +14,7 @@ public class DatabaseController
 {
 
     private static Connection conn;
-
+    private static boolean restockenabled = false;
     public DatabaseController(Connection connection)
     {
 
@@ -25,15 +25,32 @@ public class DatabaseController
     public static int UpdateQuery(String query)
     {
 
+        Statement stmt = null;
+
         int updated;
         try
         {
-            updated = StatementTemplate.connUpdateStatement().executeUpdate(query);
+            stmt = StatementTemplate.connUpdateStatement();
+            updated = stmt.executeUpdate(query);
         }
         catch (SQLException e)
         {
             e.printStackTrace();
             return -1;
+        }
+        finally
+        {
+            try
+            {
+                if (stmt != null)
+                {
+                    stmt.close();
+                }
+            }
+            catch (SQLException e)
+            {
+                e.printStackTrace();
+            }
         }
         return updated;
     }
@@ -50,7 +67,7 @@ public class DatabaseController
     public static ResultSet SelectQuery(String Query)
     {
 
-        Statement stmt = null;
+        Statement stmt;
         ResultSet rs = null;
         try
         {
@@ -76,9 +93,11 @@ public class DatabaseController
     public static StatementType getQueryType(String Query)
     {
 
+        Statement stmt = null;
+
         try
         {
-            Statement stmt = StatementTemplate.connQueryStatement();
+            stmt = StatementTemplate.connQueryStatement();
             stmt.executeQuery(Query);
         }
         catch (SQLException e)
@@ -90,6 +109,20 @@ public class DatabaseController
             else
             {
                 return StatementType.INVALID;
+            }
+        }
+        finally
+        {
+            try
+            {
+                if (stmt != null)
+                {
+                    stmt.close();
+                }
+            }
+            catch (SQLException e)
+            {
+                e.printStackTrace();
             }
         }
         return StatementType.SELECT;
@@ -215,6 +248,73 @@ public class DatabaseController
         return true;
     }
 
+    public static boolean enableRestockingTrigger()
+    {
+
+        try
+        {
+            Statement stmt = StatementTemplate.connUpdateStatement();
+
+            String statement = "create trigger autorestock after update on inventory " +
+                               "for each row " +
+                               "call \"Controllers.Restock\"";
+
+            stmt.executeUpdate(statement);
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+            try
+            {
+                conn.rollback();
+                return false;
+            }
+            catch (SQLException f)
+            {
+                f.printStackTrace();
+                return false;
+            }
+        }
+        restockenabled = true;
+        return true;
+
+    }
+
+    public static boolean disableRestockingTrigger()
+    {
+
+        try
+        {
+            Statement stmt = StatementTemplate.connUpdateStatement();
+
+            String statement = "DROP TRIGGER autorestock";
+
+            stmt.executeUpdate(statement);
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+            try
+            {
+                conn.rollback();
+                return false;
+            }
+            catch (SQLException f)
+            {
+                f.printStackTrace();
+                return false;
+            }
+        }
+        restockenabled = false;
+        return true;
+
+    }
+
+    public static Boolean getRestockenabled()
+    {
+
+        return restockenabled;
+    }
     //initialize a fresh instance of the retail DB
     public void InitializeNewDatabaseInstance() throws Exception
     {
