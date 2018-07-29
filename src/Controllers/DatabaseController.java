@@ -279,6 +279,35 @@ public class DatabaseController
 
     }
 
+    public static boolean disableRestockingTrigger()
+        {
+
+            try
+            {
+                Statement stmt = StatementTemplate.connUpdateStatement();
+
+                String statement =  "DROP TRIGGER autorestock";
+
+                stmt.executeUpdate(statement);
+            }
+            catch (SQLException e){
+                e.printStackTrace();
+                try
+                {
+                    conn.rollback();
+                    return false;
+                }
+                catch (SQLException f)
+                {
+                    f.printStackTrace();
+                    return false;
+                }
+            }
+
+            return true;
+
+        }
+
     //initialize a fresh instance of the retail DB
     public void InitializeNewDatabaseInstance() throws Exception
     {
