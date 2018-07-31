@@ -1,6 +1,6 @@
 package Controllers;
 
-import Models.CartEntry;
+import Models.Item;
 import Utilities.StatementTemplate;
 import Utilities.StatementType;
 
@@ -129,7 +129,7 @@ public class DatabaseController
 
     }
 
-    public static boolean createOrder(int storeId, Integer userId, ArrayList<CartEntry> order)
+    public static boolean createOrder(int storeId, Integer userId, ArrayList<Item> order)
     {
 
         String sstoreId = String.valueOf(storeId);
@@ -167,7 +167,7 @@ public class DatabaseController
                 throw new SQLException("Generated Key is null");
             }
 
-            for (CartEntry item : order)
+            for (Item item : order)
             {
                 if (item.Quantity <= 0)
                 {

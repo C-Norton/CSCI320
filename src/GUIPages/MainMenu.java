@@ -4,7 +4,10 @@ import Controllers.DatabaseController;
 import Controllers.GuiController;
 import Models.Products;
 import Models.Store;
+import Models.Vendor;
 import com.googlecode.lanterna.gui2.*;
+import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
+import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
 
 /**
  * Created by Channing Helmling-Cornell on 7/14/2018.
@@ -80,8 +83,75 @@ public class MainMenu implements iPage
                                                                                                          + "Store"));
             }
         }));
+        panel.addComponent(new Button("6. Register as Frequent Shopper", new Runnable()
+        {
+            @Override
+            public void run()
+            {
+
+                String name;
+                String addr;
+                String phone;
+                String creditCard;
+                name = guiController.textpopup("Name", "Please enter your name (first 32 letters)(Required).");
+                addr = guiController.textpopup("Address", "Please enter your street address (first 255 letters)"
+                                                          + "(Required).");
+                phone = guiController.textpopup("Phone", "Please enter your Phone number (10 digits)(Required).");
+                creditCard = guiController.textpopup("Credit Card", "Please enter your Credit card number (max 19 "
+                                                                    + "digits) (Optional).");
+                if ((name != null
+                     && name.length() > 0
+                     && name.length() <= 32
+                     && addr != null
+                     && addr.length() > 0
+                     && addr.length() <= 255
+                     && phone != null
+                     && phone.length() == 10
+                     && phone.matches("[0-9]{10}"))
+                    && (
+                            creditCard == null
+                            || creditCard.matches("[0-9]{0,19}")
+                    )
+                )
+                {
+                    if (creditCard == null || creditCard.length() == 0)
+                    {
+                        DatabaseController.UpdateQuery("INSERT INTO FrequentShopper (name,address,phoneNum) VALUES "
+                                                       + "('" + name + "', '" + addr + "', '" + phone + "')");
+                    }
+                    else
+                    {
+                        DatabaseController.UpdateQuery("INSERT INTO FrequentShopper (name, address, phoneNum, "
+                                                       + "creditCard) VALUES ('" + name + "', '" + addr + "', '"
+                                                       + phone + "', '" + creditCard + "')");
+                    }
+                    MessageDialog.showMessageDialog(guiController.textGUI, "Thank you for registering.",
+                            "You are now a frequent shopper.", MessageDialogButton.OK);
+                }
+                else
+                {
+                    MessageDialog.showMessageDialog(guiController.textGUI, "Your entry was invalid",
+                            "You have not been registered. Please try again.", MessageDialogButton.Close);
+                }
+            }
+        }));
+        panel.addComponent(new Button("7. View vendor information", new Runnable()
+        {
+            @Override
+            public void run()
+            {
+
+                Integer vendorid = guiController.numPopup("Please enter the vendor ID");
+                if (vendorid != null)
+                {
+                    iPage results = new DataTablePage(guiController, Vendor.getSingleVendorQuery(vendorid),
+                            "Vendorinfo");
+                    guiController.addAndDisplayPage(results);
+                }
+            }
+        }));
         boolean restockenabled = DatabaseController.getRestockenabled();
-        panel.addComponent(new Button("6. Toggle automatic restocking, Current status: "
+        panel.addComponent(new Button("8. Toggle automatic restocking, Current status: "
                                       + String.valueOf(restockenabled),
                 new Runnable()
                 {
@@ -101,8 +171,10 @@ public class MainMenu implements iPage
                         guiController.refreshPage();
                     }
                 }));
-        panel.addComponent(new Button("7. Back", guiController::closePage));
+
+        panel.addComponent(new Button("9. Back", guiController::closePage));
     }
+
     @Override
     public Panel getPanel()
     {

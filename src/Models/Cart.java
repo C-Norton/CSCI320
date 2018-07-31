@@ -12,8 +12,8 @@ public class Cart
 {
     private Integer CustomerId;
     private int StoreId;
-    private LinkedHashMap<String, CartEntry> Contents;
-    private LinkedHashMap<String, CartEntry> StoreContents;
+    private LinkedHashMap<String, Item> Contents;
+    private LinkedHashMap<String, Item> StoreContents;
     private int itemcount;
     private float totalCost;
 
@@ -25,7 +25,7 @@ public class Cart
         itemcount = 0;
         totalCost = 0.0f;
         Contents = new LinkedHashMap<>();
-        StoreContents = CartEntry.RStoContents(DatabaseController.SelectQuery
+        StoreContents = Item.RStoContents(DatabaseController.SelectQuery
                 (("Select Product.UPC, Product.Name, Product.Brand, Product.Price, Inventory.Quantity from product "
                   + "join inventory on Product.UPC = inventory.productUPC where inventory.storeId="
                   + String.valueOf(StoreId))));
@@ -64,10 +64,10 @@ public class Cart
         }
     }
 
-    public ArrayList<CartEntry> getStoreContents()
+    public ArrayList<Item> getStoreContents()
     {
 
-        ArrayList<CartEntry> conts = new ArrayList<>();
+        ArrayList<Item> conts = new ArrayList<>();
         conts.addAll(StoreContents.values());
         return conts;
     }
@@ -91,11 +91,11 @@ public class Cart
         }
         if (StoreContents.containsKey(UPC))
         {
-            CartEntry item = StoreContents.get(UPC);
+            Item item = StoreContents.get(UPC);
             int desiredQuantity = quantity + (Contents.containsKey(UPC) ? Contents.get(UPC).Quantity : 0);
             if (item.Quantity >= desiredQuantity)
             {
-                CartEntry entry = new CartEntry();
+                Item entry = new Item();
                 entry.UPC = UPC;
                 entry.Name = item.Name;
                 entry.Brand = item.Brand;
@@ -124,7 +124,7 @@ public class Cart
 
         if (Contents.containsKey(UPC))
         {
-            CartEntry item = Contents.get(UPC);
+            Item item = Contents.get(UPC);
             int desiredQuantity = item.Quantity - quantity;
             if (desiredQuantity > 0)
             {
@@ -150,10 +150,10 @@ public class Cart
         return DatabaseController.createOrder(StoreId, CustomerId, getCartItemDetails());
     }
 
-    public ArrayList<CartEntry> getCartItemDetails()
+    public ArrayList<Item> getCartItemDetails()
     {
 
-        ArrayList<CartEntry> conts = new ArrayList<>();
+        ArrayList<Item> conts = new ArrayList<>();
         conts.addAll(Contents.values());
         return conts;
     }

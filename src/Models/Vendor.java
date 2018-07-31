@@ -16,18 +16,8 @@ public class Vendor {
     //parsing method still included but this just returns the ResultSet right now
     public static ResultSet getSingleVendorQuery(int id)
     {
-
         String selectVendor = "SELECT * FROM Vendor WHERE vendorId =" + id;
         //create query statement
-
         return DatabaseController.SelectQuery(selectVendor);
-
     }
-
-
-
-
-    //Getters and Setters//
-
-
 }

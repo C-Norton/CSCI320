@@ -32,10 +32,11 @@ public final class Store
         }
     }
 
-    public static ResultSet getInventoryMetadata(int id)
+    public static ResultSet getInventory(int id)
     {
 
-        return DatabaseController.SelectQuery("Select product.UPC, product.Name, product.Brand, product.Price from "
+        return DatabaseController.SelectQuery("Select product.UPC, product.Name, product.Brand, product.Price, "
+                                              + "inventory.quantity from "
                                               + "product join inventory on product.UPC = inventory.productUPC where "
                                               + "storeId="
                                               + id);

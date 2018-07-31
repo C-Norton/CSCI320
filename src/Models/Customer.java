@@ -19,24 +19,25 @@ public final class Customer
 
     }
 
-
     //--Queries--//
     //return boolean of whether the customer exists
-    public static boolean existsCustomer(int customerId){
+    public static boolean existsCustomer(int customerId)
+    {//I feel like i've fixed this NPE twice with this throwing exceptions if it isn't valid
+
         String query = "select userid from frequentshopper where userid = " + customerId;
         ResultSet rs = DatabaseController.SelectQuery(query);
         ArrayList<String[]> parsedRs = RSParser.rsToStringHeaders(rs);
-        return parsedRs != null && parsedRs.get(1)[0].equals(String.valueOf(customerId));
+        return parsedRs != null && parsedRs.size() == 2 && parsedRs.get(1)[0].equals(String.valueOf(customerId));
     }
 
-    //returns a Customer instance, if id does not exist it returns an anon
-    public static ResultSet getSingleCustomerInfoQuery(int id)
+    public static ResultSet getOrdersOfCustomer(int customerId)
     {
 
-        String selectCustomer = "SELECT * FROM FrequentShopper WHERE userId =" + id ;
-
-
-        return DatabaseController.SelectQuery(selectCustomer);
+        String query = "with prod as (Select * from orders natural join prodquantities "
+                       + " WHERE userId =" + customerId + ")  Select prod.ordernum, prod.userid, "
+                       + " prod.productupc, prod.quantity, product.name, product.brand from prod "
+                       + " join product on prod.productupc = product.upc order by prod.ordernum";
+        return DatabaseController.SelectQuery(query);
     }
 
 }
