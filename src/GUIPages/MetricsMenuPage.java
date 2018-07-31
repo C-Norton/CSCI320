@@ -176,7 +176,22 @@ public class MetricsMenuPage implements iPage
 
             }
         }));
-        panel.addComponent(new Button("10. Back", guiController::closePage));
+        panel.addComponent(new Button("10. View store inventory.", new Runnable()
+        {
+            @Override
+            public void run()
+            {
+
+                Integer storeId = guiController.numPopup("Enter the storeId to check inventory for");
+                if (storeId != null && Store.existsStore(storeId))
+                {
+                    iPage results = new DataTablePage(guiController, Store.getInventory(storeId), "Store "
+                                                                                                  + "inventory");
+                    guiController.addAndDisplayPage(results);
+                }
+            }
+        }));
+        panel.addComponent(new Button("11. Back", guiController::closePage));
     }
 
     @Override
