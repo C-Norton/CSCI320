@@ -1,9 +1,9 @@
 package Controllers;
 
+
 import org.h2.tools.RunScript;
 
-import java.io.FileReader;
-import java.io.Reader;
+import java.io.*;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -202,26 +202,40 @@ class DatabaseInitializer
     private static void dataPop(Connection conn) throws Exception
     {
 
-        Reader reader = new FileReader("SQLScripts/LoadFrequentCustomers.sql");
-        RunScript.execute(conn, reader);
+        InputStream in = DatabaseInitializer.class.getResourceAsStream("/Controllers/SQLScripts/LoadFrequentCustomers.sql");
+        BufferedReader buffReader = new BufferedReader(new InputStreamReader(in));
+        RunScript.execute(conn,buffReader);
+        buffReader.close();
 
-        reader = new FileReader("SQLScripts/LoadStores.sql");
-        RunScript.execute(conn, reader);
+        in = DatabaseInitializer.class.getResourceAsStream("/Controllers/SQLScripts/LoadStores.sql");
+        buffReader = new BufferedReader(new InputStreamReader(in));
+        RunScript.execute(conn,buffReader);
+        buffReader.close();
 
-        reader = new FileReader("SQLScripts/LoadOrders.sql");
-        RunScript.execute(conn, reader);
+        in = DatabaseInitializer.class.getResourceAsStream("/Controllers/SQLScripts/LoadOrders.sql");
+        buffReader = new BufferedReader(new InputStreamReader(in));
+        RunScript.execute(conn,buffReader);
+        buffReader.close();
 
-        reader = new FileReader("SQLScripts/LoadVendors.sql");
-        RunScript.execute(conn, reader);
+        in = DatabaseInitializer.class.getResourceAsStream("/Controllers/SQLScripts/LoadVendors.sql");
+        buffReader = new BufferedReader(new InputStreamReader(in));
+        RunScript.execute(conn,buffReader);
+        buffReader.close();
 
-        reader = new FileReader("SQLScripts/LoadProducts.sql");
-        RunScript.execute(conn, reader);
+        in = DatabaseInitializer.class.getResourceAsStream("/Controllers/SQLScripts/LoadProducts.sql");
+        buffReader = new BufferedReader(new InputStreamReader(in));
+        RunScript.execute(conn,buffReader);
+        buffReader.close();
 
-        reader = new FileReader("SQLScripts/LoadProductQuantities.sql");
-        RunScript.execute(conn, reader);
+        in = DatabaseInitializer.class.getResourceAsStream("/Controllers/SQLScripts/LoadProductQuantities.sql");
+        buffReader = new BufferedReader(new InputStreamReader(in));
+        RunScript.execute(conn,buffReader);
+        buffReader.close();
 
-        reader = new FileReader("SQLScripts/LoadInventories.sql");
-        RunScript.execute(conn, reader);
+        in = DatabaseInitializer.class.getResourceAsStream("/Controllers/SQLScripts/LoadInventories.sql");
+        buffReader = new BufferedReader(new InputStreamReader(in));
+        RunScript.execute(conn,buffReader);
+        buffReader.close();
 
     }
 
