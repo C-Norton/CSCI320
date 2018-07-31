@@ -9,26 +9,27 @@ import java.util.LinkedHashMap;
 /**
  * Created by Channing Helmling-Cornell on 7/25/2018.
  */
-public class CartEntry
+public class Item
 {
 
+    //Man, I wish java had structs. That's what this is. This is a struct.
     public String UPC, Name, Brand;
     public float Price;
     public int Quantity;
 
-    CartEntry()
+    Item()
     {
 
     }
 
-    static LinkedHashMap<String, CartEntry> RStoContents(ResultSet rs)
+    static LinkedHashMap<String, Item> RStoContents(ResultSet rs)
     {
 
         if (rs == null)
         {
             return null;
         }
-        LinkedHashMap<String, CartEntry> contents = new LinkedHashMap<>();
+        LinkedHashMap<String, Item> contents = new LinkedHashMap<>();
         ResultSetMetaData metadata = null;
         try
         {
@@ -66,7 +67,7 @@ public class CartEntry
             rs.beforeFirst();
             while (rs.next())
             {
-                CartEntry item = new CartEntry();
+                Item item = new Item();
                 item.UPC = rs.getString(1);
                 item.Name = rs.getString(2);
                 item.Brand = rs.getString(3);

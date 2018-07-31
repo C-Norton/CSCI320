@@ -105,6 +105,9 @@ public class MetricsMenuPage implements iPage
                 Long prod1L, prod2L;
                 try
                 {
+                    //So contrary to what your IDE says, these do something. Its a really quick isparsable thing that
+                    //SHOULD be replaced by a regex, but it was done quickly, and this stupid way was the first thing I
+                    //thought of that wasn't writing a string parser.
                     prod1L = Long.valueOf(prod1);
                     prod2L = Long.valueOf(prod2);
                 }

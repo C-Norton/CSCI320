@@ -2,8 +2,10 @@ package GUIPages;
 
 import Controllers.DatabaseController;
 import Controllers.GuiController;
+import Models.Customer;
 import Models.Products;
 import Models.Store;
+import Models.Vendor;
 import com.googlecode.lanterna.gui2.*;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
@@ -121,16 +123,8 @@ public class MainMenu implements iPage
                     else
                     {
                         DatabaseController.UpdateQuery("INSERT INTO FrequentShopper (name, address, phoneNum, "
-                                                       + "creditCard) VALUES "
-                                                       + "('"
-                                                       + name
-                                                       + "', '"
-                                                       + addr
-                                                       + "', '"
-                                                       + phone
-                                                       + "', '"
-                                                       + creditCard
-                                                       + "')");
+                                                       + "creditCard) VALUES ('" + name + "', '" + addr + "', '"
+                                                       + phone + "', '" + creditCard + "')");
                     }
                     MessageDialog.showMessageDialog(guiController.textGUI, "Thank you for registering.",
                             "You are now a frequent shopper.", MessageDialogButton.OK);
@@ -140,11 +134,25 @@ public class MainMenu implements iPage
                     MessageDialog.showMessageDialog(guiController.textGUI, "Your entry was invalid",
                             "You have not been registered. Please try again.", MessageDialogButton.Close);
                 }
+            }
+        }));
+        panel.addComponent(new Button("7. View vendor information", new Runnable()
+        {
+            @Override
+            public void run()
+            {
 
+                Integer vendorid = guiController.numPopup("Please enter the vendor ID");
+                if (vendorid != null)
+                {
+                    iPage results = new DataTablePage(guiController, Vendor.getSingleVendorQuery(vendorid),
+                            "Vendorinfo");
+                    guiController.addAndDisplayPage(results);
+                }
             }
         }));
         boolean restockenabled = DatabaseController.getRestockenabled();
-        panel.addComponent(new Button("7. Toggle automatic restocking, Current status: "
+        panel.addComponent(new Button("8. Toggle automatic restocking, Current status: "
                                       + String.valueOf(restockenabled),
                 new Runnable()
                 {
@@ -164,7 +172,33 @@ public class MainMenu implements iPage
                         guiController.refreshPage();
                     }
                 }));
-        panel.addComponent(new Button("8. Back", guiController::closePage));
+        panel.addComponent(new Button("View Shopping history for Customer", new Runnable()
+        {
+            @Override
+            public void run()
+            {
+
+                Integer custid = guiController.numPopup("Enter the customer to check history for");
+                if (custid != null)
+                {
+                    if (Customer.existsCustomer(custid))
+                    {
+                        iPage results = new DataTablePage(guiController, Customer.getOrdersOfCustomer(custid),
+                                "Customer orders");
+                        guiController.addAndDisplayPage(results);
+                    }
+                    else
+                    {
+                        MessageDialog.showMessageDialog(guiController.textGUI, "Error: Invalid customer",
+                                "The requested "
+                                + "customer does"
+                                + " not exist");
+                    }
+                }
+
+            }
+        }));
+        panel.addComponent(new Button("9. Back", guiController::closePage));
     }
 
     @Override
