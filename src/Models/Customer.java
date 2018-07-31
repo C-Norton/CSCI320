@@ -22,12 +22,12 @@ public final class Customer
     //--Queries--//
     //return boolean of whether the customer exists
     public static boolean existsCustomer(int customerId)
-    {
+    {//I feel like i've fixed this NPE twice with this throwing exceptions if it isn't valid
 
         String query = "select userid from frequentshopper where userid = " + customerId;
         ResultSet rs = DatabaseController.SelectQuery(query);
         ArrayList<String[]> parsedRs = RSParser.rsToStringHeaders(rs);
-        return parsedRs != null && parsedRs.get(1)[0].equals(String.valueOf(customerId));
+        return parsedRs != null && parsedRs.size() == 2 && parsedRs.get(1)[0].equals(String.valueOf(customerId));
     }
 
     public static ResultSet getOrdersOfCustomer(int customerId)

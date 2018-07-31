@@ -2,7 +2,6 @@ package GUIPages;
 
 import Controllers.DatabaseController;
 import Controllers.GuiController;
-import Models.Customer;
 import Models.Products;
 import Models.Store;
 import Models.Vendor;
@@ -172,32 +171,7 @@ public class MainMenu implements iPage
                         guiController.refreshPage();
                     }
                 }));
-        panel.addComponent(new Button("View Shopping history for Customer", new Runnable()
-        {
-            @Override
-            public void run()
-            {
 
-                Integer custid = guiController.numPopup("Enter the customer to check history for");
-                if (custid != null)
-                {
-                    if (Customer.existsCustomer(custid))
-                    {
-                        iPage results = new DataTablePage(guiController, Customer.getOrdersOfCustomer(custid),
-                                "Customer orders");
-                        guiController.addAndDisplayPage(results);
-                    }
-                    else
-                    {
-                        MessageDialog.showMessageDialog(guiController.textGUI, "Error: Invalid customer",
-                                "The requested "
-                                + "customer does"
-                                + " not exist");
-                    }
-                }
-
-            }
-        }));
         panel.addComponent(new Button("9. Back", guiController::closePage));
     }
 

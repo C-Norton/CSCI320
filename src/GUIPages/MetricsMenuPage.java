@@ -1,10 +1,12 @@
 package GUIPages;
 
 import Controllers.GuiController;
+import Models.Customer;
 import Models.Metrics;
 import Models.Products;
 import Models.Store;
 import com.googlecode.lanterna.gui2.*;
+import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
 
 /**
  * Created by Channing Helmling-Cornell on 7/19/2018.
@@ -148,8 +150,33 @@ public class MetricsMenuPage implements iPage
                 guiController.addAndDisplayPage(results);
             }
         }));
+        panel.addComponent(new Button("9. View Shopping history for Customer", new Runnable()
+        {
+            @Override
+            public void run()
+            {
 
-        panel.addComponent(new Button("9. Back", guiController::closePage));
+                Integer custid = guiController.numPopup("Enter the customer to check history for");
+                if (custid != null)
+                {
+                    if (Customer.existsCustomer(custid))
+                    {
+                        iPage results = new DataTablePage(guiController, Customer.getOrdersOfCustomer(custid),
+                                "Customer orders");
+                        guiController.addAndDisplayPage(results);
+                    }
+                    else
+                    {
+                        MessageDialog.showMessageDialog(guiController.textGUI, "Error: Invalid customer",
+                                "The requested "
+                                + "customer does"
+                                + " not exist");
+                    }
+                }
+
+            }
+        }));
+        panel.addComponent(new Button("10. Back", guiController::closePage));
     }
 
     @Override
