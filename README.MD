@@ -5,3 +5,4 @@ This project requires H2 to run, download the jar and add it to your project cla
 
 Download the JAR here: http://www.h2database.com/html/download.html
 
+This repo made public on Thurs, March 7, 2019 by Channing Helmling-Cornell
